@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ggreener.oa.mapper.TagMapper">
+    <resultMap id="TagPO" type="com.ggreener.oa.po.TagPO">
+        <result column="id" jdbcType="BIGINT" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="parent_id" jdbcType="BIGINT" property="parentId"/>
+        <result column="order" jdbcType="INTEGER" property="order"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO tag (`name`, `parent_id`, `order`, `status`, `create_time`, `create_user`, `update_time`, `update_user`)
+        VALUES(#{name}, #{parentId}, #{order}, #{status}, #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
+    </insert>
+
+    <update id="update">
+        UPDATE `tag`
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name!=null">
+                `name` = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="parentId!=null">
+                parent_id = #{parentId,jdbcType=BIGINT},
+            </if>
+            <if test="order!=null">
+                `order`= #{order,jdbcType=INTEGER},
+            </if>
+            <if test="status!=null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime!=null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+
+    <select id="list" resultMap="TagPO">
+        SELECT id, `name`, parent_id, `order`, status, create_time, create_user, update_time, update_user
+        FROM tag
+        WHERE parent_id = #{parentId} AND status = 1 ORDER BY id, `order`
+    </select>
+</mapper>
