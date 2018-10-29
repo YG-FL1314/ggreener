@@ -12,9 +12,7 @@ public class UserVO implements Serializable {
     private static final long serialVersionUID = -504988295594176813L;
 
     private String uuid;
-
     private String name;
-
     private Integer role;
 
     public String getUuid() {

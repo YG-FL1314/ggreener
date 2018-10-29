@@ -43,6 +43,12 @@
     <select id="list" resultMap="TagPO">
         SELECT id, `name`, parent_id, `order`, status, create_time, create_user, update_time, update_user
         FROM tag
-        WHERE parent_id = #{parentId} AND status = 1 ORDER BY id, `order`
+        WHERE status = 1
+        <if test="parentId!=null">
+            AND parent_id = #{parentId}
+        </if>
+        <if test="parentId==null">
+            AND parent_id != 0
+        </if> ORDER BY id, `order`
     </select>
 </mapper>

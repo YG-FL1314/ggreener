@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ggreener.oa.mapper.CompanyTagsMapper">
+    <resultMap id="CompanyTagsPO" type="com.ggreener.oa.po.CompanyTagsPO">
+        <result column="id" jdbcType="BIGINT" property="id" />
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="tag_id" jdbcType="BIGINT" property="tagId"/>
+        <result column="time" jdbcType="TIMESTAMP" property="time"/>
+    </resultMap>
+
+    <resultMap id="TagPO" type="com.ggreener.oa.po.TagPO">
+        <result column="id" jdbcType="BIGINT" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="parent_id" jdbcType="BIGINT" property="parentId"/>
+        <result column="order" jdbcType="INTEGER" property="order"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+    </resultMap>
+
+    <insert id="batchInsert" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO `company_tag`(`company_id`, `tag_id`, `time`)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.companyId}, #{item.tagId}, #{item.time})
+        </foreach>
+    </insert>
+    <delete id="delete">
+        DELETE FROM company_tag
+        WHERE company_id = #{companyId}
+    </delete>
+    <select id="selectTagsByCompanyId" resultMap="TagPO">
+        SELECT tag.id, tag.`name`, tag.parent_id, tag.`order` FROM company_tag ct JOIN tag on ct.tag_id = tag.id
+        WHERE company_id = #{companyId}
+    </select>
+</mapper>

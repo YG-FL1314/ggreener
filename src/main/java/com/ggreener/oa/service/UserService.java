@@ -6,7 +6,7 @@ import com.ggreener.oa.mapper.UserMapper;
 import com.ggreener.oa.po.UserPO;
 import com.ggreener.oa.util.PasswordUtil;
 import com.ggreener.oa.util.UuidUtil;
-import com.ggreener.oa.util.constants;
+import com.ggreener.oa.util.Constants;
 import com.ggreener.oa.vo.UserVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,10 +55,10 @@ public class UserService {
             String uuid = UuidUtil.generateUUID();
             Date date = new Date();
             userNew.setName(name);
-            userNew.setRole(constants.NORMAL_ROLE);
+            userNew.setRole(Constants.NORMAL_ROLE);
             userNew.setPassword(PasswordUtil.Encrypt( name  + password));
             userNew.setUuid(uuid);
-            userNew.setStatus(constants.STATUS_NORMAL);
+            userNew.setStatus(Constants.STATUS_NORMAL);
             userNew.setCreateTime(date);
             userNew.setUpdateTime(date);
             try {

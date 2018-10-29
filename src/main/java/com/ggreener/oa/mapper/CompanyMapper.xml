@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ggreener.oa.mapper.CompanyMapper">
+    <resultMap id="CompanyPO" type="com.ggreener.oa.po.CompanyPO">
+        <result column="id" jdbcType="BIGINT" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="established_time" jdbcType="TIMESTAMP" property="establishedTime"/>
+        <result column="registered_capital" jdbcType="FLOAT" property="registeredCapital"/>
+        <result column="shares_code" jdbcType="VARCHAR" property="sharesCode"/>
+        <result column="patents" jdbcType="VARCHAR" property="patents"/>
+        <result column="utility_patents" jdbcType="VARCHAR" property="utilityPatents"/>
+        <result column="softwares" jdbcType="VARCHAR" property="softwares"/>
+        <result column="office_area" jdbcType="FLOAT" property="officeArea"/>
+        <result column="staff_number" jdbcType="BIGINT" property="staffNumber"/>
+        <result column="technicians" jdbcType="BIGINT" property="technicians"/>
+        <result column="telephone" jdbcType="VARCHAR" property="telephone"/>
+        <result column="fax" jdbcType="VARCHAR" property="fax"/>
+        <result column="website" jdbcType="VARCHAR" property="website"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO company (`name`, `established_time`, `registered_capital`, `shares_code`,`patents`, `utility_patents`,
+         `softwares`, `office_area`, `staff_number`, `technicians`, `telephone`, `fax`, `website`, `address`, `status`,
+         `create_time`, `create_user`, `update_time`, `update_user`)
+        VALUES(#{name}, #{establishedTime}, #{registeredCapital}, #{sharesCode}, #{patents}, #{utilityPatents}, #{softwares}, #{officeArea}, #{staffNumber},
+        #{technicians}, #{telephone}, #{fax}, #{website}, #{address}, #{status}, #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
+    </insert>
+
+    <select id="selectByCompanyId" resultMap="CompanyPO">
+        SELECT id, `name`, established_time, registered_capital, shares_code, patents, utility_patents, softwares, office_area, staff_number, technicians,
+        telephone, fax, website, address, status, create_time, create_user, update_time, update_user
+        FROM comany
+        WHERE id = #{companyId} and status = 1 LIMIT 1
+    </select>
+
+    <update id="delete">
+        UPDATE company SET status = 0 WHERE id = #{companyId}
+    </update>
+</mapper>

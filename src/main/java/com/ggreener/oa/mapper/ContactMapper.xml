@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ggreener.oa.mapper.ContactMapper">
+    <resultMap id="ContactPO" type="com.ggreener.oa.po.ContactPO">
+        <result column="id" jdbcType="BIGINT" property="id" />
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="telephone" jdbcType="VARCHAR" property="telephone"/>
+        <result column="duty_id" jdbcType="BIGINT" property="dutyId"/>
+        <result column="mail" jdbcType="VARCHAR" property="mail"/>
+        <result column="weixin" jdbcType="VARCHAR" property="weixin"/>
+        <result column="qq" jdbcType="VARCHAR" property="qq"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO contacts (`company_id`, `name`, `telephone`, `duty_id`,`mail`, `weixin`, `qq`, `create_time`, `create_user`, `update_time`, `update_user`)
+        VALUES(#{companyId}, #{name}, #{telephone}, #{dutyId}, #{mail}, #{weixin}, #{qq}, #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
+    </insert>
+
+    <select id="selectByCompanyId" resultMap="ContactPO">
+        SELECT c.`id`, c.`company_id`, c.`name`, c.`telephone`, c.`duty_id`, c.`mail`, c.`weixin`, c.`qq`, c.`create_time`, c.`create_user`, c.`update_time`, c.`update_user`
+        FROM contacts c JOIN tag t ON c.duty_id = t.id
+        WHERE c.company_id = #{companyId} and c.status = 1 ORDER BY t.order
+    </select>
+
+    <update id="delete">
+        UPDATE contacts
+        SET status = 0, update_user = #{updateUser}, update_time = #{updateTime}
+        WHERE id = #{contactId}
+    </update>
+
+    <update id="update">
+        UPDATE contacts
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name!=null">
+                name = #{name},
+            </if>
+            <if test="telephone!=null">
+                telephone = #{telephone},
+            </if>
+            <if test="qq!=null">
+                qq = #{qq},
+            </if>
+            <if test="weixin!=null">
+                weixin = #{weixin},
+            </if>
+            <if test="remark!=null">
+                remark = #{remark},
+            </if>
+            <if test="update_time!=null">
+                update_time = #{updateTime},
+            </if>
+            <if test="update_user!=null">
+                update_user = #{updateUser},
+            </if>
+        </trim>
+        WHERE id = #{id} and status = 1
+    </update>
+
+    <select id="get" resultMap="ContactPO">
+        SELECT c.`id`, c.`company_id`, c.`name`, c.`telephone`, c.`duty_id`, c.`mail`, c.`weixin`, c.`qq`, c.`create_time`, c.`create_user`, c.`update_time`, c.`update_user`
+        FROM contacts c
+        WHERE c.id = #{contactId} and c.status = 1 LIMIT 1
+    </select>
+
+</mapper>

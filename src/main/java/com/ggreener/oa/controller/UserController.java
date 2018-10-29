@@ -1,9 +1,10 @@
 package com.ggreener.oa.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.ggreener.oa.exception.SessionException;
 import com.ggreener.oa.service.UserService;
 import com.ggreener.oa.util.PasswordUtil;
-import com.ggreener.oa.util.constants;
+import com.ggreener.oa.util.Constants;
 import com.ggreener.oa.vo.ResponseVO;
 import com.ggreener.oa.vo.UserVO;
 import org.slf4j.Logger;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,8 +36,6 @@ public class UserController {
                  HttpServletRequest request, HttpServletResponse response){
         ResponseVO resp = new ResponseVO();
         UserVO vo = userService.login(name, password);
-        System.out.println(request.getSession().getAttribute("uuid"));
-        System.out.println(request.getSession().getAttribute("token"));
         if (null == vo) {
             resp.setStatus(1);
             resp.setMessage("用户名或密码错误！");
@@ -46,8 +44,6 @@ public class UserController {
             resp.setMessage("登录成功！");
             resp.setObj(vo);
             request.getSession().setAttribute("uuid", vo.getUuid());
-//            Cookie cookie = new Cookie("uuid", vo.getUuid());
-//            response.addCookie(cookie);
         }
         return resp;
     }
@@ -58,19 +54,23 @@ public class UserController {
         ResponseVO resp = new ResponseVO();
         try {
             UserVO user = userService.validateUser(request.getSession());
-            if (null != user && user.getRole() == constants.ADMIN_ROLE) {
+            if (null != user && user.getRole() == Constants.ADMIN_ROLE) {
                 String name = json.getString("name");
                 String password = json.getString("password");
                 userService.addUser(name, password);
-                resp.setStatus(constants.RESPONSE_SUCCESS);
+                resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("新增用户成功！");
             } else {
-                resp.setStatus(constants.RESPONSE_FAIL);
+                resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
             }
+        } catch (SessionException e) {
+            LOGGER.error("UserController==>addUser:登录过期,", e);
+            resp.setStatus(Constants.RESPONSE_REDIRECT);
+            resp.setMessage("./login.html");
         } catch (Exception e) {
             LOGGER.error("UserController==>addUser:新增用户失败,", e);
-            resp.setStatus(constants.RESPONSE_FAIL);
+            resp.setStatus(Constants.RESPONSE_FAIL);
             resp.setMessage(e.getMessage());
         }
         return resp;
@@ -80,7 +80,7 @@ public class UserController {
     Object logout(HttpServletRequest request) {
         ResponseVO resp = new ResponseVO();
         request.getSession().removeAttribute("uuid");
-        resp.setStatus(constants.RESPONSE_SUCCESS);
+        resp.setStatus(Constants.RESPONSE_SUCCESS);
         resp.setMessage("退出登录成功！");
         return resp;
     }
@@ -91,20 +91,24 @@ public class UserController {
         ResponseVO resp = new ResponseVO();
         try {
             UserVO user = userService.validateUser(request.getSession());
-            if (null != user && user.getRole() == constants.ADMIN_ROLE) {
+            if (null != user && user.getRole() == Constants.ADMIN_ROLE) {
                 String uuid = json.getString("uuid");
                 String name = json.getString("name");
                 String password = json.getString("password");
                 resp.setObj(userService.updateUserByUuid(uuid, name, password));
-                resp.setStatus(constants.RESPONSE_SUCCESS);
+                resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("更新成功！");
             } else {
-                resp.setStatus(constants.RESPONSE_FAIL);
+                resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
             }
+        } catch (SessionException e) {
+            LOGGER.error("UserController==>updateUserByAdmin:登录过期,", e);
+            resp.setStatus(Constants.RESPONSE_REDIRECT);
+            resp.setMessage("./login.html");
         } catch (Exception e) {
             LOGGER.error("UserController==>updateUserByAdmin:更新用户失败,", e);
-            resp.setStatus(constants.RESPONSE_FAIL);
+            resp.setStatus(Constants.RESPONSE_FAIL);
             resp.setMessage(e.getMessage());
         }
         return resp;
@@ -122,15 +126,19 @@ public class UserController {
                 String srcDe = PasswordUtil.Encrypt(user.getName() + srcPwd);
                 String destDe = PasswordUtil.Encrypt(user.getName() + destPwd);
                 resp.setObj(userService.updateNormalUser(user.getUuid(), user.getName(), srcDe, destDe));
-                resp.setStatus(constants.RESPONSE_SUCCESS);
+                resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("更新成功！");
             } else {
-                resp.setStatus(constants.RESPONSE_FAIL);
+                resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("更新失败");
             }
+        } catch (SessionException e) {
+            LOGGER.error("UserController==>updateUserByNormal:登录过期,", e);
+            resp.setStatus(Constants.RESPONSE_REDIRECT);
+            resp.setMessage("./login.html");
         } catch (Exception e) {
             LOGGER.error("UserController==>updateUserByNormal:更新用户失败,", e);
-            resp.setStatus(constants.RESPONSE_FAIL);
+            resp.setStatus(Constants.RESPONSE_FAIL);
             resp.setMessage(e.getMessage());
         }
         return resp;
@@ -141,24 +149,52 @@ public class UserController {
                       @RequestParam(value = "status", required = true)Integer status) {
         ResponseVO resp = new ResponseVO();
         try {
-            if (status != constants.STATUS_NORMAL && status != constants.STATUS_DELETE) {
-                resp.setStatus(constants.RESPONSE_FAIL);
+            if (status != Constants.STATUS_NORMAL && status != Constants.STATUS_DELETE) {
+                resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("用户状态错误！");
                 return resp;
             }
             UserVO user = userService.validateUser(request.getSession());
-            if (null != user && user.getRole() == constants.ADMIN_ROLE) {
+            if (null != user && user.getRole() == Constants.ADMIN_ROLE) {
                 resp.setObj(userService.updateUserStatus(uuid, status));
-                resp.setStatus(constants.RESPONSE_SUCCESS);
+                resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("停用该用户成功！");
             } else {
-                resp.setStatus(constants.RESPONSE_FAIL);
+                resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
             }
+        } catch (SessionException e) {
+            LOGGER.error("UserController==>updateUserStatus:登录过期,", e);
+            resp.setStatus(Constants.RESPONSE_REDIRECT);
+            resp.setMessage("./login.html");
         } catch (Exception e) {
             LOGGER.error("UserController==>updateUserStatus:更新用户状态失败,", e);
-            resp.setStatus(constants.RESPONSE_FAIL);
+            resp.setStatus(Constants.RESPONSE_FAIL);
             resp.setMessage(e.getMessage());
+        }
+        return resp;
+    }
+
+    @GetMapping(value = "/islogin", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    Object isLogin(HttpServletRequest request, HttpServletResponse response) {
+        ResponseVO resp = new ResponseVO();
+        try {
+            UserVO user = userService.validateUser(request.getSession());
+            if (null != user) {
+                resp.setStatus(Constants.RESPONSE_SUCCESS);
+                resp.setObj(user);
+            } else {
+                resp.setStatus(Constants.RESPONSE_REDIRECT);
+                resp.setMessage("./ggreen/login.html");
+            }
+        } catch (SessionException e) {
+            LOGGER.error("UserController==>isLogin:登录过期,", e);
+            resp.setStatus(Constants.RESPONSE_REDIRECT);
+            resp.setMessage("./login.html");
+        } catch (Exception e) {
+            LOGGER.error("UserController==>isLogin:登录失败,", e);
+            resp.setStatus(Constants.RESPONSE_FAIL);
+            resp.setMessage("登录失败");
         }
         return resp;
     }

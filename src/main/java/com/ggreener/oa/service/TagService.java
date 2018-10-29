@@ -2,9 +2,8 @@ package com.ggreener.oa.service;
 
 import com.ggreener.oa.exception.TagException;
 import com.ggreener.oa.mapper.TagMapper;
-import com.ggreener.oa.mapper.UserMapper;
 import com.ggreener.oa.po.TagPO;
-import com.ggreener.oa.util.constants;
+import com.ggreener.oa.util.Constants;
 import com.ggreener.oa.vo.TagVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,16 +33,13 @@ public class TagService {
         tag.setParentId(parentId);
         tag.setOrder(order);
         tag.setCreateUser(userId);
-        tag.setStatus(constants.STATUS_NORMAL);
+        tag.setStatus(Constants.STATUS_NORMAL);
         tag.setUpdateUser(userId);
         tag.setCreateTime(new Date());
         tag.setUpdateTime(new Date());
         if (tagMapper.insert(tag) > 0) {
             TagVO tagVO = new TagVO();
-            tagVO.setId(tag.getId());
-            tagVO.setName(tag.getName());
-            tagVO.setParentId(tag.getParentId());
-            tagVO.setOrder(tag.getOrder());
+            BeanUtils.copyProperties(tag, tagVO);
             return tagVO;
         } else {
             throw new TagException("增加标签失败！");
@@ -61,10 +57,7 @@ public class TagService {
         tag.setUpdateTime(new Date());
         if (tagMapper.update(tag) > 0) {
             TagVO tagVO = new TagVO();
-            tagVO.setId(tag.getId());
-            tagVO.setName(tag.getName());
-            tagVO.setParentId(tag.getParentId());
-            tagVO.setOrder(tag.getOrder());
+            BeanUtils.copyProperties(tag, tagVO);
             return tagVO;
         } else {
             throw new TagException("更新标签失败！");
