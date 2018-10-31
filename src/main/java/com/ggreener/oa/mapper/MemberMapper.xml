@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ggreener.oa.mapper.MemberMapper">
+    <resultMap id="MemberPO" type="com.ggreener.oa.po.MemberPO">
+        <result column="id" jdbcType="BIGINT" property="id" />
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="tag_id" jdbcType="BIGINT" property="tagId"/>
+        <result column="member_code" jdbcType="VARCHAR" property="memberCode"/>
+        <result column="joining_time" jdbcType="TIMESTAMP" property="joiningTime"/>
+        <result column="validity_time" jdbcType="TIMESTAMP" property="validityTime"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO member (`company_id`, `tag_id`, `member_code`, `joining_time`,`validity_time`, `create_time`, `create_user`, `update_time`, `update_user`)
+        VALUES(#{companyId}, #{tagId}, #{memberCode}, #{joiningTime}, #{validityTime}, #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
+    </insert>
+
+    <select id="selectByCompanyId" resultMap="MemberPO">
+        SELECT id, company_id, tag_id, member_code, joining_time, validity_time, create_time, create_user, update_time, update_user
+        FROM member
+        WHERE company_id = #{companyId} AND status = 1 LIMIT 1
+    </select>
+
+    <update id="update">
+        UPDATE member
+        <trim prefix="set" suffixOverrides=",">
+            <if test="tagId!=null">
+                tag_id = #{tagId},
+            </if>
+            <if test="memberCode!=null">
+                member_code = #{memberCode},
+            </if>
+            <if test="joiningTime!=null">
+                joining_time = #{joiningTime},
+            </if>
+            <if test="validityTime!=null">
+                validity_time = #{validityTime},
+            </if>
+            <if test="update_time!=null">
+                update_time = #{updateTime},
+            </if>
+            <if test="update_user!=null">
+                update_user = #{updateUser},
+            </if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+
+    <select id="get" resultMap="MemberPO">
+        SELECT id, company_id, tag_id, member_code, joining_time, validity_time, create_time, create_user, update_time, update_user
+        FROM member
+        WHERE c.id = #{id} LIMIT 1
+    </select>
+
+</mapper>

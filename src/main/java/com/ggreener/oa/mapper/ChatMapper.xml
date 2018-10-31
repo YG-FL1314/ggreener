@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ggreener.oa.mapper.ChatMapper">
+    <resultMap id="ChatPO" type="com.ggreener.oa.po.ChatPO">
+        <result column="id" jdbcType="BIGINT" property="id" />
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="chat_time" jdbcType="TIMESTAMP" property="chatTime"/>
+        <result column="chat_type" jdbcType="BIGINT" property="chatType"/>
+        <result column="customers" jdbcType="VARCHAR" property="customers"/>
+        <result column="owners" jdbcType="VARCHAR" property="owners"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO chat_info (`company_id`, `chat_time`, `chat_type`, `customers`,`owners`, `content`, `status`, `create_time`, `create_user`, `update_time`, `update_user`)
+        VALUES(#{companyId}, #{chatTime}, #{chatType}, #{customers}, #{owners}, #{content}, #{status}, #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
+    </insert>
+
+    <select id="selectByCompanyId" resultMap="ChatPO">
+        SELECT id, company_id, chat_type, chat_time, customers, owners, content, status, create_time, create_user, update_time, update_user
+        FROM chat_info
+        WHERE company_id = #{companyId} AND status = 1 ORDER BY update_time DESC
+    </select>
+
+    <update id="delete">
+        UPDATE chat_info
+        SET status = 0, update_user = #{updateUser}, update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+
+    <update id="update">
+        UPDATE chat_info
+        <trim prefix="set" suffixOverrides=",">
+            <if test="chatTime!=null">
+                chat_time = #{chatTime},
+            </if>
+            <if test="customers!=null">
+                customers = #{customers},
+            </if>
+            <if test="owners!=null">
+                owners = #{owners},
+            </if>
+            <if test="content!=null">
+                content = #{content},
+            </if>
+            <if test="update_time!=null">
+                update_time = #{updateTime},
+            </if>
+            <if test="update_user!=null">
+                update_user = #{updateUser},
+            </if>
+        </trim>
+        WHERE id = #{id} and status = 1
+    </update>
+
+    <select id="get" resultMap="ChatPO">
+        SELECT id, company_id, chat_time, customers, owners, content, status, create_time, create_user, update_time, update_user
+        FROM chat_info
+        WHERE c.id = #{id} and c.status = 1 LIMIT 1
+    </select>
+
+</mapper>

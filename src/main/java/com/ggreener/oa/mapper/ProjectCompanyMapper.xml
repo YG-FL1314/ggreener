@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ggreener.oa.mapper.ProjectCompanyMapper">
+    <resultMap id="ProjectCompanyPO" type="com.ggreener.oa.po.ProjectCompanyPO">
+        <result column="id" jdbcType="BIGINT" property="id" />
+        <result column="project_id" jdbcType="BIGINT" property="projectId" />
+        <result column="company_id" jdbcType="BIGINT" property="companyId" />
+        <result column="people" jdbcType="VARCHAR" property="people"/>
+        <result column="amount" jdbcType="BIGINT" property="amount"/>
+        <result column="own" jdbcType="VARCHAR" property="own"/>
+        <result column="other" jdbcType="BIGINT" property="other"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO project (`project_id`, `company_id`, `people`, `amount`,`own`, `other`,
+         `status`, `create_time`, `create_user`, `update_time`, `update_user`)
+        VALUES(#{projectId}, #{companyId}, #{people}, #{amount}, #{own}, #{other}, #{status},
+        #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
+    </insert>
+
+    <select id="selectByProjectId" resultMap="ProjectCompanyPO">
+        SELECT id, `project_id`, `company_id`, `people`, `amount`,`own`, `other`,
+         `status`, `create_time`, `create_user`, `update_time`, `update_user`
+        FROM project_company
+        WHERE project_id = #{projectId} and status = 1
+    </select>
+
+    <select id="selectByCompanyId" resultMap="ProjectCompanyPO">
+        SELECT id, `project_id`, `company_id`, `people`, `amount`,`own`, `other`,
+        `status`, `create_time`, `create_user`, `update_time`, `update_user`
+        FROM project_company
+        WHERE company_id = #{companyId} and status = 1
+    </select>
+
+    <update id="delete">
+        UPDATE project_company
+        SET status = 0, update_time = #{updateTime}, update_user = #{updateUser}
+        WHERE id = #{id}
+    </update>
+    <update id="update">
+        UPDATE project_company
+        <trim prefix="set" suffixOverrides=",">
+            <if test="project_id!=null">
+                project_id = #{projectId},
+            </if>
+            <if test="company_id!=null">
+                company_id = #{companyId},
+            </if>
+            <if test="people!=null">
+                people = #{people},
+            </if>
+            <if test="amount!=null">
+                amount = #{amount},
+            </if>
+            <if test="own!=null">
+                own = #{own},
+            </if>
+            <if test="other!=null">
+                other = #{other},
+            </if>
+            <if test="update_time!=null">
+                update_time = #{updateTime},
+            </if>
+            <if test="update_user!=null">
+                update_user = #{updateUser},
+            </if>
+        </trim>
+        WHERE id = #{id} and status = 1
+    </update>
+</mapper>

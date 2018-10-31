@@ -11,18 +11,14 @@ import java.util.Date;
  * XXX
  */
 @Data
-public class ContactPO implements Serializable {
-    private static final long serialVersionUID = 1441455311765181191L;
+public class MemberPO implements Serializable {
+    private static final long serialVersionUID = -3425442816132955274L;
     private Long id;
     private Long companyId;
-    private String name;
-    private String telephone;
-    private Long dutyId;
-    private String mail;
-    private String weixin;
-    private String qq;
-    private String remark;
-    private Integer status;
+    private Long tagId;
+    private String memberCode;
+    private Date joiningTime;
+    private Date validityTime;
     private Date createTime;
     private String createUser;
     private Date updateTime;

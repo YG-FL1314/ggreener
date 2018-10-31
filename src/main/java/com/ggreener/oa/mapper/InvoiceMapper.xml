@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ggreener.oa.mapper.InvoiceMapper">
+    <resultMap id="InvoicePO" type="com.ggreener.oa.po.InvoicePO">
+        <result column="id" jdbcType="BIGINT" property="id" />
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="pay_number" jdbcType="VARCHAR" property="payNumber"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="telephone" jdbcType="VARCHAR" property="telephone"/>
+        <result column="bank_name" jdbcType="VARCHAR" property="bankName"/>
+        <result column="account_number" jdbcType="VARCHAR" property="accountNumber"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO invoice (`company_id`, `name`, `pay_number`, `address`,`telephone`, `bank_name`, `account_number`, `status`, `create_time`, `create_user`, `update_time`, `update_user`)
+        VALUES(#{companyId}, #{name}, #{payNumber}, #{address}, #{telephone}, #{bankName}, #{accountNumber}, #{status}, #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
+    </insert>
+
+    <select id="selectByCompanyId" resultMap="InvoicePO">
+        SELECT id, `company_id`, `name`, `pay_number`, `address`,`telephone`, `bank_name`, `account_number`, `status`, `create_time`, `create_user`, `update_time`, `update_user`
+        FROM invoice
+        WHERE company_id = #{companyId} AND status = 1
+    </select>
+
+    <update id="update">
+        UPDATE invoice
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name!=null">
+                name = #{name},
+            </if>
+            <if test="payNumber!=null">
+                pay_number = #{payNumber},
+            </if>
+            <if test="address!=null">
+                address = #{address},
+            </if>
+            <if test="telephone!=null">
+                telephone = #{telephone},
+            </if>
+            <if test="bankName!=null">
+                bank_name = #{bankName},
+            </if>
+            <if test="accountNumber!=null">
+                account_number = #{accountNumber},
+            </if>
+            <if test="update_time!=null">
+                update_time = #{updateTime},
+            </if>
+            <if test="update_user!=null">
+                update_user = #{updateUser},
+            </if>
+        </trim>
+        WHERE id = #{id} AND status = 1
+    </update>
+
+    <select id="get" resultMap="InvoicePO">
+        SELECT id, `company_id`, `name`, `pay_number`, `address`,`telephone`, `bank_name`, `account_number`, `status`, `create_time`, `create_user`, `update_time`, `update_user`
+        FROM invoice
+        WHERE c.id = #{id} AND status = 1 LIMIT 1
+    </select>
+
+    <update id="delete">
+        UPDATE invoice
+        SET status = 0, update_user = #{updateUser}, update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+
+</mapper>

@@ -2,11 +2,9 @@ package com.ggreener.oa.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ggreener.oa.exception.SessionException;
-import com.ggreener.oa.po.ContactPO;
-import com.ggreener.oa.po.ProjectPO;
+import com.ggreener.oa.po.InvoicePO;
 import com.ggreener.oa.service.CompanyService;
-import com.ggreener.oa.service.ContactService;
-import com.ggreener.oa.service.ProjectService;
+import com.ggreener.oa.service.InvoiceService;
 import com.ggreener.oa.service.UserService;
 import com.ggreener.oa.util.Constants;
 import com.ggreener.oa.vo.ResponseVO;
@@ -25,50 +23,55 @@ import java.util.Date;
  *
  */
 @RestController
-@RequestMapping(value = {"project"})
-public class ProjectController {
+@RequestMapping(value = {"invoice"})
+public class InvoiceController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProjectController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InvoiceController.class);
 
     @Autowired
     private UserService userService;
 
     @Autowired
-    private ProjectService projectService;
+    private InvoiceService invoiceService;
+
+    @Autowired
+    private CompanyService companyService;
 
     @PostMapping(value = "add", consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE },
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    Object addProject(@RequestBody JSONObject json, HttpServletRequest request) {
+    Object addInvoice(@RequestBody JSONObject json, HttpServletRequest request) {
         ResponseVO resp = new ResponseVO();
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
-                ProjectPO project = new ProjectPO();
+                InvoicePO invoice = new InvoicePO();
                 Date date = new Date();
-                project.setCreateTime(date);
-                project.setUpdateTime(date);
-                project.setCreateUser(user.getUuid());
-                project.setUpdateUser(user.getUuid());
-                project.setName(json.getString("name"));
-                project.setType(json.getLong("type"));
-                project.setAddress(json.getString("address"));
-                project.setRemark(json.getString("remark"));
-                project.setStartDate(json.getDate("startDate"));
-                project.setEndDate(json.getDate("endDate"));
-                project.setStatus(Constants.STATUS_NORMAL);
-                resp.setObj(projectService.addProject(project));
+                invoice.setCreateTime(date);
+                invoice.setUpdateTime(date);
+                invoice.setCreateUser(user.getUuid());
+                invoice.setUpdateUser(user.getUuid());
+                invoice.setName(json.getString("name"));
+                invoice.setCompanyId(json.getLong("companyId"));
+                companyService.get(invoice.getCompanyId());
+                invoice.setPayNumber(json.getString("pay_number"));
+                invoice.setAddress(json.getString("address"));
+                invoice.setAccountNumber(json.getString("accountNumber"));
+                invoice.setBankName(json.getString("bankName"));
+                invoice.setTelephone(json.getString("telephone"));
+                invoice.setStatus(Constants.STATUS_NORMAL);
+                resp.setObj(invoiceService.addInvoice(invoice));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
-                resp.setMessage("添加项目成功！");
+                resp.setMessage("添加发票信息成功！");
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
             }
         } catch (SessionException e) {
-            LOGGER.error("ProjectController==>addProject:登录过期,", e);
+            LOGGER.error("InvoiceController==>addInvoice:登录过期,", e);
             resp.setStatus(Constants.RESPONSE_REDIRECT);
             resp.setMessage("./login.html");
         } catch (Exception e) {
-            LOGGER.error("ProjectController==>addProject:添加项目失败,", e);
+            LOGGER.error("InvoiceController==>addInvoice:添加发票信息失败,", e);
             resp.setStatus(Constants.RESPONSE_FAIL);
             resp.setMessage(e.getMessage());
         }
@@ -76,35 +79,35 @@ public class ProjectController {
     }
 
     @PutMapping(value = "update", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    Object updateProject(@RequestBody JSONObject json, HttpServletRequest request) {
+    Object updateInvoice(@RequestBody JSONObject json, HttpServletRequest request) {
         ResponseVO resp = new ResponseVO();
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
-                ProjectPO project = new ProjectPO();
-                project.setUpdateTime(new Date());
-                project.setUpdateUser(user.getUuid());
-                project.setId(json.getLong("id"));
-                projectService.getProject(project.getId());
-                project.setName(json.getString("name"));
-                project.setType(json.getLong("type"));
-                project.setAddress(json.getString("address"));
-                project.setRemark(json.getString("remark"));
-                project.setStartDate(json.getDate("startDate"));
-                project.setEndDate(json.getDate("endDate"));
-                resp.setObj(projectService.updateProject(project));
+                InvoicePO invoice = new InvoicePO();
+                invoice.setUpdateTime(new Date());
+                invoice.setUpdateUser(user.getUuid());
+                invoice.setId(json.getLong("id"));
+                invoiceService.getInvoice(invoice.getId());
+                invoice.setName(json.getString("name"));
+                invoice.setPayNumber(json.getString("pay_number"));
+                invoice.setAddress(json.getString("address"));
+                invoice.setAccountNumber(json.getString("accountNumber"));
+                invoice.setBankName(json.getString("bankName"));
+                invoice.setTelephone(json.getString("telephone"));
+                resp.setObj(invoiceService.updateInvoice(invoice));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
-                resp.setMessage("更新项目成功！");
+                resp.setMessage("更新发票信息成功！");
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
             }
         } catch (SessionException e) {
-            LOGGER.error("ProjectController==>updateProject:登录过期,", e);
+            LOGGER.error("InvoiceController==>updateInvoice:登录过期,", e);
             resp.setStatus(Constants.RESPONSE_REDIRECT);
             resp.setMessage("./login.html");
         } catch (Exception e) {
-            LOGGER.error("ProjectController==>updateProject:更新项目失败,", e);
+            LOGGER.error("InvoiceController==>updateInvoice:更新发票信息失败,", e);
             resp.setStatus(Constants.RESPONSE_FAIL);
             resp.setMessage(e.getMessage());
         }
@@ -112,24 +115,24 @@ public class ProjectController {
     }
 
     @DeleteMapping(value = "delete", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    Object deleteProject(HttpServletRequest request, @RequestParam(value = "id", required = true) Long id) {
+    Object deleteInvoice(HttpServletRequest request, @RequestParam(value = "id", required = true) Long id) {
         ResponseVO resp = new ResponseVO();
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
-                projectService.deleteProject(id, user.getUuid());
+                invoiceService.deleteInvoice(id, user.getUuid());
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
-                resp.setMessage("删除项目成功！");
+                resp.setMessage("删除发票信息成功！");
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
             }
         } catch (SessionException e) {
-            LOGGER.error("ProjectController==>deleteProject:登录过期,", e);
+            LOGGER.error("InvoiceController==>deleteInvoice:登录过期,", e);
             resp.setStatus(Constants.RESPONSE_REDIRECT);
             resp.setMessage("./login.html");
         } catch (Exception e) {
-            LOGGER.error("ProjectController==>deleteProject:删除项目失败,", e);
+            LOGGER.error("InvoiceController==>deleteInvoice:删除发票信息失败,", e);
             resp.setStatus(Constants.RESPONSE_FAIL);
             resp.setMessage(e.getMessage());
         }
@@ -137,12 +140,12 @@ public class ProjectController {
     }
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    Object listProjects(HttpServletRequest request) {
+    Object listInvoices(HttpServletRequest request,@RequestParam(value = "companyId", required = true) Long companyId) {
         ResponseVO resp = new ResponseVO();
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
-                resp.setObj(projectService.listProjects());
+                resp.setObj(invoiceService.getInvoiceByCompanyId(companyId));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setObj(user);
             } else {
@@ -150,11 +153,11 @@ public class ProjectController {
                 resp.setMessage("./ggreen/login.html");
             }
         } catch (SessionException e) {
-            LOGGER.error("ProjectController==>listProjects:登录过期,", e);
+            LOGGER.error("InvoiceController==>listInvoices:登录过期,", e);
             resp.setStatus(Constants.RESPONSE_REDIRECT);
             resp.setMessage("./login.html");
         } catch (Exception e) {
-            LOGGER.error("ProjectController==>listProjects:获取项目列表失败！,", e);
+            LOGGER.error("InvoiceController==>listInvoices:获取发票信息列表失败！,", e);
             resp.setStatus(Constants.RESPONSE_FAIL);
             resp.setMessage(e.getMessage());
         }
