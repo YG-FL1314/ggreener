@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ggreener.oa.mapper.RequireMapper">
+    <resultMap id="RequirePO" type="com.ggreener.oa.po.RequirePO">
+        <result column="id" jdbcType="BIGINT" property="id" />
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="requirement_id" jdbcType="BIGINT" property="requirementId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO requirements (`company_id`, `requirement_id`, `create_time`, `create_user`)
+        VALUES(#{companyId}, #{requirementId}, #{createTime}, #{createUser})
+    </insert>
+
+    <select id="selectByCompanyId" resultMap="RequirePO">
+        SELECT id, `company_id`, `requirement_id`, `create_time`, `create_user`
+        FROM requirements
+        WHERE company_id = #{companyId} AND status = 1 ORDER BY update_time DESC
+    </select>
+
+    <delete id="delete">
+        DELETE FROM requirements
+        WHERE company_id = #{companyId}
+    </delete>
+
+    <select id="get" resultMap="RequirePO">
+        SELECT id, `company_id`, `requirement_id`, `create_time`, `create_user`
+        FROM requirements
+        WHERE id = #{id} and status = 1 LIMIT 1
+    </select>
+
+</mapper>

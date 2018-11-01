@@ -61,7 +61,7 @@
     <select id="get" resultMap="ChatPO">
         SELECT id, company_id, chat_time, customers, owners, content, status, create_time, create_user, update_time, update_user
         FROM chat_info
-        WHERE c.id = #{id} and c.status = 1 LIMIT 1
+        WHERE id = #{id} and status = 1 LIMIT 1
     </select>
 
 </mapper>
