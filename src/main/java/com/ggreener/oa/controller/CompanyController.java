@@ -47,6 +47,11 @@ public class CompanyController {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
                 CompanyPO entity = TransformUtil.transformJsonToCompanyPO(json, user.getUuid());
+                if (companyService.exist(entity.getName())) {
+                    resp.setStatus(Constants.RESPONSE_FAIL);
+                    resp.setMessage("公司已存在！");
+                    return resp;
+                }
                 List<Long> tags = new ArrayList<>();
                 if (json.containsKey("tags")) {
                     JSONArray list = json.getJSONArray("tags");
@@ -67,6 +72,33 @@ public class CompanyController {
             resp.setMessage("./login.html");
         } catch (Exception e) {
             LOGGER.error("CompanyController==>addCompany: 添加公司失败,", e);
+            resp.setStatus(Constants.RESPONSE_FAIL);
+            resp.setMessage(e.getMessage());
+        }
+        return resp;
+    }
+
+    @PostMapping(value = "list", consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE},
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    Object listCompanies(@RequestBody JSONObject json, HttpServletRequest request) {
+        ResponseVO resp = new ResponseVO();
+        try {
+            UserVO user = userService.validateUser(request.getSession());
+            if (null != user) {
+                String name = json.getString("name");
+                int start = json.getIntValue("start");
+                int limit = json.getIntValue("limit");
+                String region = json.getString("region");
+            } else {
+                resp.setStatus(Constants.RESPONSE_FAIL);
+                resp.setMessage("没有权限！");
+            }
+        } catch (SessionException e) {
+            LOGGER.error("CompanyController==>listCompanies:登录过期,", e);
+            resp.setStatus(Constants.RESPONSE_REDIRECT);
+            resp.setMessage("./login.html");
+        } catch (Exception e) {
+            LOGGER.error("CompanyController==>listCompanies: 查询公司,", e);
             resp.setStatus(Constants.RESPONSE_FAIL);
             resp.setMessage(e.getMessage());
         }

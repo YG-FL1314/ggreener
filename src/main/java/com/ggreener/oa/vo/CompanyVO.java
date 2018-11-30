@@ -21,11 +21,12 @@ public class CompanyVO implements Serializable {
     private Long highTechs;
     private Long comapnyMarket;
     private Long companyType;
+    private String products;
     private List<Long> industries;
     private List<Long> business;
     private List<Long> domains;
     private List<Long> markets;
-    private Long products;
+    private Long productTag;
     private List<Long> advantages;
     private String name;
     private Date establishedTime;
@@ -170,12 +171,12 @@ public class CompanyVO implements Serializable {
         this.markets = markets;
     }
 
-    public Long getProducts() {
-        return products;
+    public Long getProductTag() {
+        return productTag;
     }
 
-    public void setProducts(Long products) {
-        this.products = products;
+    public void setProductTag(Long productTag) {
+        this.productTag = productTag;
     }
 
     public List<Long> getAdvantages() {
@@ -264,5 +265,13 @@ public class CompanyVO implements Serializable {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getProducts() {
+        return products;
+    }
+
+    public void setProducts(String products) {
+        this.products = products;
     }
 }

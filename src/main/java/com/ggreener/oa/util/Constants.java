@@ -10,6 +10,8 @@ public class Constants {
 
     public static final Integer NORMAL_ROLE = 2;
 
+    public static final Integer PAUSE_ROLE = 3;
+
     public static final int RESPONSE_SUCCESS = 0;
 
     public static final int RESPONSE_FAIL = 1;

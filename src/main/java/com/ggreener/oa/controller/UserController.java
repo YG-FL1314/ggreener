@@ -198,4 +198,31 @@ public class UserController {
         }
         return resp;
     }
+
+    @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    Object listUsers(HttpServletRequest request) {
+        ResponseVO resp = new ResponseVO();
+        try {
+            UserVO user = userService.validateUser(request.getSession());
+            if (null != user && user.getRole() == Constants.ADMIN_ROLE) {
+                resp.setStatus(Constants.RESPONSE_SUCCESS);
+                resp.setObj(userService.listUsers(Constants.NORMAL_ROLE));
+            } else if (null != user){
+                resp.setStatus(Constants.RESPONSE_FAIL);
+                resp.setMessage("没有权限");
+            } else {
+                resp.setStatus(Constants.RESPONSE_REDIRECT);
+                resp.setMessage("./ggreen/login.html");
+            }
+        } catch (SessionException e) {
+            LOGGER.error("UserController==>listUsers:登录过期,", e);
+            resp.setStatus(Constants.RESPONSE_REDIRECT);
+            resp.setMessage("./login.html");
+        } catch (Exception e) {
+            LOGGER.error("UserController==>listUsers:获取用户列表失败,", e);
+            resp.setStatus(Constants.RESPONSE_FAIL);
+            resp.setMessage("获取用户列表失败");
+        }
+        return resp;
+    }
 }

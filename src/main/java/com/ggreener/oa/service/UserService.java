@@ -10,11 +10,14 @@ import com.ggreener.oa.util.Constants;
 import com.ggreener.oa.vo.UserVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by lifu on 2018/9/30.
@@ -36,9 +39,7 @@ public class UserService {
             UserPO user = userMapper.selectUserPOByName(name, pwd);
             if (null != user) {
                 UserVO result = new UserVO();
-                result.setUuid(user.getUuid());
-                result.setName(user.getName());
-                result.setRole(user.getRole());
+                BeanUtils.copyProperties(user, result);
                 return result;
             }
         } catch (Exception e) {
@@ -145,5 +146,18 @@ public class UserService {
         } else {
             throw new UserException("用户不存在！");
         }
+    }
+
+    public List<UserVO> listUsers(Integer role){
+        List<UserVO> result = new ArrayList<>();
+        List<UserPO> users = userMapper.list(role);
+        if (null != users && users.size() > 0) {
+            for (UserPO user : users) {
+                UserVO userTmp = new UserVO();
+                BeanUtils.copyProperties(user, userTmp);
+                result.add(userTmp);
+            }
+        }
+        return result;
     }
 }

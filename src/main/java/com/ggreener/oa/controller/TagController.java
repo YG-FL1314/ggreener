@@ -119,7 +119,7 @@ public class TagController {
 
     @CrossOrigin(origins = "*")
     @GetMapping(value = "list")
-    Object listTag(HttpServletRequest request, @RequestParam(value = "parentId", required = true) Long parentId) {
+    Object listTag(HttpServletRequest request, @RequestParam(value = "parentId", required = false) Long parentId) {
         ResponseVO resp = new ResponseVO();
         try {
             UserVO user = userService.validateUser(request.getSession());

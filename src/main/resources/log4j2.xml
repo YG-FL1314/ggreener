@@ -5,8 +5,8 @@
 			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss,SSS} [%level] %c{40} - %m%n" />
 		</Console>
 
-		<RollingFile name="default" fileName="/data0/ggreen/logs/ggreen.log"
-					 filePattern="/data0/ggreen/logs/ggreen-%d{yyyy-MM-dd}.log">
+		<RollingFile name="default" fileName="/data/ggreener/logs/ggreener.log"
+					 filePattern="/data/ggreener/logs/ggreener-%d{yyyy-MM-dd}.log">
 			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss,SSS} [%level] %c{40} %l - %m%n"/>
 			<Policies>
 				<TimeBasedTriggeringPolicy modulate="true" interval="1"/>

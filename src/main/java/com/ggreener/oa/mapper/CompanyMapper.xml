@@ -13,6 +13,7 @@
         <result column="office_area" jdbcType="FLOAT" property="officeArea"/>
         <result column="staff_number" jdbcType="BIGINT" property="staffNumber"/>
         <result column="technicians" jdbcType="BIGINT" property="technicians"/>
+        <result column="products" jdbcType="VARCHAR" property="products"/>
         <result column="telephone" jdbcType="VARCHAR" property="telephone"/>
         <result column="fax" jdbcType="VARCHAR" property="fax"/>
         <result column="website" jdbcType="VARCHAR" property="website"/>
@@ -24,12 +25,21 @@
         <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
     </resultMap>
 
+    <resultMap id="CompanyListPO" type="com.ggreener.oa.po.CompanyListPO">
+        <result column="id" jdbcType="BIGINT" property="companyId" />
+        <result column="member_code" jdbcType="VARCHAR" property="memberCode"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="established_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="register" jdbcType="FLOAT" property="register"/>
+        <result column="tag_id" jdbcType="BIGINT" property="tagId"/>
+    </resultMap>
+
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO company (`name`, `established_time`, `registered_capital`, `shares_code`,`patents`, `utility_patents`,
-         `softwares`, `office_area`, `staff_number`, `technicians`, `telephone`, `fax`, `website`, `address`, `status`,
+         `softwares`, `office_area`, `staff_number`, `technicians`, `products`, `telephone`, `fax`, `website`, `address`, `status`,
          `create_time`, `create_user`, `update_time`, `update_user`)
         VALUES(#{name}, #{establishedTime}, #{registeredCapital}, #{sharesCode}, #{patents}, #{utilityPatents}, #{softwares}, #{officeArea}, #{staffNumber},
-        #{technicians}, #{telephone}, #{fax}, #{website}, #{address}, #{status}, #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
+        #{technicians}, #{products}, #{telephone}, #{fax}, #{website}, #{address}, #{status}, #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
     </insert>
 
     <select id="selectByCompanyId" resultMap="CompanyPO">
@@ -39,7 +49,20 @@
         WHERE id = #{companyId} and status = 1 LIMIT 1
     </select>
 
+    <select id="selectByName" resultMap="CompanyPO">
+        SELECT id, `name`, established_time, registered_capital, shares_code, patents, utility_patents, softwares, office_area, staff_number, technicians,
+        telephone, fax, website, address, status, create_time, create_user, update_time, update_user
+        FROM company
+        WHERE `name` = #{name} and status = 1 LIMIT 1
+    </select>
+
     <update id="delete">
         UPDATE company SET status = 0 WHERE id = #{companyId}
     </update>
+
+    <select id="list" resultMap="CompanyListPO">
+        SELECT c.id, c.`name`,m.`member_code`, m.`tag_id`, c.established_time, c.registered_capital
+        FROM company c LEFT JOIN member m ON c.id = m.company_id
+    </select>
+
 </mapper>

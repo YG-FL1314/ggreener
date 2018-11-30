@@ -24,6 +24,7 @@ public class CompanyPO implements Serializable {
     private float officeArea;
     private Long staffNumber;
     private Long technicians;
+    private String products;
     private String telephone;
     private String fax;
     private String website;

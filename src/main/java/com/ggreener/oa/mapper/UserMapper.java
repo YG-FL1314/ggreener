@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 
 @Repository
 public interface UserMapper {
@@ -12,4 +13,5 @@ public interface UserMapper {
     UserPO selectUserPOByUuid(@Param("uuid")String uuid);
     Long update(UserPO user);
     Long insert(UserPO user);
+    List<UserPO> list(Integer role);
 }

@@ -57,25 +57,25 @@ public class CompanyService {
         return companyVO;
     }
 
-    public CompanyVO list(CompanyPO company, List<Long> tags) throws CompanyException {
+    public CompanyVO list(String name, List<Long> tags, int start, int limit) throws CompanyException {
         CompanyVO companyVO = new CompanyVO();
-        if (companyMapper.insert(company) > 0) {
-            BeanUtils.copyProperties(company, companyVO);
-            Date date = new Date();
-            List<CompanyTagsPO> list = new ArrayList<>();
-            if (tags.size() > 0) {
-                for (Long tag : tags) {
-                    CompanyTagsPO entity = new CompanyTagsPO();
-                    entity.setCompanyId(company.getId());
-                    entity.setTagId(tag);
-                    entity.setTime(date);
-                    list.add(entity);
-                }
-                companyTagsMapper.batchInsert(list);
-            }
-        } else {
-            throw new CompanyException("添加公司失败！");
-        }
+//        if (companyMapper.insert(company) > 0) {
+//            BeanUtils.copyProperties(company, companyVO);
+//            Date date = new Date();
+//            List<CompanyTagsPO> list = new ArrayList<>();
+//            if (tags.size() > 0) {
+//                for (Long tag : tags) {
+//                    CompanyTagsPO entity = new CompanyTagsPO();
+//                    entity.setCompanyId(company.getId());
+//                    entity.setTagId(tag);
+//                    entity.setTime(date);
+//                    list.add(entity);
+//                }
+//                companyTagsMapper.batchInsert(list);
+//            }
+//        } else {
+//            throw new CompanyException("添加公司失败！");
+//        }
         return companyVO;
     }
 
@@ -93,4 +93,12 @@ public class CompanyService {
         return companyVO;
     }
 
+    public boolean exist(String name) throws CompanyException {
+        CompanyVO companyVO = new CompanyVO();
+        CompanyPO companyPO = companyMapper.selectByName(name);
+        if (null == companyPO) {
+            return false;
+        }
+        return true;
+    }
 }

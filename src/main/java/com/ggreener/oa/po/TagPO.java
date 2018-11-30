@@ -12,7 +12,7 @@ import java.util.Date;
  */
 @Data
 public class TagPO implements Serializable {
-    private static final long serialVersionUID = 1441455311765181191L;
+    private static final long serialVersionUID = 1589161674271379294L;
     private Long id;
     private String name;
     private Long parentId;

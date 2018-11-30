@@ -35,6 +35,7 @@ public class TransformUtil {
             Long staffNumber = json.getLong("staffNumber");
             Long technicians = json.getLong("technicians");
             String telephone = json.getString("telephone");
+            String products = json.getString("products");
             String fax = json.getString("fax");
             String website = json.getString("website");
             String address = json.getString("address");
@@ -57,6 +58,7 @@ public class TransformUtil {
             company.setCreateUser(uuid);
             company.setUpdateTime(new Date());
             company.setUpdateUser(uuid);
+            company.setProducts(products);
         } catch (Exception e) {
             LOGGER.error("TransformUtil==>transformJsonToCompanyPO: 转化失败，", e);
             throw new Exception(e);
