@@ -25,13 +25,13 @@
         <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
     </resultMap>
 
-    <resultMap id="CompanyListPO" type="com.ggreener.oa.po.CompanyListPO">
-        <result column="id" jdbcType="BIGINT" property="companyId" />
-        <result column="member_code" jdbcType="VARCHAR" property="memberCode"/>
+    <resultMap id="CompanyOverviewPO" type="com.ggreener.oa.po.CompanyOverviewPO">
+        <result column="id" jdbcType="BIGINT" property="id" />
         <result column="name" jdbcType="VARCHAR" property="name"/>
-        <result column="established_time" jdbcType="TIMESTAMP" property="createTime"/>
-        <result column="register" jdbcType="FLOAT" property="register"/>
-        <result column="tag_id" jdbcType="BIGINT" property="tagId"/>
+        <result column="established_time" jdbcType="TIMESTAMP" property="establishedTime"/>
+        <result column="registered_capital" jdbcType="FLOAT" property="registeredCapital"/>
+        <result column="member_name" jdbcType="VARCHAR" property="memberName"/>
+        <result column="member_code" jdbcType="VARCHAR" property="memberCode"/>
     </resultMap>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
@@ -45,8 +45,39 @@
     <select id="selectByCompanyId" resultMap="CompanyPO">
         SELECT id, `name`, established_time, registered_capital, shares_code, patents, utility_patents, softwares, office_area, staff_number, technicians,
         telephone, fax, website, address, status, create_time, create_user, update_time, update_user
-        FROM comany
+        FROM company
         WHERE id = #{companyId} and status = 1 LIMIT 1
+    </select>
+
+    <select id="selectByIds" resultMap="CompanyOverviewPO">
+        SELECT c.id, c.`name`, c.established_time, c.registered_capital, m.member_code, t.name AS member_name
+        FROM company c, member m, tag t
+        WHERE c.id = member.company_id AND m.tag_id = t.id AND status = 1
+        <if test="ids != null" >
+            id IN
+            <foreach collection="ids" item="id" separator=",">
+                (#{id})
+            </foreach>
+        </if>
+        <if test="name != null and name != ''" >
+            AND name LIKE CONCAT('%',#{name},'%')
+        </if>
+        LIMIT #{start}, #{limit}
+    </select>
+
+    <select id="countByIds" resultType="java.lang.Long">
+        SELECT COUNT(1)
+        FROM company
+        WHERE status = 1
+        <if test="ids != null" >
+            id IN
+            <foreach collection="ids" item="id" separator=",">
+                (#{id})
+            </foreach>
+        </if>
+        <if test="name != null and name != ''" >
+            AND name LIKE CONCAT('%',#{name},'%')
+        </if>
     </select>
 
     <select id="selectByName" resultMap="CompanyPO">
@@ -59,10 +90,4 @@
     <update id="delete">
         UPDATE company SET status = 0 WHERE id = #{companyId}
     </update>
-
-    <select id="list" resultMap="CompanyListPO">
-        SELECT c.id, c.`name`,m.`member_code`, m.`tag_id`, c.established_time, c.registered_capital
-        FROM company c LEFT JOIN member m ON c.id = m.company_id
-    </select>
-
 </mapper>

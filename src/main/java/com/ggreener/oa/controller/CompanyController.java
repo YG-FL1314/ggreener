@@ -86,9 +86,17 @@ public class CompanyController {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
                 String name = json.getString("name");
-                int start = json.getIntValue("start");
-                int limit = json.getIntValue("limit");
-                String region = json.getString("region");
+                Long start = json.getLong("start");
+                Long limit = json.getLong("limit");
+                JSONArray tags = json.getJSONArray("region");
+                List<Long> tagList = null;
+                if (tags != null && tags.size() > 0) {
+                    tagList = new ArrayList<>();
+                    for (int i = 0; i < tags.size(); i++) {
+                        tagList.add(tags.getLong(i));
+                    }
+                }
+                resp.setObj(companyService.list(name, tagList, start, limit));
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");

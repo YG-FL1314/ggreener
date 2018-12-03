@@ -20,6 +20,13 @@
         <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
     </resultMap>
 
+    <resultMap id="TagDetailPO" type="com.ggreener.oa.po.TagDetailPO">
+        <result column="tag_id" jdbcType="BIGINT" property="tagId" />
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="company_id" jdbcType="BIGINT" property="companyId" />
+        <result column="parent_id" jdbcType="BIGINT" property="parentId"/>
+    </resultMap>
+
     <insert id="batchInsert" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO `company_tag`(`company_id`, `tag_id`, `time`)
         VALUES
@@ -27,12 +34,34 @@
             (#{item.companyId}, #{item.tagId}, #{item.time})
         </foreach>
     </insert>
+
     <delete id="delete">
         DELETE FROM company_tag
         WHERE company_id = #{companyId}
     </delete>
+
     <select id="selectTagsByCompanyId" resultMap="TagPO">
         SELECT tag.id, tag.`name`, tag.parent_id, tag.`order` FROM company_tag ct JOIN tag on ct.tag_id = tag.id
         WHERE company_id = #{companyId}
+    </select>
+
+    <select id="selectCompanyByTags" parameterType="java.util.List" resultType="java.lang.Long">
+        SELECT DISTINCT(company_id) FROM company_tag
+        <if test="tags != null and tags != '[]'" >
+            WHERE tag_id IN
+            <foreach collection="tags" item="tag" separator=",">
+                (#{tag})
+            </foreach>
+        </if>
+    </select>
+
+    <select id="listByCompanyIds" resultMap="TagDetailPO">
+        SELECT t.name, t.parent_id, ct.company_id, ct.tag_id
+        FROM tag t, company_tag ct
+        WHERE t.id = ct.id AND
+        ct.company_id IN
+        <foreach collection="ids" item="id" separator=",">
+            (#{id})
+        </foreach>
     </select>
 </mapper>
