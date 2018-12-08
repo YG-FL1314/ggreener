@@ -6,6 +6,7 @@
         <result column="company_id" jdbcType="BIGINT" property="companyId"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="telephone" jdbcType="VARCHAR" property="telephone"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
         <result column="duty_id" jdbcType="BIGINT" property="dutyId"/>
         <result column="mail" jdbcType="VARCHAR" property="mail"/>
         <result column="weixin" jdbcType="VARCHAR" property="weixin"/>

@@ -62,7 +62,19 @@ public class CompanyService {
         JSONObject result = new JSONObject();
         List<CompanyListVO> list = new ArrayList<>();
         Long count = 0L;
-        List<Long> companyIds = companyTagsMapper.selectCompanyByTags(tags);
+        List<Long> companyIds = new ArrayList<>();
+        Map<Long, List<CompanyTagsPO>> mapIds = companyTagsMapper.selectCompanyByTags(tags).stream()
+                .collect(Collectors.groupingBy(CompanyTagsPO::getCompanyId));
+        if (null != tags) {
+            mapIds.forEach((k, v) -> {
+                if (v.size() >= tags.size()) companyIds.add(k);
+            });
+        } else {
+            mapIds.forEach((k, v) -> {
+                companyIds.add(k);
+            });
+        }
+
         List<CompanyOverviewPO> companies = companyMapper.selectByIds(name, companyIds, start, limit);
         count = companyMapper.countByIds(name, companyIds);
         Map<Long, List<TagDetailPO>> map = companyTagsMapper.listByCompanyIds(companyIds).stream()
@@ -83,7 +95,7 @@ public class CompanyService {
                             company.setAttention(tagDetail.getName());
                             break;
                         case Constants.AREA_FLAG:
-                            company.setAttention(tagDetail.getName());
+                            company.setRegion(tagDetail.getName());
                             break;
                         case Constants.UNIT_PROPERTIES_FLAG:
                             if (company.getUnitProperty() != null) {
@@ -96,7 +108,7 @@ public class CompanyService {
                             }
                             break;
                         case Constants.INDUSTRIES_FLAG:
-                            if (company.getUnitProperty() != null) {
+                            if (company.getIndustry() != null) {
                                 StringBuilder sb = new StringBuilder(company.getIndustry());
                                 sb.append(",");
                                 sb.append(tagDetail.getName());
@@ -106,7 +118,7 @@ public class CompanyService {
                             }
                             break;
                         case Constants.BUSINESS_FLAG:
-                            if (company.getUnitProperty() != null) {
+                            if (company.getBusiness() != null) {
                                 StringBuilder sb = new StringBuilder(company.getBusiness());
                                 sb.append(",");
                                 sb.append(tagDetail.getName());
@@ -116,7 +128,7 @@ public class CompanyService {
                             }
                             break;
                         case Constants.BUSINESS_AREA_FLAG:
-                            if (company.getUnitProperty() != null) {
+                            if (company.getBusinessArea() != null) {
                                 StringBuilder sb = new StringBuilder(company.getBusinessArea());
                                 sb.append(",");
                                 sb.append(tagDetail.getName());
@@ -126,7 +138,7 @@ public class CompanyService {
                             }
                             break;
                         case Constants.ADVANTAGES_FLAG:
-                            if (company.getUnitProperty() != null) {
+                            if (company.getAdvantage() != null) {
                                 StringBuilder sb = new StringBuilder(company.getAdvantage());
                                 sb.append(",");
                                 sb.append(tagDetail.getName());

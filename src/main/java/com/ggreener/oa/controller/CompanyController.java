@@ -88,7 +88,7 @@ public class CompanyController {
                 String name = json.getString("name");
                 Long start = json.getLong("start");
                 Long limit = json.getLong("limit");
-                JSONArray tags = json.getJSONArray("region");
+                JSONArray tags = json.getJSONArray("tags");
                 List<Long> tagList = null;
                 if (tags != null && tags.size() > 0) {
                     tagList = new ArrayList<>();

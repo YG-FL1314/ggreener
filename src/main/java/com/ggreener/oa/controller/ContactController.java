@@ -61,6 +61,7 @@ public class ContactController {
                 contact.setQq(json.getString("qq"));
                 contact.setWeixin(json.getString("weixin"));
                 contact.setRemark(json.getString("remark"));
+                contact.setPhone(json.getString("phone"));
                 resp.setObj(contactService.addContact(contact));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("添加联系人成功！");
@@ -98,6 +99,7 @@ public class ContactController {
                 contact.setQq(json.getString("qq"));
                 contact.setWeixin(json.getString("weixin"));
                 contact.setRemark(json.getString("remark"));
+                contact.setPhone(json.getString("phone"));
                 resp.setObj(contactService.updateContact(contact));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("更新联系人成功！");

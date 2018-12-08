@@ -45,12 +45,12 @@
         WHERE company_id = #{companyId}
     </select>
 
-    <select id="selectCompanyByTags" parameterType="java.util.List" resultType="java.lang.Long">
-        SELECT DISTINCT(company_id) FROM company_tag
-        <if test="tags != null and tags != '[]'" >
+    <select id="selectCompanyByTags" parameterType="java.util.List" resultMap="CompanyTagsPO">
+        SELECT id, company_id, tag_id, `time` FROM company_tag
+        <if test="tags != null" >
             WHERE tag_id IN
-            <foreach collection="tags" item="tag" separator=",">
-                (#{tag})
+            <foreach collection="tags" item="tag" open="(" close=")"  separator=",">
+                #{tag}
             </foreach>
         </if>
     </select>
@@ -58,10 +58,9 @@
     <select id="listByCompanyIds" resultMap="TagDetailPO">
         SELECT t.name, t.parent_id, ct.company_id, ct.tag_id
         FROM tag t, company_tag ct
-        WHERE t.id = ct.id AND
-        ct.company_id IN
-        <foreach collection="ids" item="id" separator=",">
-            (#{id})
+        WHERE t.id = ct.tag_id AND ct.company_id IN
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
         </foreach>
     </select>
 </mapper>

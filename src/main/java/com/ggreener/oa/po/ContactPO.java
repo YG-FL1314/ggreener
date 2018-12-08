@@ -17,6 +17,7 @@ public class ContactPO implements Serializable {
     private Long companyId;
     private String name;
     private String telephone;
+    private String phone;
     private Long dutyId;
     private String mail;
     private String weixin;

@@ -1,7 +1,9 @@
 package com.ggreener.oa.service;
 
 import com.ggreener.oa.exception.MemberException;
+import com.ggreener.oa.mapper.CompanyTagsMapper;
 import com.ggreener.oa.mapper.MemberMapper;
+import com.ggreener.oa.po.CompanyTagsPO;
 import com.ggreener.oa.po.MemberPO;
 import com.ggreener.oa.vo.MemberVO;
 import org.slf4j.Logger;
@@ -27,8 +29,18 @@ public class MemberService {
     @Autowired
     private MemberMapper memberMapper;
 
+    @Autowired
+    private CompanyTagsMapper companyTagsMapper;
+
     public MemberVO addMember(MemberPO member) throws MemberException {
         if (memberMapper.insert(member) > 0) {
+            List<CompanyTagsPO> list = new ArrayList<>();
+            CompanyTagsPO companyTagsPO = new CompanyTagsPO();
+            companyTagsPO.setTime(new Date());
+            companyTagsPO.setTagId(member.getTagId());
+            companyTagsPO.setCompanyId(member.getCompanyId());
+            list.add(companyTagsPO);
+            companyTagsMapper.batchInsert(list);
             MemberVO result = new MemberVO();
             BeanUtils.copyProperties(member, result);
             return result;

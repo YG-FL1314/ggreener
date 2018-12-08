@@ -51,16 +51,16 @@
 
     <select id="selectByIds" resultMap="CompanyOverviewPO">
         SELECT c.id, c.`name`, c.established_time, c.registered_capital, m.member_code, t.name AS member_name
-        FROM company c, member m, tag t
-        WHERE c.id = member.company_id AND m.tag_id = t.id AND status = 1
+        FROM company c LEFT JOIN member m on c.id = m.company_id LEFT JOIN tag t on m.tag_id = t.id
+        WHERE c.status = 1
         <if test="ids != null" >
-            id IN
-            <foreach collection="ids" item="id" separator=",">
-                (#{id})
+            AND c.id IN
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
             </foreach>
         </if>
         <if test="name != null and name != ''" >
-            AND name LIKE CONCAT('%',#{name},'%')
+            AND c.name LIKE CONCAT('%',#{name},'%')
         </if>
         LIMIT #{start}, #{limit}
     </select>
@@ -70,9 +70,9 @@
         FROM company
         WHERE status = 1
         <if test="ids != null" >
-            id IN
-            <foreach collection="ids" item="id" separator=",">
-                (#{id})
+            AND id IN
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
             </foreach>
         </if>
         <if test="name != null and name != ''" >

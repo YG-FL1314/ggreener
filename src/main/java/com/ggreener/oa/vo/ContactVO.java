@@ -15,6 +15,7 @@ public class ContactVO implements Serializable {
     private Long contactId;
     private String name;
     private String telephone;
+    private String phone;
     private Long dutyId;
     private String mail;
     private String qq;
@@ -51,6 +52,14 @@ public class ContactVO implements Serializable {
 
     public void setTelephone(String telephone) {
         this.telephone = telephone;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public Long getDutyId() {
