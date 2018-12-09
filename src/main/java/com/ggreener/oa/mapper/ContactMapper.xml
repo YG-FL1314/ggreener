@@ -20,12 +20,12 @@
     </resultMap>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
-        INSERT INTO contacts (`company_id`, `name`, `telephone`, `duty_id`,`mail`, `weixin`, `qq`, `remark`, `status`, `create_time`, `create_user`, `update_time`, `update_user`)
-        VALUES(#{companyId}, #{name}, #{telephone}, #{dutyId}, #{mail}, #{weixin}, #{qq}, #{remark}, #{status}, #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
+        INSERT INTO contacts (`company_id`, `name`, `telephone`, `phone`, `duty_id`,`mail`, `weixin`, `qq`, `remark`, `status`, `create_time`, `create_user`, `update_time`, `update_user`)
+        VALUES(#{companyId}, #{name}, #{telephone}, #{phone}, #{dutyId}, #{mail}, #{weixin}, #{qq}, #{remark}, #{status}, #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
     </insert>
 
     <select id="selectByCompanyId" resultMap="ContactPO">
-        SELECT c.`id`, c.`company_id`, c.`name`, c.`telephone`, c.`duty_id`, c.`mail`, c.`weixin`, c.`qq`, c.remark, c.status, c.`create_time`, c.`create_user`, c.`update_time`, c.`update_user`
+        SELECT c.`id`, c.`company_id`, c.`name`, c.`telephone`, c.phone, c.`duty_id`, c.`mail`, c.`weixin`, c.`qq`, c.remark, c.status, c.`create_time`, c.`create_user`, c.`update_time`, c.`update_user`
         FROM contacts c JOIN tag t ON c.duty_id = t.id
         WHERE c.company_id = #{companyId} and c.status = 1 ORDER BY t.order
     </select>
@@ -45,8 +45,14 @@
             <if test="telephone!=null">
                 telephone = #{telephone},
             </if>
+            <if test="phone!=null">
+                phone = #{phone},
+            </if>
             <if test="qq!=null">
                 qq = #{qq},
+            </if>
+            <if test="mail!=null">
+                mail = #{mail},
             </if>
             <if test="weixin!=null">
                 weixin = #{weixin},
@@ -54,10 +60,10 @@
             <if test="remark!=null">
                 remark = #{remark},
             </if>
-            <if test="update_time!=null">
+            <if test="updateTime!=null">
                 update_time = #{updateTime},
             </if>
-            <if test="update_user!=null">
+            <if test="updateUser!=null">
                 update_user = #{updateUser},
             </if>
         </trim>

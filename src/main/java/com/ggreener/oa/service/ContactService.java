@@ -4,7 +4,9 @@ import com.ggreener.oa.exception.ContactException;
 import com.ggreener.oa.exception.SessionException;
 import com.ggreener.oa.exception.UserException;
 import com.ggreener.oa.mapper.ContactMapper;
+import com.ggreener.oa.mapper.TagMapper;
 import com.ggreener.oa.po.ContactPO;
+import com.ggreener.oa.po.TagPO;
 import com.ggreener.oa.po.UserPO;
 import com.ggreener.oa.util.Constants;
 import com.ggreener.oa.util.PasswordUtil;
@@ -18,9 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by lifu on 2018/9/30.
@@ -34,6 +34,9 @@ public class ContactService {
 
     @Autowired
     private ContactMapper contactMapper;
+
+    @Autowired
+    private TagMapper tagMapper;
 
     public ContactVO addContact(ContactPO contact) throws ContactException {
         if (contactMapper.insert(contact) > 0) {
@@ -74,11 +77,17 @@ public class ContactService {
 
     public List<ContactVO> list(Long companyId) {
         List<ContactPO> list = contactMapper.selectByCompanyId(companyId);
+        List<TagPO> duties = tagMapper.list(new Long(Constants.DUTY_FLAG));
+        Map<Long, String> map =  new HashMap<>();
+        for (TagPO duty : duties) {
+            map.put(duty.getId(), duty.getName());
+        }
         List<ContactVO> result = new ArrayList<>();
         if (null != list && list.size() > 0) {
             for (ContactPO contactPO : list) {
                 ContactVO contactTmp = new ContactVO();
                 BeanUtils.copyProperties(contactPO, contactTmp);
+                contactTmp.setDuty(map.get(contactPO.getDutyId()));
                 result.add(contactTmp);
             }
         }

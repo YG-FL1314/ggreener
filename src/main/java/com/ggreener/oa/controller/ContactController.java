@@ -10,6 +10,7 @@ import com.ggreener.oa.util.Constants;
 import com.ggreener.oa.util.PasswordUtil;
 import com.ggreener.oa.vo.ResponseVO;
 import com.ggreener.oa.vo.UserVO;
+import org.apache.tomcat.util.bcel.classfile.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +63,7 @@ public class ContactController {
                 contact.setWeixin(json.getString("weixin"));
                 contact.setRemark(json.getString("remark"));
                 contact.setPhone(json.getString("phone"));
+                contact.setStatus(Constants.STATUS_NORMAL);
                 resp.setObj(contactService.addContact(contact));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("添加联系人成功！");
@@ -152,7 +154,6 @@ public class ContactController {
             if (null != user) {
                 resp.setObj(contactService.list(companyId));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
-                resp.setObj(user);
             } else {
                 resp.setStatus(Constants.RESPONSE_REDIRECT);
                 resp.setMessage("./ggreen/login.html");

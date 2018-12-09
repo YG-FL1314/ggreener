@@ -69,4 +69,7 @@ public class Constants {
 
     //单位优势
     public static final int ADVANTAGES_FLAG = 16;
+
+    //单位优势
+    public static final int DUTY_FLAG = 144;
 }

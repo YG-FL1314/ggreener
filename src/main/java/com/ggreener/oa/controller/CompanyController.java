@@ -10,14 +10,12 @@ import com.ggreener.oa.util.Constants;
 import com.ggreener.oa.util.TransformUtil;
 import com.ggreener.oa.vo.ResponseVO;
 import com.ggreener.oa.vo.UserVO;
+import org.apache.tomcat.util.bcel.classfile.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -107,6 +105,32 @@ public class CompanyController {
             resp.setMessage("./login.html");
         } catch (Exception e) {
             LOGGER.error("CompanyController==>listCompanies: 查询公司,", e);
+            resp.setStatus(Constants.RESPONSE_FAIL);
+            resp.setMessage(e.getMessage());
+        }
+        return resp;
+    }
+
+    @PostMapping(value = "get", consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE},
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    Object getCompany(@RequestParam(value = "companyId", required = true) Long companyId,
+                        HttpServletRequest request) {
+        ResponseVO resp = new ResponseVO();
+        try {
+            UserVO user = userService.validateUser(request.getSession());
+            if (null != user) {
+                resp.setObj(companyService.get(companyId));
+                resp.setStatus(Constants.RESPONSE_SUCCESS);
+            } else {
+                resp.setStatus(Constants.RESPONSE_FAIL);
+                resp.setMessage("没有权限！");
+            }
+        } catch (SessionException e) {
+            LOGGER.error("CompanyController==>getCompany:登录过期,", e);
+            resp.setStatus(Constants.RESPONSE_REDIRECT);
+            resp.setMessage("./login.html");
+        } catch (Exception e) {
+            LOGGER.error("CompanyController==>getCompany: 查询公司,", e);
             resp.setStatus(Constants.RESPONSE_FAIL);
             resp.setMessage(e.getMessage());
         }
