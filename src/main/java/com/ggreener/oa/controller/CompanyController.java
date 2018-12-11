@@ -114,7 +114,7 @@ public class CompanyController {
         return resp;
     }
 
-    @PostMapping(value = "get", consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE},
+    @GetMapping(value = "get", consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE},
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     Object getCompanyDetail(@RequestParam(value = "companyId", required = true) Long companyId,
                         HttpServletRequest request) {

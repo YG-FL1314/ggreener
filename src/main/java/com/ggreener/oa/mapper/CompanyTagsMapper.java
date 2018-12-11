@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface CompanyTagsMapper {
-    Long batchInsert(@Param("companyId") Long companyId, List<Long> list, @Param("time") Date time);
+    Long batchInsert(@Param("companyId") Long companyId, @Param("list") List<Long> list, @Param("time") Date time);
     Long delete(@Param("companyId") Long companyId, @Param("memberId") Long memberId);
     List<TagPO> selectTagsByCompanyId(Long companyId);
     List<CompanyTagsPO> selectCompanyByTags(@Param("tags") List<Long> tags);
