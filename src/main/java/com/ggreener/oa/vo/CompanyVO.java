@@ -13,34 +13,65 @@ import java.util.List;
  */
 public class CompanyVO implements Serializable {
     private static final long serialVersionUID = 1441455311765181191L;
+    //公司ID
     private Long id;
-    private Long level;
-    private Long area;
-    private Long zol;
-    private Long contribution;
-    private Long highTechs;
-    private Long comapnyMarket;
-    private Long companyType;
-    private String products;
-    private List<Long> industries;
-    private List<Long> business;
-    private List<Long> domains;
-    private List<Long> markets;
-    private Long productTag;
-    private List<Long> advantages;
+    //公司名称
     private String name;
+    //关注等级
+    private Long attention;
+    //地区
+    private Long region;
+    //中关村
+    private Long zol;
+    //单位性质
+    private Long unitProperty;
+    //成立时间
     private Date establishedTime;
+    //注册资金
     private float registeredCapital;
+    //出资方式
+    private Long equity;
+    //高薪技术
+    private List<Long> highTechs;
+    //上市公司
+    private Long companyMarket;
+    //股票代码
     private String sharesCode;
+    //单位类型
+    private Long companyType;
+    //所属行业
+    private List<Long> industries;
+    //主营业务
+    private List<Long> business;
+    //业务领域
+    private List<Long> businessArea;
+    //细分市场
+    private List<Long> segmentMarket;
+    //单位优势
+    private List<Long> advantages;
+    //技术产品
+    private Long techProduct;
+    //发明专利
     private String patents;
+    //实用专利
     private String utilityPatents;
+    //软件著作
     private String softwares;
-    private float officeArea;
+    //员工人数
     private Long staffNumber;
+    //技术人员数
     private Long technicians;
+    //办公面积
+    private float officeArea;
+    //自主研发技术产品
+    private String products;
+    //单位总机
     private String telephone;
+    //传真
     private String fax;
+    //网址
     private String website;
+    //地址
     private String address;
 
     public Long getId() {
@@ -59,6 +90,38 @@ public class CompanyVO implements Serializable {
         this.name = name;
     }
 
+    public Long getAttention() {
+        return attention;
+    }
+
+    public void setAttention(Long attention) {
+        this.attention = attention;
+    }
+
+    public Long getRegion() {
+        return region;
+    }
+
+    public void setRegion(Long region) {
+        this.region = region;
+    }
+
+    public Long getZol() {
+        return zol;
+    }
+
+    public void setZol(Long zol) {
+        this.zol = zol;
+    }
+
+    public Long getUnitProperty() {
+        return unitProperty;
+    }
+
+    public void setUnitProperty(Long unitProperty) {
+        this.unitProperty = unitProperty;
+    }
+
     public Date getEstablishedTime() {
         return establishedTime;
     }
@@ -75,60 +138,36 @@ public class CompanyVO implements Serializable {
         this.registeredCapital = registeredCapital;
     }
 
+    public Long getEquity() {
+        return equity;
+    }
+
+    public void setEquity(Long equity) {
+        this.equity = equity;
+    }
+
+    public List<Long> getHighTechs() {
+        return highTechs;
+    }
+
+    public void setHighTechs(List<Long> highTechs) {
+        this.highTechs = highTechs;
+    }
+
+    public Long getCompanyMarket() {
+        return companyMarket;
+    }
+
+    public void setCompanyMarket(Long companyMarket) {
+        this.companyMarket = companyMarket;
+    }
+
     public String getSharesCode() {
         return sharesCode;
     }
 
     public void setSharesCode(String sharesCode) {
         this.sharesCode = sharesCode;
-    }
-
-    public Long getLevel() {
-        return level;
-    }
-
-    public void setLevel(Long level) {
-        this.level = level;
-    }
-
-    public Long getArea() {
-        return area;
-    }
-
-    public void setArea(Long area) {
-        this.area = area;
-    }
-
-    public Long getZol() {
-        return zol;
-    }
-
-    public void setZol(Long zol) {
-        this.zol = zol;
-    }
-
-    public Long getContribution() {
-        return contribution;
-    }
-
-    public void setContribution(Long contribution) {
-        this.contribution = contribution;
-    }
-
-    public Long getHighTechs() {
-        return highTechs;
-    }
-
-    public void setHighTechs(Long highTechs) {
-        this.highTechs = highTechs;
-    }
-
-    public Long getComapnyMarket() {
-        return comapnyMarket;
-    }
-
-    public void setComapnyMarket(Long comapnyMarket) {
-        this.comapnyMarket = comapnyMarket;
     }
 
     public Long getCompanyType() {
@@ -155,28 +194,20 @@ public class CompanyVO implements Serializable {
         this.business = business;
     }
 
-    public List<Long> getDomains() {
-        return domains;
+    public List<Long> getBusinessArea() {
+        return businessArea;
     }
 
-    public void setDomains(List<Long> domains) {
-        this.domains = domains;
+    public void setBusinessArea(List<Long> businessArea) {
+        this.businessArea = businessArea;
     }
 
-    public List<Long> getMarkets() {
-        return markets;
+    public List<Long> getSegmentMarket() {
+        return segmentMarket;
     }
 
-    public void setMarkets(List<Long> markets) {
-        this.markets = markets;
-    }
-
-    public Long getProductTag() {
-        return productTag;
-    }
-
-    public void setProductTag(Long productTag) {
-        this.productTag = productTag;
+    public void setSegmentMarket(List<Long> segmentMarket) {
+        this.segmentMarket = segmentMarket;
     }
 
     public List<Long> getAdvantages() {
@@ -185,6 +216,14 @@ public class CompanyVO implements Serializable {
 
     public void setAdvantages(List<Long> advantages) {
         this.advantages = advantages;
+    }
+
+    public Long getTechProduct() {
+        return techProduct;
+    }
+
+    public void setTechProduct(Long techProduct) {
+        this.techProduct = techProduct;
     }
 
     public String getPatents() {
@@ -211,14 +250,6 @@ public class CompanyVO implements Serializable {
         this.softwares = softwares;
     }
 
-    public float getOfficeArea() {
-        return officeArea;
-    }
-
-    public void setOfficeArea(float officeArea) {
-        this.officeArea = officeArea;
-    }
-
     public Long getStaffNumber() {
         return staffNumber;
     }
@@ -233,6 +264,22 @@ public class CompanyVO implements Serializable {
 
     public void setTechnicians(Long technicians) {
         this.technicians = technicians;
+    }
+
+    public float getOfficeArea() {
+        return officeArea;
+    }
+
+    public void setOfficeArea(float officeArea) {
+        this.officeArea = officeArea;
+    }
+
+    public String getProducts() {
+        return products;
+    }
+
+    public void setProducts(String products) {
+        this.products = products;
     }
 
     public String getTelephone() {
@@ -265,13 +312,5 @@ public class CompanyVO implements Serializable {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public String getProducts() {
-        return products;
-    }
-
-    public void setProducts(String products) {
-        this.products = products;
     }
 }

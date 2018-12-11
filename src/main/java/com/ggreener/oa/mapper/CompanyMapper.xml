@@ -90,4 +90,62 @@
     <update id="delete">
         UPDATE company SET status = 0 WHERE id = #{companyId}
     </update>
+
+    <update id="update">
+        UPDATE `company`
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name!=null">
+                `name` = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="establishedTime!=null">
+                established_time = #{establishedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="registeredCapital!=null">
+                `registered_capital`= #{registeredCapital,jdbcType=FLOAT},
+            </if>
+            <if test="sharesCode!=null">
+                shares_code = #{sharesCode,jdbcType=VARCHAR},
+            </if>
+            <if test="patents!=null">
+                patents = #{patents,jdbcType=VARCHAR},
+            </if>
+            <if test="utilityPatents!=null">
+                utility_patents = #{utilityPatents,jdbcType=VARCHAR},
+            </if>
+            <if test="softwares!=null">
+                softwares = #{softwares,jdbcType=VARCHAR},
+            </if>
+            <if test="officeArea!=null">
+                office_area = #{officeArea,jdbcType=FLOAT},
+            </if>
+            <if test="staffNumber!=null">
+                staff_number = #{staffNumber,jdbcType=BIGINT},
+            </if>
+            <if test="technicians!=null">
+                technicians = #{technicians,jdbcType=BIGINT},
+            </if>
+            <if test="products!=null">
+                products = #{products,jdbcType=VARCHAR},
+            </if>
+            <if test="telephone!=null">
+                telephone = #{telephone,jdbcType=VARCHAR},
+            </if>
+            <if test="fax!=null">
+                fax = #{fax,jdbcType=VARCHAR},
+            </if>
+            <if test="website!=null">
+                website = #{website,jdbcType=VARCHAR},
+            </if>
+            <if test="address!=null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime!=null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser!=null">
+                update_user = #{updateUser,jdbcType=VARCHAR},
+            </if>
+        </trim>
+        WHERE id = #{id}
+    </update>
 </mapper>

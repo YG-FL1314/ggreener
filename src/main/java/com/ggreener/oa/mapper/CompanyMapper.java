@@ -20,4 +20,5 @@ public interface CompanyMapper {
 
     Long countByIds(@Param("name") String name,
                     @Param("ids") List<Long> ids);
+    Long update(CompanyPO company);
 }

@@ -41,7 +41,7 @@ public class Constants {
     public static final int FOUNDING_TIME_FLAG = 6;
 
     //出资方式
-    public static final int EQUITY_PARTICIPATION_FLAG = 7;
+    public static final int EQUITY_FLAG = 7;
 
     //高薪技术
     public static final int HIGH_TECHNOLOGY_FLAG = 8;
@@ -70,6 +70,6 @@ public class Constants {
     //单位优势
     public static final int ADVANTAGES_FLAG = 16;
 
-    //单位优势
+    //职位
     public static final int DUTY_FLAG = 144;
 }

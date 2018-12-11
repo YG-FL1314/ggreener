@@ -5,6 +5,7 @@ import com.ggreener.oa.mapper.CompanyTagsMapper;
 import com.ggreener.oa.mapper.MemberMapper;
 import com.ggreener.oa.po.CompanyTagsPO;
 import com.ggreener.oa.po.MemberPO;
+import com.ggreener.oa.util.Constants;
 import com.ggreener.oa.vo.MemberVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,13 +35,9 @@ public class MemberService {
 
     public MemberVO addMember(MemberPO member) throws MemberException {
         if (memberMapper.insert(member) > 0) {
-            List<CompanyTagsPO> list = new ArrayList<>();
-            CompanyTagsPO companyTagsPO = new CompanyTagsPO();
-            companyTagsPO.setTime(new Date());
-            companyTagsPO.setTagId(member.getTagId());
-            companyTagsPO.setCompanyId(member.getCompanyId());
-            list.add(companyTagsPO);
-            companyTagsMapper.batchInsert(list);
+            List<Long> list = new ArrayList<>();
+            list.add(member.getTagId());
+            companyTagsMapper.batchInsert(member.getCompanyId(), list, new Date());
             MemberVO result = new MemberVO();
             BeanUtils.copyProperties(member, result);
             return result;
@@ -62,6 +59,10 @@ public class MemberService {
 
     public MemberVO updateMember(MemberPO member) throws MemberException {
         if (memberMapper.update(member) > 0) {
+            List<Long> tag = new ArrayList<>();
+            tag.add(member.getTagId());
+            companyTagsMapper.deleteMember(member.getCompanyId(), new Long(Constants.MEMBER_FLAG));
+            companyTagsMapper.batchInsert(member.getCompanyId(), tag, new Date());
             MemberVO result = new MemberVO();
             BeanUtils.copyProperties(member, result);
             return result;

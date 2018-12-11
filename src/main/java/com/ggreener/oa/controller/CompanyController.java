@@ -1,13 +1,16 @@
 package com.ggreener.oa.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.ggreener.oa.exception.SessionException;
 import com.ggreener.oa.po.CompanyPO;
 import com.ggreener.oa.service.CompanyService;
 import com.ggreener.oa.service.UserService;
 import com.ggreener.oa.util.Constants;
 import com.ggreener.oa.util.TransformUtil;
+import com.ggreener.oa.vo.CompanyVO;
 import com.ggreener.oa.vo.ResponseVO;
 import com.ggreener.oa.vo.UserVO;
 import org.apache.tomcat.util.bcel.classfile.Constant;
@@ -113,13 +116,39 @@ public class CompanyController {
 
     @PostMapping(value = "get", consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE},
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    Object getCompany(@RequestParam(value = "companyId", required = true) Long companyId,
+    Object getCompanyDetail(@RequestParam(value = "companyId", required = true) Long companyId,
                         HttpServletRequest request) {
         ResponseVO resp = new ResponseVO();
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
                 resp.setObj(companyService.get(companyId));
+                resp.setStatus(Constants.RESPONSE_SUCCESS);
+            } else {
+                resp.setStatus(Constants.RESPONSE_FAIL);
+                resp.setMessage("没有权限！");
+            }
+        } catch (SessionException e) {
+            LOGGER.error("CompanyController==>getCompany:登录过期,", e);
+            resp.setStatus(Constants.RESPONSE_REDIRECT);
+            resp.setMessage("./login.html");
+        } catch (Exception e) {
+            LOGGER.error("CompanyController==>getCompany: 查询公司,", e);
+            resp.setStatus(Constants.RESPONSE_FAIL);
+            resp.setMessage(e.getMessage());
+        }
+        return resp;
+    }
+
+    @PostMapping(value = "update", consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE},
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    Object updateCompany(HttpServletRequest request, @RequestBody JSONObject json) {
+        ResponseVO resp = new ResponseVO();
+        try {
+            UserVO user = userService.validateUser(request.getSession());
+            if (null != user) {
+                CompanyVO company = JSON.parseObject(json.toString(), new TypeReference<CompanyVO>(){});
+                resp.setObj(companyService.update(company, user.getUuid()));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);

@@ -31,13 +31,18 @@
         INSERT INTO `company_tag`(`company_id`, `tag_id`, `time`)
         VALUES
         <foreach collection="list" item="item" separator=",">
-            (#{item.companyId}, #{item.tagId}, #{item.time})
+            (#{companyId}, #{item.tagId}, #{time})
         </foreach>
     </insert>
 
     <delete id="delete">
-        DELETE FROM company_tag
-        WHERE company_id = #{companyId}
+        DELETE FROM company_tag ct LEFT JOIN tag t ON ct.tag_id = t.id
+        WHERE ct.company_id = #{companyId} AND t.parent_id != #{memberId}
+    </delete>
+
+    <delete id="deleteMember">
+        DELETE FROM company_tag ct LEFT JOIN tag t ON ct.tag_id = t.id
+        WHERE ct.company_id = #{companyId} AND t.parent_id = #{memberId}
     </delete>
 
     <select id="selectTagsByCompanyId" resultMap="TagPO">
