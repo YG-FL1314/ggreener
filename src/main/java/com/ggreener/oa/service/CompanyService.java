@@ -268,13 +268,13 @@ public class CompanyService {
             tags.add(company.getEquity());
             tags.addAll(company.getHighTechs());
             tags.add(company.getCompanyMarket());
-            tags.add(company.getCompanyMarket());
             tags.addAll(company.getIndustries());
             tags.addAll(company.getBusiness());
             tags.addAll(company.getBusinessArea());
             tags.addAll(company.getSegmentMarket());
             tags.addAll(company.getAdvantages());
             tags.add(company.getTechProduct());
+            tags.add(company.getCompanyType());
             //删除除了会员关系的company_tag相关信息
             companyTagsMapper.delete(companyPO.getId(), new Long(Constants.MEMBER_FLAG));
             companyTagsMapper.batchInsert(company.getId(), tags, new Date());
