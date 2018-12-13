@@ -20,7 +20,7 @@ public class CompanyListVO implements Serializable{
     private String region;
     private Date createTime;
     private float register;
-    private String unitProperty;
+    private String companyType;
     private String industry;
     private String business;
     private String businessArea;
@@ -90,12 +90,12 @@ public class CompanyListVO implements Serializable{
         this.register = register;
     }
 
-    public String getUnitProperty() {
-        return unitProperty;
+    public String getCompanyType() {
+        return companyType;
     }
 
-    public void setUnitProperty(String unitProperty) {
-        this.unitProperty = unitProperty;
+    public void setCompanyType(String companyType) {
+        this.companyType = companyType;
     }
 
     public String getIndustry() {

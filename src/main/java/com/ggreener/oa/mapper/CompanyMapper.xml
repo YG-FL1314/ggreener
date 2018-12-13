@@ -62,6 +62,7 @@
         <if test="name != null and name != ''" >
             AND c.name LIKE CONCAT('%',#{name},'%')
         </if>
+        ORDER BY c.update_time DESC
         LIMIT #{start}, #{limit}
     </select>
 
@@ -88,7 +89,8 @@
     </select>
 
     <update id="delete">
-        UPDATE company SET status = 0 WHERE id = #{companyId}
+        UPDATE company SET status = 0, update_user = #{userId}, update_time = #{updateTime}
+        WHERE id = #{companyId}
     </update>
 
     <update id="update">
@@ -148,4 +150,13 @@
         </trim>
         WHERE id = #{id}
     </update>
+
+    <select id="list" resultType="java.lang.Long">
+        SELECT c.id FROM company c
+        WHERE c.status = 1
+        <if test="name != null and name != ''" >
+            AND c.name LIKE CONCAT('%',#{name},'%')
+        </if>
+        ORDER BY c.update_time DESC
+    </select>
 </mapper>

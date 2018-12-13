@@ -140,7 +140,7 @@ public class CompanyController {
         return resp;
     }
 
-    @PostMapping(value = "update", consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE},
+    @PutMapping(value = "update", consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE},
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     Object updateCompany(HttpServletRequest request, @RequestBody JSONObject json) {
         ResponseVO resp = new ResponseVO();
@@ -165,4 +165,31 @@ public class CompanyController {
         }
         return resp;
     }
+
+    @DeleteMapping(value = "delete", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    Object deleteCompany(HttpServletRequest request,
+                         @RequestParam(value = "companyId", required = true) Long companyId) {
+        ResponseVO resp = new ResponseVO();
+        try {
+            UserVO user = userService.validateUser(request.getSession());
+            if (null != user) {
+                companyService.delete(companyId, user.getUuid());
+                resp.setStatus(Constants.RESPONSE_SUCCESS);
+                resp.setMessage("删除企业成功！");
+            } else {
+                resp.setStatus(Constants.RESPONSE_FAIL);
+                resp.setMessage("没有权限！");
+            }
+        } catch (SessionException e) {
+            LOGGER.error("CompanyController==>deleteCompany:登录过期,", e);
+            resp.setStatus(Constants.RESPONSE_REDIRECT);
+            resp.setMessage("./login.html");
+        } catch (Exception e) {
+            LOGGER.error("CompanyController==>deleteCompany:删除企业失败,", e);
+            resp.setStatus(Constants.RESPONSE_FAIL);
+            resp.setMessage(e.getMessage());
+        }
+        return resp;
+    }
+
 }

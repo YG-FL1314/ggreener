@@ -1,12 +1,15 @@
 package com.ggreener.oa.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.ggreener.oa.exception.SessionException;
 import com.ggreener.oa.po.MemberPO;
-import com.ggreener.oa.service.MemberService;
 import com.ggreener.oa.service.CompanyService;
+import com.ggreener.oa.service.MemberService;
 import com.ggreener.oa.service.UserService;
 import com.ggreener.oa.util.Constants;
+import com.ggreener.oa.vo.MemberVO;
 import com.ggreener.oa.vo.ResponseVO;
 import com.ggreener.oa.vo.UserVO;
 import org.slf4j.Logger;
@@ -81,16 +84,17 @@ public class MemberController {
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
-                MemberPO member = new MemberPO();
+                MemberPO member = JSON.parseObject(json.toString(), new TypeReference<MemberPO>(){});
                 member.setUpdateTime(new Date());
                 member.setUpdateUser(user.getUuid());
-                member.setId(json.getLong("id"));
-                memberService.getMember(member.getId());
-                member.setTagId(json.getLong("tagId"));
-                member.setMemberCode(json.getString("memberCode"));
-                member.setJoiningTime(json.getDate("joiningTime"));
-                member.setValidityTime(json.getDate("validityTime"));
-                resp.setObj(memberService.updateMember(member));
+                MemberVO vo = memberService.getMemberByCompanyId(member.getCompanyId());
+                if (vo!= null && vo.getId() != null) {
+                    resp.setObj(memberService.updateMember(member));
+                } else {
+                    member.setCreateTime(new Date());
+                    member.setCreateUser(user.getUuid());
+                    resp.setObj(memberService.addMember(member));
+                }
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("更新会员信息成功！");
             } else {
@@ -109,7 +113,7 @@ public class MemberController {
         return resp;
     }
 
-    @GetMapping(value = "/get", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "get", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     Object getMember(HttpServletRequest request,@RequestParam(value = "companyId", required = true) Long companyId) {
         ResponseVO resp = new ResponseVO();
         try {
@@ -117,7 +121,6 @@ public class MemberController {
             if (null != user) {
                 resp.setObj(memberService.getMemberByCompanyId(companyId));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
-                resp.setObj(user);
             } else {
                 resp.setStatus(Constants.RESPONSE_REDIRECT);
                 resp.setMessage("./ggreen/login.html");
