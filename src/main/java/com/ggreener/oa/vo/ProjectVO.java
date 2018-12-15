@@ -1,5 +1,7 @@
 package com.ggreener.oa.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -16,7 +18,9 @@ public class ProjectVO implements Serializable {
     private String name;
     private Integer type;
     private String address;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date startDate;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date endDate;
     private String remark;
 

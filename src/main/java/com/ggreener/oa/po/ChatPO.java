@@ -17,6 +17,7 @@ public class ChatPO implements Serializable {
     private Long companyId;
     private Date chatTime;
     private Long chatType;
+    private String chatAddress;
     private String customers;
     private String owners;
     private String content;

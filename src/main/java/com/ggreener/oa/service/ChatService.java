@@ -2,17 +2,19 @@ package com.ggreener.oa.service;
 
 import com.ggreener.oa.exception.ChatException;
 import com.ggreener.oa.mapper.ChatMapper;
+import com.ggreener.oa.mapper.TagMapper;
 import com.ggreener.oa.po.ChatPO;
+import com.ggreener.oa.po.TagPO;
+import com.ggreener.oa.util.Constants;
 import com.ggreener.oa.vo.ChatVO;
+import org.apache.tomcat.util.bcel.classfile.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by lifu on 2018/9/30.
@@ -26,6 +28,9 @@ public class ChatService {
 
     @Autowired
     private ChatMapper chatMapper;
+
+    @Autowired
+    private TagMapper tagMapper;
 
     public ChatVO addChat(ChatPO chat) throws ChatException {
         if (chatMapper.insert(chat) > 0) {
@@ -67,10 +72,16 @@ public class ChatService {
     public List<ChatVO> list(Long companyId) {
         List<ChatPO> list = chatMapper.selectByCompanyId(companyId);
         List<ChatVO> result = new ArrayList<>();
+        List<TagPO> chatTypes = tagMapper.list(new Long(Constants.CHAT_TYPE_FLAG));
+        Map<Long, String> map = new HashMap<>();
+        for (TagPO chatType : chatTypes) {
+            map.put(chatType.getId(), chatType.getName());
+        }
         if (null != list && list.size() > 0) {
             for (ChatPO chatPO : list) {
                 ChatVO chatTmp = new ChatVO();
                 BeanUtils.copyProperties(chatPO, chatTmp);
+                chatTmp.setChatType(map.get(chatPO.getChatType()));
                 result.add(chatTmp);
             }
         }

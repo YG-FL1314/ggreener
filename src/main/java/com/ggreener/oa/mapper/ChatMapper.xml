@@ -6,6 +6,7 @@
         <result column="company_id" jdbcType="BIGINT" property="companyId"/>
         <result column="chat_time" jdbcType="TIMESTAMP" property="chatTime"/>
         <result column="chat_type" jdbcType="BIGINT" property="chatType"/>
+        <result column="chat_address" jdbcType="VARCHAR" property="chatAddress"/>
         <result column="customers" jdbcType="VARCHAR" property="customers"/>
         <result column="owners" jdbcType="VARCHAR" property="owners"/>
         <result column="content" jdbcType="VARCHAR" property="content"/>
@@ -17,12 +18,12 @@
     </resultMap>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
-        INSERT INTO chat_info (`company_id`, `chat_time`, `chat_type`, `customers`,`owners`, `content`, `status`, `create_time`, `create_user`, `update_time`, `update_user`)
-        VALUES(#{companyId}, #{chatTime}, #{chatType}, #{customers}, #{owners}, #{content}, #{status}, #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
+        INSERT INTO chat_info (`company_id`, `chat_time`, `chat_type`, `chat_address`, `customers`,`owners`, `content`, `status`, `create_time`, `create_user`, `update_time`, `update_user`)
+        VALUES(#{companyId}, #{chatTime}, #{chatType}, #{chatAddress}, #{customers}, #{owners}, #{content}, #{status}, #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
     </insert>
 
     <select id="selectByCompanyId" resultMap="ChatPO">
-        SELECT id, company_id, chat_type, chat_time, customers, owners, content, status, create_time, create_user, update_time, update_user
+        SELECT id, company_id, chat_type, chat_address, chat_time, customers, owners, content, status, create_time, create_user, update_time, update_user
         FROM chat_info
         WHERE company_id = #{companyId} AND status = 1 ORDER BY update_time DESC
     </select>
@@ -42,16 +43,19 @@
             <if test="customers!=null">
                 customers = #{customers},
             </if>
+            <if test="chatAddress!=null">
+                chat_address = #{chatAddress},
+            </if>
             <if test="owners!=null">
                 owners = #{owners},
             </if>
             <if test="content!=null">
                 content = #{content},
             </if>
-            <if test="update_time!=null">
+            <if test="updateTime!=null">
                 update_time = #{updateTime},
             </if>
-            <if test="update_user!=null">
+            <if test="updateUser!=null">
                 update_user = #{updateUser},
             </if>
         </trim>
@@ -59,7 +63,7 @@
     </update>
 
     <select id="get" resultMap="ChatPO">
-        SELECT id, company_id, chat_time, customers, owners, content, status, create_time, create_user, update_time, update_user
+        SELECT id, company_id, chat_time, chat_type, chat_address, customers, owners, content, status, create_time, create_user, update_time, update_user
         FROM chat_info
         WHERE id = #{id} and status = 1 LIMIT 1
     </select>

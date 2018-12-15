@@ -72,4 +72,7 @@ public class Constants {
 
     //职位
     public static final int DUTY_FLAG = 144;
+
+    //交流方式
+    public static final int CHAT_TYPE_FLAG = 151;
 }

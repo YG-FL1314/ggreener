@@ -1,5 +1,7 @@
 package com.ggreener.oa.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -18,6 +20,7 @@ public class CompanyListVO implements Serializable{
     private String attention;
     private String name;
     private String region;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date createTime;
     private float register;
     private String companyType;

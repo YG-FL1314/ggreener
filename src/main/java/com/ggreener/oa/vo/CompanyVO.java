@@ -1,5 +1,6 @@
 package com.ggreener.oa.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -26,6 +27,7 @@ public class CompanyVO implements Serializable {
     //单位性质
     private Long unitProperty;
     //成立时间
+    @JsonFormat(pattern = "yyyy-MM-dd HH:MM", timezone = "GMT+8")
     private Date establishedTime;
     //注册资金
     private float registeredCapital;

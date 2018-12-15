@@ -1,12 +1,15 @@
 package com.ggreener.oa.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.ggreener.oa.exception.SessionException;
 import com.ggreener.oa.po.ChatPO;
 import com.ggreener.oa.service.CompanyService;
 import com.ggreener.oa.service.ChatService;
 import com.ggreener.oa.service.UserService;
 import com.ggreener.oa.util.Constants;
+import com.ggreener.oa.vo.CompanyVO;
 import com.ggreener.oa.vo.ResponseVO;
 import com.ggreener.oa.vo.UserVO;
 import org.slf4j.Logger;
@@ -44,20 +47,14 @@ public class ChatController {
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
-                ChatPO chat = new ChatPO();
+                ChatPO chat = JSON.parseObject(json.toString(), new TypeReference<ChatPO>(){});
                 Date date = new Date();
                 chat.setCreateTime(date);
                 chat.setUpdateTime(date);
                 chat.setCreateUser(user.getUuid());
                 chat.setUpdateUser(user.getUuid());
-                chat.setCompanyId(json.getLong("companyId"));
                 companyService.get(chat.getCompanyId());
-                chat.setChatType(json.getLong("chatType"));
                 chat.setStatus(Constants.STATUS_NORMAL);
-                chat.setChatTime(json.getDate("chatTime"));
-                chat.setOwners(json.getString("owners"));
-                chat.setCustomers(json.getString("customers"));
-                chat.setContent(json.getString("content"));
                 resp.setObj(chatService.addChat(chat));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("添加互动信息成功！");
@@ -83,17 +80,10 @@ public class ChatController {
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
-                ChatPO chat = new ChatPO();
+                ChatPO chat = JSON.parseObject(json.toString(), new TypeReference<ChatPO>(){});
                 chat.setUpdateTime(new Date());
                 chat.setUpdateUser(user.getUuid());
-                chat.setId(json.getLong("id"));
                 chatService.getChat(chat.getId());
-                chat.setChatType(json.getLong("chatType"));
-                chat.setStatus(Constants.STATUS_NORMAL);
-                chat.setChatTime(json.getDate("chatTime"));
-                chat.setOwners(json.getString("owners"));
-                chat.setCustomers(json.getString("customers"));
-                chat.setContent(json.getString("content"));
                 resp.setObj(chatService.updateChat(chat));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("更新互动信息成功！");
@@ -146,7 +136,6 @@ public class ChatController {
             if (null != user) {
                 resp.setObj(chatService.list(companyId));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
-                resp.setObj(user);
             } else {
                 resp.setStatus(Constants.RESPONSE_REDIRECT);
                 resp.setMessage("./ggreen/login.html");
