@@ -262,20 +262,48 @@ public class CompanyService {
         companyPO.setUpdateUser(userId);
         if (companyMapper.update(companyPO) > 0) {
             List<Long> tags = new ArrayList<>();
-            tags.add(company.getAttention());
-            tags.add(company.getRegion());
-            tags.add(company.getZol());
-            tags.add(company.getUnitProperty());
-            tags.add(company.getEquity());
-            tags.addAll(company.getHighTechs());
-            tags.add(company.getCompanyMarket());
-            tags.addAll(company.getIndustries());
-            tags.addAll(company.getBusiness());
-            tags.addAll(company.getBusinessArea());
-            tags.addAll(company.getSegmentMarket());
-            tags.addAll(company.getAdvantages());
-            tags.add(company.getTechProduct());
-            tags.add(company.getCompanyType());
+            if (company.getAttention() != null) {
+                tags.add(company.getAttention());
+            }
+            if (company.getRegion() != null) {
+                tags.add(company.getRegion());
+            }
+            if (company.getZol() != null) {
+                tags.add(company.getZol());
+            }
+            if (company.getUnitProperty() != null) {
+                tags.add(company.getUnitProperty());
+            }
+            if (company.getEquity() != null) {
+                tags.add(company.getEquity());
+            }
+            if (company.getHighTechs() != null) {
+                tags.addAll(company.getHighTechs());
+            }
+            if (company.getCompanyMarket() != null) {
+                tags.add(company.getCompanyMarket());
+            }
+            if (company.getIndustries() != null) {
+                tags.addAll(company.getIndustries());
+            }
+            if (company.getBusiness() != null) {
+                tags.addAll(company.getBusiness());
+            }
+            if (company.getBusinessArea() != null) {
+                tags.addAll(company.getBusinessArea());
+            }
+            if (company.getSegmentMarket() != null) {
+                tags.addAll(company.getSegmentMarket());
+            }
+            if (company.getAdvantages() != null) {
+                tags.addAll(company.getAdvantages());
+            }
+            if (company.getTechProduct() != null) {
+                tags.add(company.getTechProduct());
+            }
+            if (company.getCompanyType() != null) {
+                tags.add(company.getCompanyType());
+            }
             //删除除了会员关系的company_tag相关信息
             companyTagsMapper.delete(companyPO.getId(), new Long(Constants.MEMBER_FLAG));
             companyTagsMapper.batchInsert(company.getId(), tags, new Date());

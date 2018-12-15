@@ -49,10 +49,10 @@
             <if test="accountNumber!=null">
                 account_number = #{accountNumber},
             </if>
-            <if test="update_time!=null">
+            <if test="updateTime!=null">
                 update_time = #{updateTime},
             </if>
-            <if test="update_user!=null">
+            <if test="updateUser!=null">
                 update_user = #{updateUser},
             </if>
         </trim>
@@ -62,7 +62,7 @@
     <select id="get" resultMap="InvoicePO">
         SELECT id, `company_id`, `name`, `pay_number`, `address`,`telephone`, `bank_name`, `account_number`, `status`, `create_time`, `create_user`, `update_time`, `update_user`
         FROM invoice
-        WHERE c.id = #{id} AND status = 1 LIMIT 1
+        WHERE id = #{id} AND status = 1 LIMIT 1
     </select>
 
     <update id="delete">

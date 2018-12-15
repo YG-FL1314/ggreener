@@ -64,7 +64,7 @@ public class InvoiceService {
         if (null != list && list.size() > 0) {
             for (InvoicePO invoicePO : list) {
                 InvoiceVO tmp = new InvoiceVO();
-                BeanUtils.copyProperties(tmp, result);
+                BeanUtils.copyProperties(invoicePO, tmp);
                 result.add(tmp);
             }
         }

@@ -1,6 +1,8 @@
 package com.ggreener.oa.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.ggreener.oa.exception.SessionException;
 import com.ggreener.oa.po.InvoicePO;
 import com.ggreener.oa.service.CompanyService;
@@ -44,20 +46,13 @@ public class InvoiceController {
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
-                InvoicePO invoice = new InvoicePO();
+                InvoicePO invoice = JSON.parseObject(json.toString(), new TypeReference<InvoicePO>(){});
                 Date date = new Date();
                 invoice.setCreateTime(date);
                 invoice.setUpdateTime(date);
                 invoice.setCreateUser(user.getUuid());
                 invoice.setUpdateUser(user.getUuid());
-                invoice.setName(json.getString("name"));
-                invoice.setCompanyId(json.getLong("companyId"));
                 companyService.get(invoice.getCompanyId());
-                invoice.setPayNumber(json.getString("pay_number"));
-                invoice.setAddress(json.getString("address"));
-                invoice.setAccountNumber(json.getString("accountNumber"));
-                invoice.setBankName(json.getString("bankName"));
-                invoice.setTelephone(json.getString("telephone"));
                 invoice.setStatus(Constants.STATUS_NORMAL);
                 resp.setObj(invoiceService.addInvoice(invoice));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
@@ -84,17 +79,10 @@ public class InvoiceController {
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
-                InvoicePO invoice = new InvoicePO();
+                InvoicePO invoice = JSON.parseObject(json.toString(), new TypeReference<InvoicePO>(){});
                 invoice.setUpdateTime(new Date());
                 invoice.setUpdateUser(user.getUuid());
-                invoice.setId(json.getLong("id"));
                 invoiceService.getInvoice(invoice.getId());
-                invoice.setName(json.getString("name"));
-                invoice.setPayNumber(json.getString("pay_number"));
-                invoice.setAddress(json.getString("address"));
-                invoice.setAccountNumber(json.getString("accountNumber"));
-                invoice.setBankName(json.getString("bankName"));
-                invoice.setTelephone(json.getString("telephone"));
                 resp.setObj(invoiceService.updateInvoice(invoice));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("更新发票信息成功！");
@@ -147,7 +135,6 @@ public class InvoiceController {
             if (null != user) {
                 resp.setObj(invoiceService.getInvoiceByCompanyId(companyId));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
-                resp.setObj(user);
             } else {
                 resp.setStatus(Constants.RESPONSE_REDIRECT);
                 resp.setMessage("./ggreen/login.html");
