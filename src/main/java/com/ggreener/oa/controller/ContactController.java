@@ -1,16 +1,16 @@
 package com.ggreener.oa.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.ggreener.oa.exception.SessionException;
 import com.ggreener.oa.po.ContactPO;
 import com.ggreener.oa.service.CompanyService;
 import com.ggreener.oa.service.ContactService;
 import com.ggreener.oa.service.UserService;
 import com.ggreener.oa.util.Constants;
-import com.ggreener.oa.util.PasswordUtil;
 import com.ggreener.oa.vo.ResponseVO;
 import com.ggreener.oa.vo.UserVO;
-import org.apache.tomcat.util.bcel.classfile.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
 /**
@@ -47,22 +46,13 @@ public class ContactController {
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
-                ContactPO contact = new ContactPO();
+                ContactPO contact = JSON.parseObject(json.toString(), new TypeReference<ContactPO>(){});
                 Date date = new Date();
                 contact.setCreateTime(date);
                 contact.setUpdateTime(date);
                 contact.setCreateUser(user.getUuid());
                 contact.setUpdateUser(user.getUuid());
-                contact.setName(json.getString("name"));
-                contact.setCompanyId(json.getLong("companyId"));
                 companyService.get(contact.getCompanyId());
-                contact.setDutyId(json.getLong("dutyId"));
-                contact.setMail(json.getString("mail"));
-                contact.setTelephone(json.getString("telephone"));
-                contact.setQq(json.getString("qq"));
-                contact.setWeixin(json.getString("weixin"));
-                contact.setRemark(json.getString("remark"));
-                contact.setPhone(json.getString("phone"));
                 contact.setStatus(Constants.STATUS_NORMAL);
                 resp.setObj(contactService.addContact(contact));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
@@ -89,19 +79,10 @@ public class ContactController {
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
-                ContactPO contact = new ContactPO();
+                ContactPO contact = JSON.parseObject(json.toString(), new TypeReference<ContactPO>(){});
                 contact.setUpdateTime(new Date());
                 contact.setUpdateUser(user.getUuid());
-                contact.setId(json.getLong("id"));
                 contactService.getContact(contact.getId());
-                contact.setName(json.getString("name"));
-                contact.setDutyId(json.getLong("dutyId"));
-                contact.setMail(json.getString("mail"));
-                contact.setTelephone(json.getString("telephone"));
-                contact.setQq(json.getString("qq"));
-                contact.setWeixin(json.getString("weixin"));
-                contact.setRemark(json.getString("remark"));
-                contact.setPhone(json.getString("phone"));
                 resp.setObj(contactService.updateContact(contact));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("更新联系人成功！");

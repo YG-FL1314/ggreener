@@ -1,10 +1,12 @@
 package com.ggreener.oa.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.ggreener.oa.exception.SessionException;
 import com.ggreener.oa.po.HolderPO;
-import com.ggreener.oa.service.HolderService;
 import com.ggreener.oa.service.CompanyService;
+import com.ggreener.oa.service.HolderService;
 import com.ggreener.oa.service.UserService;
 import com.ggreener.oa.util.Constants;
 import com.ggreener.oa.vo.ResponseVO;
@@ -44,18 +46,14 @@ public class HolderController {
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
-                HolderPO holder = new HolderPO();
+                HolderPO holder = JSON.parseObject(json.toString(), new TypeReference<HolderPO>(){});
                 Date date = new Date();
                 holder.setCreateTime(date);
                 holder.setUpdateTime(date);
                 holder.setCreateUser(user.getUuid());
                 holder.setUpdateUser(user.getUuid());
-                holder.setCompanyId(json.getLong("companyId"));
                 companyService.get(holder.getCompanyId());
-                holder.setName(json.getString("name"));
                 holder.setStatus(Constants.STATUS_NORMAL);
-                holder.setPercent(json.getString("percent"));
-                holder.setAmount(json.getDouble("amount"));
                 resp.setObj(holderService.addHolder(holder));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("添加股东信息成功！");
@@ -81,14 +79,10 @@ public class HolderController {
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
-                HolderPO holder = new HolderPO();
+                HolderPO holder = JSON.parseObject(json.toString(), new TypeReference<HolderPO>(){});
                 holder.setUpdateTime(new Date());
                 holder.setUpdateUser(user.getUuid());
-                holder.setId(json.getLong("id"));
                 holderService.getHolder(holder.getId());
-                holder.setName(json.getString("name"));
-                holder.setPercent(json.getString("percent"));
-                holder.setAmount(json.getDouble("amount"));
                 resp.setObj(holderService.updateHolder(holder));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("更新股东信息成功！");
@@ -141,7 +135,6 @@ public class HolderController {
             if (null != user) {
                 resp.setObj(holderService.list(companyId));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
-                resp.setObj(user);
             } else {
                 resp.setStatus(Constants.RESPONSE_REDIRECT);
                 resp.setMessage("./ggreen/login.html");

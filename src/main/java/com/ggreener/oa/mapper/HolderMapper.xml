@@ -43,10 +43,10 @@
             <if test="percent!=null">
                 percent = #{percent},
             </if>
-            <if test="update_time!=null">
+            <if test="updateTime!=null">
                 update_time = #{updateTime},
             </if>
-            <if test="update_user!=null">
+            <if test="updateUser!=null">
                 update_user = #{updateUser},
             </if>
         </trim>
