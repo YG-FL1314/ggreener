@@ -204,7 +204,7 @@ public class UserController {
         ResponseVO resp = new ResponseVO();
         try {
             UserVO user = userService.validateUser(request.getSession());
-            if (null != user && user.getRole() == Constants.ADMIN_ROLE) {
+            if (null != user) {
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setObj(userService.listUsers(Constants.NORMAL_ROLE));
             } else if (null != user){

@@ -77,17 +77,11 @@ public class ContactService {
 
     public List<ContactVO> list(Long companyId) {
         List<ContactPO> list = contactMapper.selectByCompanyId(companyId);
-        List<TagPO> duties = tagMapper.list(new Long(Constants.DUTY_FLAG));
-        Map<Long, String> map =  new HashMap<>();
-        for (TagPO duty : duties) {
-            map.put(duty.getId(), duty.getName());
-        }
         List<ContactVO> result = new ArrayList<>();
         if (null != list && list.size() > 0) {
             for (ContactPO contactPO : list) {
                 ContactVO contactTmp = new ContactVO();
                 BeanUtils.copyProperties(contactPO, contactTmp);
-                contactTmp.setDuty(map.get(contactPO.getDutyId()));
                 result.add(contactTmp);
             }
         }

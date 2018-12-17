@@ -43,7 +43,7 @@
     </insert>
 
     <select id="selectByCompanyId" resultMap="CompanyPO">
-        SELECT id, `name`, established_time, registered_capital, shares_code, patents, utility_patents, softwares, office_area, staff_number, technicians,
+        SELECT id, `name`, established_time, registered_capital, shares_code, patents, utility_patents, softwares, office_area, staff_number, technicians, products,
         telephone, fax, website, address, status, create_time, create_user, update_time, update_user
         FROM company
         WHERE id = #{companyId} and status = 1 LIMIT 1
@@ -82,7 +82,7 @@
     </select>
 
     <select id="selectByName" resultMap="CompanyPO">
-        SELECT id, `name`, established_time, registered_capital, shares_code, patents, utility_patents, softwares, office_area, staff_number, technicians,
+        SELECT id, `name`, established_time, registered_capital, shares_code, patents, utility_patents, softwares, office_area, staff_number, technicians, products,
         telephone, fax, website, address, status, create_time, create_user, update_time, update_user
         FROM company
         WHERE `name` = #{name} and status = 1 LIMIT 1
