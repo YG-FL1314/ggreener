@@ -9,26 +9,34 @@
         <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
     </resultMap>
 
+    <resultMap id="TagDetailPO" type="com.ggreener.oa.po.TagDetailPO">
+        <result column="tag_id" jdbcType="BIGINT" property="tagId" />
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="company_id" jdbcType="BIGINT" property="companyId" />
+        <result column="parent_id" jdbcType="BIGINT" property="parentId"/>
+    </resultMap>
+
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO requirements (`company_id`, `requirement_id`, `create_time`, `create_user`)
         VALUES(#{companyId}, #{requirementId}, #{createTime}, #{createUser})
     </insert>
 
-    <select id="selectByCompanyId" resultMap="RequirePO">
-        SELECT id, `company_id`, `requirement_id`, `create_time`, `create_user`
-        FROM requirements
-        WHERE company_id = #{companyId} AND status = 1 ORDER BY update_time DESC
+    <insert id="batchInsert" parameterType="java.util.List" useGeneratedKeys="true">
+        INSERT INTO `requirements`(`company_id`, `requirement_id`, `create_user`, `create_time`)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{companyId}, #{item}, #{userId}, #{date})
+        </foreach>
+    </insert>
+
+    <select id="selectByCompanyId" resultMap="TagDetailPO">
+        SELECT t.name, t.parent_id, r.company_id, r.requirement_id as tag_id
+        FROM requirements r JOIN tag t ON r.requirement_id = t.id
+        WHERE company_id = #{companyId} ORDER BY update_time DESC
     </select>
 
     <delete id="delete">
         DELETE FROM requirements
         WHERE company_id = #{companyId}
     </delete>
-
-    <select id="get" resultMap="RequirePO">
-        SELECT id, `company_id`, `requirement_id`, `create_time`, `create_user`
-        FROM requirements
-        WHERE id = #{id} and status = 1 LIMIT 1
-    </select>
-
 </mapper>

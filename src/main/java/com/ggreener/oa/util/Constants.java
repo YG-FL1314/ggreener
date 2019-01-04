@@ -75,4 +75,31 @@ public class Constants {
 
     //交流方式
     public static final int CHAT_TYPE_FLAG = 151;
+
+    //品牌宣传
+    public static final int REQUIRE_BRAND_FLAG = 161;
+
+    //资源整合
+    public static final int REQUIRE_RESOURCE_FLAG = 162;
+
+    //融资需求
+    public static final int REQUIRE_FINANCE_FLAG = 163;
+
+    //能力建设
+    public static final int REQUIRE_ABILITY_FLAG = 164;
+
+    //国际交流
+    public static final int REQUIRE_INTERNATION_FLAG = 165;
+
+    //标准制定
+    public static final int REQUIRE_STANDARD_FLAG = 166;
+
+    //认证需求
+    public static final int REQUIRE_INDENTIFACTION_FLAG = 167;
+
+    //咨询服务
+    public static final int REQUIRE_CONSULT_FLAG = 168;
+
+    //其它需求
+    public static final int REQUIRE_OTHER_FLAG = 169;
 }

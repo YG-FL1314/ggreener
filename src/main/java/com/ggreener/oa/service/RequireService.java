@@ -3,6 +3,8 @@ package com.ggreener.oa.service;
 import com.ggreener.oa.exception.RequireException;
 import com.ggreener.oa.mapper.RequireMapper;
 import com.ggreener.oa.po.RequirePO;
+import com.ggreener.oa.po.TagDetailPO;
+import com.ggreener.oa.util.Constants;
 import com.ggreener.oa.vo.RequireVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,43 +29,123 @@ public class RequireService {
     @Autowired
     private RequireMapper requireMapper;
 
-    public RequireVO addRequire(RequirePO require) throws RequireException {
-        if (requireMapper.insert(require) > 0) {
-            RequireVO result = new RequireVO();
-            BeanUtils.copyProperties(require, result);
-            return result;
+    public void addRequires(Long companyId, List<Long> tags, String userId) throws RequireException {
+        if (requireMapper.batchInsert(companyId, tags, userId, new Date()) > 0) {
+
         } else {
             throw new RequireException("添加需求信息失败！");
         }
     }
 
-    public RequireVO getRequire(Long requireId) throws RequireException {
-        RequireVO result = new RequireVO();
-        RequirePO require = requireMapper.get(requireId);
-        if (null != require) {
-            BeanUtils.copyProperties(require, result);
+    public void updateRequires(Long companyId, List<Long> tags, String userId) throws RequireException {
+        if (requireMapper.delete(companyId) >= 0) {
+            if (requireMapper.batchInsert(companyId, tags, userId, new Date()) > 0) {
+
+            } else {
+                throw new RequireException("添加需求信息失败！");
+            }
         } else {
-            throw new RequireException("需求信息不存在！");
+            throw new RequireException("删除需求信息失败！");
+        }
+    }
+
+    public RequireVO getRequires(Long companyId) {
+        RequireVO result = new RequireVO();
+        result.setCompanyId(companyId);
+        List<TagDetailPO> requires = requireMapper.selectByCompanyId(companyId);
+        if (null != requires) {
+            for (TagDetailPO require : requires) {
+                switch(require.getParentId().intValue()) {
+                    case Constants.REQUIRE_BRAND_FLAG:
+                        if (result.getBrand() != null) {
+                            result.getBrand().add(require.getTagId());
+                        } else {
+                            List<Long> tags = new ArrayList<>();
+                            tags.add(require.getTagId());
+                            result.setBrand(tags);
+                        }
+                        break;
+                    case Constants.REQUIRE_RESOURCE_FLAG:
+                        if (result.getResources() != null) {
+                            result.getResources().add(require.getTagId());
+                        } else {
+                            List<Long> tags = new ArrayList<>();
+                            tags.add(require.getTagId());
+                            result.setResources(tags);
+                        }
+                        break;
+                    case Constants.REQUIRE_FINANCE_FLAG:
+                        if (result.getFinances() != null) {
+                            result.getFinances().add(require.getTagId());
+                        } else {
+                            List<Long> tags = new ArrayList<>();
+                            tags.add(require.getTagId());
+                            result.setFinances(tags);
+                        }
+                        break;
+                    case Constants.REQUIRE_ABILITY_FLAG:
+                        if (result.getAbility() != null) {
+                            result.getAbility().add(require.getTagId());
+                        } else {
+                            List<Long> tags = new ArrayList<>();
+                            tags.add(require.getTagId());
+                            result.setAbility(tags);
+                        }
+                        break;
+                    case Constants.REQUIRE_INTERNATION_FLAG:
+                        if (result.getInternations() != null) {
+                            result.getInternations().add(require.getTagId());
+                        } else {
+                            List<Long> tags = new ArrayList<>();
+                            tags.add(require.getTagId());
+                            result.setInternations(tags);
+                        }
+                        break;
+                    case Constants.REQUIRE_STANDARD_FLAG:
+                        if (result.getStandards() != null) {
+                            result.getStandards().add(require.getTagId());
+                        } else {
+                            List<Long> tags = new ArrayList<>();
+                            tags.add(require.getTagId());
+                            result.setStandards(tags);
+                        }
+                        break;
+                    case Constants.REQUIRE_INDENTIFACTION_FLAG:
+                        if (result.getIdentify() != null) {
+                            result.getIdentify().add(require.getTagId());
+                        } else {
+                            List<Long> tags = new ArrayList<>();
+                            tags.add(require.getTagId());
+                            result.setIdentify(tags);
+                        }
+                        break;
+                    case Constants.REQUIRE_CONSULT_FLAG:
+                        if (result.getConsult() != null) {
+                            result.getConsult().add(require.getTagId());
+                        } else {
+                            List<Long> tags = new ArrayList<>();
+                            tags.add(require.getTagId());
+                            result.setConsult(tags);
+                        }
+                        break;
+                    case Constants.REQUIRE_OTHER_FLAG:
+                        if (result.getOthers() != null) {
+                            result.getOthers().add(require.getTagId());
+                        } else {
+                            List<Long> tags = new ArrayList<>();
+                            tags.add(require.getTagId());
+                            result.setOthers(tags);
+                        }
+                        break;
+                }
+            }
         }
         return result;
     }
 
     public void deleteRequire(Long companyId) throws RequireException {
-        if (requireMapper.delete(companyId) <= 0) {
+        if (requireMapper.delete(companyId) < 0) {
             throw new RequireException("删除需求信息失败！");
         }
-    }
-
-    public List<RequireVO> list(Long companyId) {
-        List<RequirePO> list = requireMapper.selectByCompanyId(companyId);
-        List<RequireVO> result = new ArrayList<>();
-        if (null != list && list.size() > 0) {
-            for (RequirePO requirePO : list) {
-                RequireVO requireTmp = new RequireVO();
-                BeanUtils.copyProperties(requirePO, requireTmp);
-                result.add(requireTmp);
-            }
-        }
-        return result;
     }
 }
