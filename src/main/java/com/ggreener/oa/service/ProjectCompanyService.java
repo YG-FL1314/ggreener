@@ -3,7 +3,12 @@ package com.ggreener.oa.service;
 import com.ggreener.oa.exception.ProjectCompanyException;
 import com.ggreener.oa.exception.ProjectException;
 import com.ggreener.oa.mapper.ProjectCompanyMapper;
+import com.ggreener.oa.mapper.TagMapper;
+import com.ggreener.oa.po.ProjectCompanyDetailPO;
 import com.ggreener.oa.po.ProjectCompanyPO;
+import com.ggreener.oa.po.TagPO;
+import com.ggreener.oa.util.Constants;
+import com.ggreener.oa.vo.ProjectCompanyDetailVO;
 import com.ggreener.oa.vo.ProjectCompanyVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +19,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by lifu on 2018/9/30.
@@ -28,6 +35,9 @@ public class ProjectCompanyService {
     @Autowired
     private ProjectCompanyMapper projectCompanyMapper;
 
+    @Autowired
+    private TagMapper tagMapper;
+
     public ProjectCompanyVO addProjectCompany(ProjectCompanyPO projectCompanyPO) throws ProjectCompanyException {
         if (projectCompanyMapper.insert(projectCompanyPO) > 0) {
             ProjectCompanyVO result = new ProjectCompanyVO();
@@ -38,12 +48,12 @@ public class ProjectCompanyService {
         }
     }
 
-    public List<ProjectCompanyVO> getListByProjectId(Long projectId) throws ProjectCompanyException {
-        List<ProjectCompanyVO> result = new ArrayList<>();
-        List<ProjectCompanyPO> list = projectCompanyMapper.selectByProjectId(projectId);
+    public List<ProjectCompanyDetailVO> getListByProjectId(Long projectId) throws ProjectCompanyException {
+        List<ProjectCompanyDetailVO> result = new ArrayList<>();
+        List<ProjectCompanyDetailPO> list = projectCompanyMapper.selectByProjectId(projectId);
         if (null != list) {
-            for (ProjectCompanyPO tmp : list) {
-                ProjectCompanyVO vo = new ProjectCompanyVO();
+            for (ProjectCompanyDetailPO tmp : list) {
+                ProjectCompanyDetailVO vo = new ProjectCompanyDetailVO();
                 BeanUtils.copyProperties(tmp, vo);
                 result.add(vo);
             }
@@ -51,13 +61,16 @@ public class ProjectCompanyService {
         return result;
     }
 
-    public List<ProjectCompanyVO> getListByCompanyId(Long companyId) throws ProjectCompanyException {
-        List<ProjectCompanyVO> result = new ArrayList<>();
-        List<ProjectCompanyPO> list = projectCompanyMapper.selectByCompanyId(companyId);
+    public List<ProjectCompanyDetailVO> getListByCompanyId(Long companyId) throws ProjectCompanyException {
+        List<ProjectCompanyDetailVO> result = new ArrayList<>();
+        List<ProjectCompanyDetailPO> list = projectCompanyMapper.selectByCompanyId(companyId);
         if (null != list) {
-            for (ProjectCompanyPO tmp : list) {
-                ProjectCompanyVO vo = new ProjectCompanyVO();
+            Map<Long, TagPO> map = tagMapper.list(new Long(Constants.PROJECT_TYPE_FLAG)).stream()
+                    .collect(Collectors.toMap(TagPO::getId, tag -> tag));
+            for (ProjectCompanyDetailPO tmp : list) {
+                ProjectCompanyDetailVO vo = new ProjectCompanyDetailVO();
                 BeanUtils.copyProperties(tmp, vo);
+                vo.setProjectType(map.get(tmp.getProjectType()).getName());
                 result.add(vo);
             }
         }

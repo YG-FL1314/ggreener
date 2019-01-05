@@ -1,6 +1,8 @@
 package com.ggreener.oa.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.ggreener.oa.exception.SessionException;
 import com.ggreener.oa.po.ProjectCompanyPO;
 import com.ggreener.oa.po.ProjectPO;
@@ -49,20 +51,14 @@ public class ProjectCompanyController {
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
-                ProjectCompanyPO projectCompany = new ProjectCompanyPO();
+                ProjectCompanyPO projectCompany = JSON.parseObject(json.toString(), new TypeReference<ProjectCompanyPO>(){});
                 Date date = new Date();
                 projectCompany.setCreateTime(date);
                 projectCompany.setUpdateTime(date);
                 projectCompany.setCreateUser(user.getUuid());
                 projectCompany.setUpdateUser(user.getUuid());
-                projectCompany.setProjectId(json.getLong("projectId"));
                 projectService.getProject(projectCompany.getProjectId());
-                projectCompany.setCompanyId(json.getLong("companyId"));
                 companyService.get(projectCompany.getCompanyId());
-                projectCompany.setAmount(json.getLong("amount"));
-                projectCompany.setOther(json.getLong("other"));
-                projectCompany.setOwn(json.getString("own"));
-                projectCompany.setPeople(json.getString("people"));
                 projectCompany.setStatus(Constants.STATUS_NORMAL);
                 resp.setObj(projectCompanyService.addProjectCompany(projectCompany));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
@@ -89,18 +85,10 @@ public class ProjectCompanyController {
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
-                ProjectCompanyPO projectCompany = new ProjectCompanyPO();
+                ProjectCompanyPO projectCompany = JSON.parseObject(json.toString(), new TypeReference<ProjectCompanyPO>(){});
                 projectCompany.setUpdateTime(new Date());
                 projectCompany.setUpdateUser(user.getUuid());
-                projectCompany.setId(json.getLong("id"));
-                projectCompany.setProjectId(json.getLong("projectId"));
                 projectService.getProject(projectCompany.getProjectId());
-                projectCompany.setCompanyId(json.getLong("companyId"));
-                companyService.get(projectCompany.getCompanyId());
-                projectCompany.setAmount(json.getLong("amount"));
-                projectCompany.setOther(json.getLong("other"));
-                projectCompany.setOwn(json.getString("own"));
-                projectCompany.setPeople(json.getString("people"));
                 resp.setObj(projectCompanyService.updateProjectCompany(projectCompany));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("更新项目关系成功！");
@@ -147,8 +135,8 @@ public class ProjectCompanyController {
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     Object listProjects(HttpServletRequest request,
-                        @RequestParam(value = "projectId") Long projectId,
-                        @RequestParam(value = "companyId") Long companyId) {
+                        @RequestParam(value = "projectId", required = false) Long projectId,
+                        @RequestParam(value = "companyId", required = false) Long companyId) {
         ResponseVO resp = new ResponseVO();
         try {
             UserVO user = userService.validateUser(request.getSession());
@@ -159,7 +147,6 @@ public class ProjectCompanyController {
                     resp.setObj(projectCompanyService.getListByCompanyId(companyId));
                 }
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
-                resp.setObj(user);
             } else {
                 resp.setStatus(Constants.RESPONSE_REDIRECT);
                 resp.setMessage("./ggreen/login.html");

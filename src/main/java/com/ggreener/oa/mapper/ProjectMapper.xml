@@ -9,6 +9,7 @@
         <result column="end_date" jdbcType="TIMESTAMP" property="endDate"/>
         <result column="address" jdbcType="VARCHAR" property="address"/>
         <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="amount" jdbcType="FLOAT" property="amount"/>
         <result column="status" jdbcType="INTEGER" property="status"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
@@ -18,33 +19,33 @@
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO project (`name`, `type`, `start_date`, `end_date`,`address`, `remark`,
-         `status`, `create_time`, `create_user`, `update_time`, `update_user`)
-        VALUES(#{name}, #{type}, #{startDate}, #{endDate}, #{address}, #{remark}, #{status},
-        #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
+         `amount`,`status`, `create_time`, `create_user`, `update_time`, `update_user`)
+        VALUES(#{name}, #{type}, #{startDate}, #{endDate}, #{address}, #{remark}, #{amount},
+        #{status}, #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
     </insert>
 
     <select id="selectById" resultMap="ProjectPO">
-        SELECT id, `name`, `type`, `start_date`, `end_date`,`address`, `remark`,
+        SELECT id, `name`, `type`, `start_date`, `end_date`,`address`, `remark`, `amount`,
          `status`, `create_time`, `create_user`, `update_time`, `update_user`
         FROM project
         WHERE id = #{projectId} and status = 1 LIMIT 1
     </select>
 
     <update id="delete">
-        UPDATE porject
+        UPDATE project
         SET status = 0, update_time = #{updateTime}, update_user = #{updateUser}
         WHERE id = #{projectId}
     </update>
 
     <select id="list" resultMap="ProjectPO">
-        SELECT id, `name`, `type`, `start_date`, `end_date`,`address`, `remark`,
+        SELECT id, `name`, `type`, `start_date`, `end_date`,`address`, `remark`, `amount`,
         `status`, `create_time`, `create_user`, `update_time`, `update_user`
         FROM project
-        WHERE status = 1
+        WHERE status = 1 ORDER BY update_time DESC
     </select>
 
     <update id="update">
-        UPDATE contacts
+        UPDATE project
         <trim prefix="set" suffixOverrides=",">
             <if test="name!=null">
                 name = #{name},
@@ -64,10 +65,13 @@
             <if test="endDate!=null">
                 end_date = #{endDate},
             </if>
-            <if test="update_time!=null">
+            <if test="amount!=null">
+                amount = #{amount},
+            </if>
+            <if test="updateTime!=null">
                 update_time = #{updateTime},
             </if>
-            <if test="update_user!=null">
+            <if test="updateUser!=null">
                 update_user = #{updateUser},
             </if>
         </trim>

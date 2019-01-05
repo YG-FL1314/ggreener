@@ -1,6 +1,8 @@
 package com.ggreener.oa.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.ggreener.oa.exception.SessionException;
 import com.ggreener.oa.po.ContactPO;
 import com.ggreener.oa.po.ProjectPO;
@@ -43,18 +45,12 @@ public class ProjectController {
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
-                ProjectPO project = new ProjectPO();
+                ProjectPO project = JSON.parseObject(json.toString(), new TypeReference<ProjectPO>(){});
                 Date date = new Date();
                 project.setCreateTime(date);
                 project.setUpdateTime(date);
                 project.setCreateUser(user.getUuid());
                 project.setUpdateUser(user.getUuid());
-                project.setName(json.getString("name"));
-                project.setType(json.getLong("type"));
-                project.setAddress(json.getString("address"));
-                project.setRemark(json.getString("remark"));
-                project.setStartDate(json.getDate("startDate"));
-                project.setEndDate(json.getDate("endDate"));
                 project.setStatus(Constants.STATUS_NORMAL);
                 resp.setObj(projectService.addProject(project));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
@@ -81,17 +77,10 @@ public class ProjectController {
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
-                ProjectPO project = new ProjectPO();
+                ProjectPO project = JSON.parseObject(json.toString(), new TypeReference<ProjectPO>(){});
                 project.setUpdateTime(new Date());
                 project.setUpdateUser(user.getUuid());
-                project.setId(json.getLong("id"));
                 projectService.getProject(project.getId());
-                project.setName(json.getString("name"));
-                project.setType(json.getLong("type"));
-                project.setAddress(json.getString("address"));
-                project.setRemark(json.getString("remark"));
-                project.setStartDate(json.getDate("startDate"));
-                project.setEndDate(json.getDate("endDate"));
                 resp.setObj(projectService.updateProject(project));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("更新项目成功！");
@@ -136,7 +125,7 @@ public class ProjectController {
         return resp;
     }
 
-    @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     Object listProjects(HttpServletRequest request) {
         ResponseVO resp = new ResponseVO();
         try {
@@ -144,7 +133,31 @@ public class ProjectController {
             if (null != user) {
                 resp.setObj(projectService.listProjects());
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
-                resp.setObj(user);
+            } else {
+                resp.setStatus(Constants.RESPONSE_REDIRECT);
+                resp.setMessage("./ggreen/login.html");
+            }
+        } catch (SessionException e) {
+            LOGGER.error("ProjectController==>listProjects:登录过期,", e);
+            resp.setStatus(Constants.RESPONSE_REDIRECT);
+            resp.setMessage("./login.html");
+        } catch (Exception e) {
+            LOGGER.error("ProjectController==>listProjects:获取项目列表失败！,", e);
+            resp.setStatus(Constants.RESPONSE_FAIL);
+            resp.setMessage(e.getMessage());
+        }
+        return resp;
+    }
+
+    @GetMapping(value = "get", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    Object getProject(HttpServletRequest request,
+                      @RequestParam(value = "projectId", required = true) Long projectId) {
+        ResponseVO resp = new ResponseVO();
+        try {
+            UserVO user = userService.validateUser(request.getSession());
+            if (null != user) {
+                resp.setObj(projectService.getProject(projectId));
+                resp.setStatus(Constants.RESPONSE_SUCCESS);
             } else {
                 resp.setStatus(Constants.RESPONSE_REDIRECT);
                 resp.setMessage("./ggreen/login.html");

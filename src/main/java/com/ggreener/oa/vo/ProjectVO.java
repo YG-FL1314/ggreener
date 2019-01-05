@@ -16,13 +16,14 @@ public class ProjectVO implements Serializable {
 
     private Long id;
     private String name;
-    private Integer type;
+    private String type;
     private String address;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date startDate;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date endDate;
     private String remark;
+    private float amount;
 
     public Long getId() {
         return id;
@@ -40,11 +41,11 @@ public class ProjectVO implements Serializable {
         this.name = name;
     }
 
-    public Integer getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -78,5 +79,13 @@ public class ProjectVO implements Serializable {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public float getAmount() {
+        return amount;
+    }
+
+    public void setAmount(float amount) {
+        this.amount = amount;
     }
 }

@@ -6,9 +6,9 @@
         <result column="project_id" jdbcType="BIGINT" property="projectId" />
         <result column="company_id" jdbcType="BIGINT" property="companyId" />
         <result column="people" jdbcType="VARCHAR" property="people"/>
-        <result column="amount" jdbcType="BIGINT" property="amount"/>
-        <result column="own" jdbcType="VARCHAR" property="own"/>
-        <result column="other" jdbcType="BIGINT" property="other"/>
+        <result column="amount" jdbcType="FLOAT" property="amount"/>
+        <result column="owners" jdbcType="VARCHAR" property="owners"/>
+        <result column="others" jdbcType="VARCHAR" property="others"/>
         <result column="status" jdbcType="INTEGER" property="status"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
@@ -16,25 +16,49 @@
         <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
     </resultMap>
 
+    <resultMap id="ProjectCompanyDetailPO" type="com.ggreener.oa.po.ProjectCompanyDetailPO">
+        <result column="id" jdbcType="BIGINT" property="id" />
+        <result column="project_id" jdbcType="BIGINT" property="projectId" />
+        <result column="company_id" jdbcType="BIGINT" property="companyId" />
+        <result column="people" jdbcType="VARCHAR" property="people"/>
+        <result column="amount" jdbcType="FLOAT" property="amount"/>
+        <result column="owners" jdbcType="VARCHAR" property="owners"/>
+        <result column="others" jdbcType="VARCHAR" property="others"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+        <result column="name" jdbcType="VARCHAR" property="projectName"/>
+        <result column="company_name" jdbcType="VARCHAR" property="companyName"/>
+        <result column="type" jdbcType="INTEGER" property="projectType"/>
+        <result column="start_date" jdbcType="TIMESTAMP" property="startDate"/>
+        <result column="end_date" jdbcType="TIMESTAMP" property="endDate"/>
+    </resultMap>
+
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
-        INSERT INTO project (`project_id`, `company_id`, `people`, `amount`,`own`, `other`,
+        INSERT INTO project_company (`project_id`, `company_id`, `people`, `amount`,`owners`, `others`,
          `status`, `create_time`, `create_user`, `update_time`, `update_user`)
-        VALUES(#{projectId}, #{companyId}, #{people}, #{amount}, #{own}, #{other}, #{status},
+        VALUES(#{projectId}, #{companyId}, #{people}, #{amount}, #{owners}, #{others}, #{status},
         #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
     </insert>
 
-    <select id="selectByProjectId" resultMap="ProjectCompanyPO">
-        SELECT id, `project_id`, `company_id`, `people`, `amount`,`own`, `other`,
-         `status`, `create_time`, `create_user`, `update_time`, `update_user`
-        FROM project_company
-        WHERE project_id = #{projectId} and status = 1
+    <select id="selectByCompanyId" resultMap="ProjectCompanyDetailPO">
+        SELECT pc.id, pc.`project_id`, pc.`company_id`, pc.`people`, pc.`amount`, pc.`owners`,
+         pc.`others`, pc.`create_time`, pc.`create_user`, pc.`update_time`, pc.`update_user`,
+         pc.status, p.name, p.type, p.start_date, p.end_date
+        FROM project_company pc JOIN project p ON pc.project_id = p.id
+        WHERE pc.company_id = #{companyId} AND pc.status = 1 AND p.status = 1
+        ORDER BY pc.update_time DESC
     </select>
 
-    <select id="selectByCompanyId" resultMap="ProjectCompanyPO">
-        SELECT id, `project_id`, `company_id`, `people`, `amount`,`own`, `other`,
-        `status`, `create_time`, `create_user`, `update_time`, `update_user`
-        FROM project_company
-        WHERE company_id = #{companyId} and status = 1
+    <select id="selectByProjectId" resultMap="ProjectCompanyDetailPO">
+        SELECT pc.id, pc.`project_id`, pc.`company_id`, pc.`people`, pc.`amount`, pc.`owners`,
+         pc.`others`, pc.`create_time`, pc.`create_user`, pc.`update_time`, pc.`update_user`,
+         c.name as company_name
+        FROM project_company pc JOIN company c ON pc.company_id = c.id
+        WHERE pc.project_id = #{projectId} AND pc.status = 1 AND c.status = 1
+        ORDER BY pc.update_time DESC
     </select>
 
     <update id="delete">
@@ -45,10 +69,10 @@
     <update id="update">
         UPDATE project_company
         <trim prefix="set" suffixOverrides=",">
-            <if test="project_id!=null">
+            <if test="projectId!=null">
                 project_id = #{projectId},
             </if>
-            <if test="company_id!=null">
+            <if test="companyId!=null">
                 company_id = #{companyId},
             </if>
             <if test="people!=null">
@@ -57,16 +81,16 @@
             <if test="amount!=null">
                 amount = #{amount},
             </if>
-            <if test="own!=null">
-                own = #{own},
+            <if test="owners!=null">
+                owners = #{owners},
             </if>
-            <if test="other!=null">
-                other = #{other},
+            <if test="others!=null">
+                others = #{others},
             </if>
-            <if test="update_time!=null">
+            <if test="updateTime!=null">
                 update_time = #{updateTime},
             </if>
-            <if test="update_user!=null">
+            <if test="updateUser!=null">
                 update_user = #{updateUser},
             </if>
         </trim>

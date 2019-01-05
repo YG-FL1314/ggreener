@@ -11,8 +11,8 @@ import java.util.Date;
  * XXX
  */
 @Data
-public class ProjectCompanyPO implements Serializable {
-    private static final long serialVersionUID = -8332444887820693676L;
+public class ProjectCompanyDetailPO implements Serializable {
+    private static final long serialVersionUID = -1527658646327708222L;
     private Long id;
     private Long projectId;
     private Long companyId;
@@ -25,4 +25,9 @@ public class ProjectCompanyPO implements Serializable {
     private String createUser;
     private Date updateTime;
     private String updateUser;
+    private String projectName;
+    private String companyName;
+    private Long projectType;
+    private Date startDate;
+    private Date endDate;
 }

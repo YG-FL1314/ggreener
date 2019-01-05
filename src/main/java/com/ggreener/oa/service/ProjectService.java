@@ -2,7 +2,10 @@ package com.ggreener.oa.service;
 
 import com.ggreener.oa.exception.ProjectException;
 import com.ggreener.oa.mapper.ProjectMapper;
+import com.ggreener.oa.mapper.TagMapper;
 import com.ggreener.oa.po.ProjectPO;
+import com.ggreener.oa.po.TagPO;
+import com.ggreener.oa.util.Constants;
 import com.ggreener.oa.vo.ProjectVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +16,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by lifu on 2018/9/30.
@@ -26,6 +31,9 @@ public class ProjectService {
 
     @Autowired
     private ProjectMapper projectMapper;
+
+    @Autowired
+    private TagMapper tagMapper;
 
     public ProjectVO addProject(ProjectPO project) throws ProjectException {
         if (projectMapper.insert(project) > 0) {
@@ -41,7 +49,10 @@ public class ProjectService {
         ProjectVO result = new ProjectVO();
         ProjectPO project = projectMapper.selectById(projectId);
         if (null != project) {
+            Map<Long, TagPO> map = tagMapper.list(new Long(Constants.PROJECT_TYPE_FLAG)).stream()
+                    .collect(Collectors.toMap(TagPO::getId, tag -> tag));
             BeanUtils.copyProperties(project, result);
+            result.setType(map.get(project.getType()).getName());
         } else {
             throw new ProjectException("项目不存在！");
         }
@@ -68,9 +79,16 @@ public class ProjectService {
         List<ProjectPO> list = projectMapper.list();
         List<ProjectVO> result = new ArrayList<>();
         if (null != list && list.size() > 0) {
+            Map<Long, TagPO> map = tagMapper.list(new Long(Constants.PROJECT_TYPE_FLAG)).stream()
+                    .collect(Collectors.toMap(TagPO::getId, tag -> tag));
             for (ProjectPO projectPO : list) {
                 ProjectVO projectTmp = new ProjectVO();
                 BeanUtils.copyProperties(projectPO, projectTmp);
+                if (map.containsKey(projectPO.getType())) {
+                    projectTmp.setType(map.get(projectPO.getType()).getName());
+                } else {
+                    projectTmp.setType(projectPO.getType().toString());
+                }
                 result.add(projectTmp);
             }
         }

@@ -19,6 +19,7 @@ public class ProjectPO implements Serializable {
     private String address;
     private Date startDate;
     private Date endDate;
+    private float amount;
     private String remark;
     private Integer status;
     private Date createTime;

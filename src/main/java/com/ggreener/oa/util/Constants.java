@@ -102,4 +102,7 @@ public class Constants {
 
     //其它需求
     public static final int REQUIRE_OTHER_FLAG = 169;
+
+    //项目类型
+    public static final int PROJECT_TYPE_FLAG = 200;
 }
