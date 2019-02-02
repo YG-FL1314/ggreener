@@ -4,9 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.ggreener.oa.exception.SessionException;
-import com.ggreener.oa.po.InvoicePO;
+import com.ggreener.oa.po.BusinessDataPO;
+import com.ggreener.oa.service.BusinessDataService;
 import com.ggreener.oa.service.CompanyService;
-import com.ggreener.oa.service.InvoiceService;
 import com.ggreener.oa.service.UserService;
 import com.ggreener.oa.util.Constants;
 import com.ggreener.oa.vo.ResponseVO;
@@ -25,48 +25,48 @@ import java.util.Date;
  *
  */
 @RestController
-@RequestMapping(value = {"invoice"})
-public class InvoiceController {
+@RequestMapping(value = {"business"})
+public class BusinessDataController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(InvoiceController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BusinessDataController.class);
 
     @Autowired
     private UserService userService;
 
     @Autowired
-    private InvoiceService invoiceService;
+    private BusinessDataService businessDataService;
 
     @Autowired
     private CompanyService companyService;
 
     @PostMapping(value = "add", consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE },
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    Object addInvoice(@RequestBody JSONObject json, HttpServletRequest request) {
+    Object addBusinessData(@RequestBody JSONObject json, HttpServletRequest request) {
         ResponseVO resp = new ResponseVO();
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
-                InvoicePO invoice = JSON.parseObject(json.toString(), new TypeReference<InvoicePO>(){});
+                BusinessDataPO businessDataPO = JSON.parseObject(json.toString(), new TypeReference<BusinessDataPO>(){});
                 Date date = new Date();
-                invoice.setCreateTime(date);
-                invoice.setUpdateTime(date);
-                invoice.setCreateUser(user.getUuid());
-                invoice.setUpdateUser(user.getUuid());
-                companyService.get(invoice.getCompanyId());
-                invoice.setStatus(Constants.STATUS_NORMAL);
-                resp.setObj(invoiceService.addInvoice(invoice));
+                businessDataPO.setCreateTime(date);
+                businessDataPO.setUpdateTime(date);
+                businessDataPO.setCreateUser(user.getUuid());
+                businessDataPO.setUpdateUser(user.getUuid());
+                companyService.get(businessDataPO.getCompanyId());
+                businessDataPO.setStatus(Constants.STATUS_NORMAL);
+                resp.setObj(businessDataService.addBusinessData(businessDataPO));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
-                resp.setMessage("添加发票信息成功！");
+                resp.setMessage("添加经营信息成功！");
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
             }
         } catch (SessionException e) {
-            LOGGER.error("InvoiceController==>addInvoice:登录过期,", e);
+            LOGGER.error("BusinessDataController==>addBusinessData:登录过期,", e);
             resp.setStatus(Constants.RESPONSE_REDIRECT);
             resp.setMessage("./login.html");
         } catch (Exception e) {
-            LOGGER.error("InvoiceController==>addInvoice:添加发票信息失败,", e);
+            LOGGER.error("BusinessDataController==>addBusinessData:添加经营信息失败,", e);
             resp.setStatus(Constants.RESPONSE_FAIL);
             resp.setMessage(e.getMessage());
         }
@@ -74,28 +74,27 @@ public class InvoiceController {
     }
 
     @PutMapping(value = "update", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    Object updateInvoice(@RequestBody JSONObject json, HttpServletRequest request) {
+    Object updateBusinessData(@RequestBody JSONObject json, HttpServletRequest request) {
         ResponseVO resp = new ResponseVO();
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
-                InvoicePO invoice = JSON.parseObject(json.toString(), new TypeReference<InvoicePO>(){});
-                invoice.setUpdateTime(new Date());
-                invoice.setUpdateUser(user.getUuid());
-                invoiceService.getInvoice(invoice.getId());
-                resp.setObj(invoiceService.updateInvoice(invoice));
+                BusinessDataPO businessDataPO = JSON.parseObject(json.toString(), new TypeReference<BusinessDataPO>(){});
+                businessDataPO.setUpdateTime(new Date());
+                businessDataPO.setUpdateUser(user.getUuid());
+                resp.setObj(businessDataService.updateBusinessData(businessDataPO));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
-                resp.setMessage("更新发票信息成功！");
+                resp.setMessage("更新经营信息成功！");
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
             }
         } catch (SessionException e) {
-            LOGGER.error("InvoiceController==>updateInvoice:登录过期,", e);
+            LOGGER.error("BusinessDataController==>updateBusinessData:登录过期,", e);
             resp.setStatus(Constants.RESPONSE_REDIRECT);
             resp.setMessage("./login.html");
         } catch (Exception e) {
-            LOGGER.error("InvoiceController==>updateInvoice:更新发票信息失败,", e);
+            LOGGER.error("BusinessDataController==>updateBusinessData:更新经营信息失败,", e);
             resp.setStatus(Constants.RESPONSE_FAIL);
             resp.setMessage(e.getMessage());
         }
@@ -103,24 +102,24 @@ public class InvoiceController {
     }
 
     @DeleteMapping(value = "delete", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    Object deleteInvoice(HttpServletRequest request, @RequestParam(value = "id", required = true) Long id) {
+    Object deleteBusinessData(HttpServletRequest request, @RequestParam(value = "id", required = true) Long id) {
         ResponseVO resp = new ResponseVO();
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
-                invoiceService.deleteInvoice(id, user.getUuid());
+                businessDataService.deleteBusinessData(id, user.getUuid());
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
-                resp.setMessage("删除发票信息成功！");
+                resp.setMessage("删除经营信息成功！");
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
             }
         } catch (SessionException e) {
-            LOGGER.error("InvoiceController==>deleteInvoice:登录过期,", e);
+            LOGGER.error("BusinessDataController==>deleteBusinessData:登录过期,", e);
             resp.setStatus(Constants.RESPONSE_REDIRECT);
             resp.setMessage("./login.html");
         } catch (Exception e) {
-            LOGGER.error("InvoiceController==>deleteInvoice:删除发票信息失败,", e);
+            LOGGER.error("BusinessDataController==>deleteBusinessData:删除经营信息失败,", e);
             resp.setStatus(Constants.RESPONSE_FAIL);
             resp.setMessage(e.getMessage());
         }
@@ -128,23 +127,23 @@ public class InvoiceController {
     }
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    Object listInvoices(HttpServletRequest request,@RequestParam(value = "companyId", required = true) Long companyId) {
+    Object listBusinessDatas(HttpServletRequest request,@RequestParam(value = "companyId", required = true) Long companyId) {
         ResponseVO resp = new ResponseVO();
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
-                resp.setObj(invoiceService.getInvoiceByCompanyId(companyId));
+                resp.setObj(businessDataService.listBusinessDatas(companyId));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
             } else {
                 resp.setStatus(Constants.RESPONSE_REDIRECT);
                 resp.setMessage("./login.html");
             }
         } catch (SessionException e) {
-            LOGGER.error("InvoiceController==>listInvoices:登录过期,", e);
+            LOGGER.error("BusinessDataController==>listBusinessDatas:登录过期,", e);
             resp.setStatus(Constants.RESPONSE_REDIRECT);
             resp.setMessage("./login.html");
         } catch (Exception e) {
-            LOGGER.error("InvoiceController==>listInvoices:获取发票信息列表失败！,", e);
+            LOGGER.error("BusinessDataController==>listBusinessDatas:获取经营信息列表失败！,", e);
             resp.setStatus(Constants.RESPONSE_FAIL);
             resp.setMessage(e.getMessage());
         }

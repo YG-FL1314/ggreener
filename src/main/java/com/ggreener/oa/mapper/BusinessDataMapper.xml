@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ggreener.oa.mapper.BusinessDataMapper">
+    <resultMap id="BusinessDataPO" type="com.ggreener.oa.po.BusinessDataPO">
+        <result column="id" jdbcType="BIGINT" property="id" />
+        <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+        <result column="year" jdbcType="VARCHAR" property="year"/>
+        <result column="total_asset" jdbcType="FLOAT" property="totalAsset"/>
+        <result column="net_asset" jdbcType="FLOAT" property="netAsset"/>
+        <result column="revenue" jdbcType="FLOAT" property="revenue"/>
+        <result column="profit" jdbcType="FLOAT" property="profit"/>
+        <result column="debt_ratio" jdbcType="VARCHAR" property="debtRatio"/>
+        <result column="contract_amount" jdbcType="FLOAT" property="contractAmount"/>
+        <result column="invested_amount" jdbcType="FLOAT" property="investedAmount"/>
+        <result column="number" jdbcType="BIGINT" property="number"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO business_data (`company_id`, `year`, `total_asset`, `net_asset`,`revenue`,
+         `profit`, `debt_ratio`, `contract_amount`, `invested_amount`, `number`, `status`,
+         `create_time`, `create_user`, `update_time`, `update_user`)
+        VALUES(#{companyId, jdbcType=BIGINT}, #{year, jdbcType=VARCHAR}, #{totalAsset, jdbcType=FLOAT},
+         #{netAsset, jdbcType=FLOAT}, #{revenue, jdbcType=FLOAT}, #{profit, jdbcType=FLOAT}, #{debtRatio, jdbcType=VARCHAR},
+         #{contractAmount, jdbcType=FLOAT},  #{investedAmount, jdbcType=FLOAT}, #{number, jdbcType=BIGINT}, #{status, jdbcType=INTEGER},
+         #{createTime, jdbcType=TIMESTAMP},#{createUser, jdbcType=VARCHAR}, #{updateTime, jdbcType=TIMESTAMP}, #{updateUser, jdbcType=VARCHAR})
+    </insert>
+
+    <select id="selectByCompanyId" resultMap="BusinessDataPO">
+        SELECT id, `company_id`, `year`, `total_asset`, `net_asset`,`revenue`, `profit`, `debt_ratio`, `contract_amount`,
+         `invested_amount`, `number`, `status`, `create_time`, `create_user`, `update_time`, `update_user`
+        FROM business_data
+        WHERE company_id = #{companyId} AND status = 1 ORDER BY year DESC
+    </select>
+
+    <update id="update">
+        UPDATE business_data
+        <trim prefix="set" suffixOverrides=",">
+            <if test="year!=null">
+                year = #{year},
+            </if>
+            <if test="totalAsset!=null">
+                total_asset = #{totalAsset},
+            </if>
+            <if test="netAsset!=null">
+                net_asset = #{netAsset},
+            </if>
+            <if test="revenue!=null">
+                revenue = #{revenue},
+            </if>
+            <if test="profit!=null">
+                profit = #{profit},
+            </if>
+            <if test="debtRatio!=null">
+                debt_ratio = #{debtRatio},
+            </if>
+            <if test="contractAmount!=null">
+                contract_amount = #{contractAmount},
+            </if>
+            <if test="investedAmount!=null">
+                invested_amount = #{investedAmount},
+            </if>
+            <if test="number!=null">
+                number = #{number},
+            </if>
+            <if test="updateTime!=null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateUser!=null">
+                update_user = #{updateUser},
+            </if>
+        </trim>
+        WHERE id = #{id} AND status = 1
+    </update>
+
+    <update id="delete">
+        UPDATE business_data
+        SET status = 0, update_user = #{updateUser}, update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+
+</mapper>

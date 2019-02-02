@@ -304,9 +304,11 @@ public class CompanyService {
             if (company.getCompanyType() != null) {
                 tags.add(company.getCompanyType());
             }
-            //删除除了会员关系的company_tag相关信息
-            companyTagsMapper.delete(companyPO.getId(), new Long(Constants.MEMBER_FLAG));
-            companyTagsMapper.batchInsert(company.getId(), tags, new Date());
+            if (tags.size() > 0) {
+                //删除除了会员关系的company_tag相关信息
+                companyTagsMapper.delete(companyPO.getId(), new Long(Constants.MEMBER_FLAG));
+                companyTagsMapper.batchInsert(company.getId(), tags, new Date());
+            }
         }
         return company;
     }

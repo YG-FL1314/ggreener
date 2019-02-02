@@ -38,8 +38,8 @@
         INSERT INTO company (`name`, `established_time`, `registered_capital`, `shares_code`,`patents`, `utility_patents`,
          `softwares`, `office_area`, `staff_number`, `technicians`, `products`, `telephone`, `fax`, `website`, `address`, `status`,
          `create_time`, `create_user`, `update_time`, `update_user`)
-        VALUES(#{name}, #{establishedTime}, #{registeredCapital}, #{sharesCode}, #{patents}, #{utilityPatents}, #{softwares}, #{officeArea}, #{staffNumber},
-        #{technicians}, #{products}, #{telephone}, #{fax}, #{website}, #{address}, #{status}, #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
+        VALUES(#{name, jdbcType=VARCHAR}, #{establishedTime}, #{registeredCapital}, #{sharesCode}, #{patents}, #{utilityPatents}, #{softwares}, #{officeArea}, #{staffNumber},
+        #{technicians}, #{products, jdbcType=VARCHAR}, #{telephone, jdbcType=VARCHAR}, #{fax, jdbcType=VARCHAR}, #{website, jdbcType=VARCHAR}, #{address, jdbcType=VARCHAR}, #{status}, #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
     </insert>
 
     <select id="selectByCompanyId" resultMap="CompanyPO">
