@@ -70,78 +70,79 @@ public class CompanyService {
                  companyIds.add(v);
             });
         }
-
-        List<CompanyOverviewPO> companies = companyMapper.selectByIds(name, companyIds, start, limit);
-        count = companyMapper.countByIds(name, companyIds);
-        Map<Long, List<TagDetailPO>> map = companyTagsMapper.listByCompanyIds(companyIds).stream()
-                .collect(Collectors.groupingBy(TagDetailPO::getCompanyId));
-        for (CompanyOverviewPO companyOverview : companies) {
-            CompanyListVO company = new CompanyListVO();
-            company.setCompanyId(companyOverview.getId());
-            company.setName(companyOverview.getName());
-            company.setMemberCode(companyOverview.getMemberCode());
-            company.setMember(companyOverview.getMemberName());
-            company.setCreateTime(companyOverview.getEstablishedTime());
-            company.setRegister(companyOverview.getRegisteredCapital());
-            if (map.containsKey(company.getCompanyId())) {
-                List<TagDetailPO> tagDetails = map.get(company.getCompanyId());
-                if (tagDetails != null || tagDetails.size() > 0) {
-                    for (TagDetailPO tagDetail : tagDetails) {
-                        switch(tagDetail.getParentId().intValue()) {
-                            case Constants.CONCERN_LEVEL_FLAG:
-                                company.setAttention(tagDetail.getName());
-                                break;
-                            case Constants.AREA_FLAG:
-                                company.setRegion(tagDetail.getName());
-                                break;
-                            case Constants.COMPANY_TYPE_FLAG:
-                                company.setCompanyType(tagDetail.getName());
-                                break;
-                            case Constants.INDUSTRIES_FLAG:
-                                if (company.getIndustry() != null) {
-                                    StringBuilder sb = new StringBuilder(company.getIndustry());
-                                    sb.append(",");
-                                    sb.append(tagDetail.getName());
-                                    company.setIndustry(sb.toString());
-                                } else {
-                                    company.setIndustry(tagDetail.getName());
-                                }
-                                break;
-                            case Constants.BUSINESS_FLAG:
-                                if (company.getBusiness() != null) {
-                                    StringBuilder sb = new StringBuilder(company.getBusiness());
-                                    sb.append(",");
-                                    sb.append(tagDetail.getName());
-                                    company.setBusiness(sb.toString());
-                                } else {
-                                    company.setBusiness(tagDetail.getName());
-                                }
-                                break;
-                            case Constants.BUSINESS_AREA_FLAG:
-                                if (company.getBusinessArea() != null) {
-                                    StringBuilder sb = new StringBuilder(company.getBusinessArea());
-                                    sb.append(",");
-                                    sb.append(tagDetail.getName());
-                                    company.setBusinessArea(sb.toString());
-                                } else {
-                                    company.setBusinessArea(tagDetail.getName());
-                                }
-                                break;
-                            case Constants.ADVANTAGES_FLAG:
-                                if (company.getAdvantage() != null) {
-                                    StringBuilder sb = new StringBuilder(company.getAdvantage());
-                                    sb.append(",");
-                                    sb.append(tagDetail.getName());
-                                    company.setAdvantage(sb.toString());
-                                } else {
-                                    company.setAdvantage(tagDetail.getName());
-                                }
-                                break;
+        if (companyIds.size() > 0 ) {
+            List<CompanyOverviewPO> companies = companyMapper.selectByIds(name, companyIds, start, limit);
+            count = companyMapper.countByIds(name, companyIds);
+            Map<Long, List<TagDetailPO>> map = companyTagsMapper.listByCompanyIds(companyIds).stream()
+                    .collect(Collectors.groupingBy(TagDetailPO::getCompanyId));
+            for (CompanyOverviewPO companyOverview : companies) {
+                CompanyListVO company = new CompanyListVO();
+                company.setCompanyId(companyOverview.getId());
+                company.setName(companyOverview.getName());
+                company.setMemberCode(companyOverview.getMemberCode());
+                company.setMember(companyOverview.getMemberName());
+                company.setCreateTime(companyOverview.getEstablishedTime());
+                company.setRegister(companyOverview.getRegisteredCapital());
+                if (map.containsKey(company.getCompanyId())) {
+                    List<TagDetailPO> tagDetails = map.get(company.getCompanyId());
+                    if (tagDetails != null || tagDetails.size() > 0) {
+                        for (TagDetailPO tagDetail : tagDetails) {
+                            switch(tagDetail.getParentId().intValue()) {
+                                case Constants.CONCERN_LEVEL_FLAG:
+                                    company.setAttention(tagDetail.getName());
+                                    break;
+                                case Constants.AREA_FLAG:
+                                    company.setRegion(tagDetail.getName());
+                                    break;
+                                case Constants.COMPANY_TYPE_FLAG:
+                                    company.setCompanyType(tagDetail.getName());
+                                    break;
+                                case Constants.INDUSTRIES_FLAG:
+                                    if (company.getIndustry() != null) {
+                                        StringBuilder sb = new StringBuilder(company.getIndustry());
+                                        sb.append(",");
+                                        sb.append(tagDetail.getName());
+                                        company.setIndustry(sb.toString());
+                                    } else {
+                                        company.setIndustry(tagDetail.getName());
+                                    }
+                                    break;
+                                case Constants.BUSINESS_FLAG:
+                                    if (company.getBusiness() != null) {
+                                        StringBuilder sb = new StringBuilder(company.getBusiness());
+                                        sb.append(",");
+                                        sb.append(tagDetail.getName());
+                                        company.setBusiness(sb.toString());
+                                    } else {
+                                        company.setBusiness(tagDetail.getName());
+                                    }
+                                    break;
+                                case Constants.BUSINESS_AREA_FLAG:
+                                    if (company.getBusinessArea() != null) {
+                                        StringBuilder sb = new StringBuilder(company.getBusinessArea());
+                                        sb.append(",");
+                                        sb.append(tagDetail.getName());
+                                        company.setBusinessArea(sb.toString());
+                                    } else {
+                                        company.setBusinessArea(tagDetail.getName());
+                                    }
+                                    break;
+                                case Constants.ADVANTAGES_FLAG:
+                                    if (company.getAdvantage() != null) {
+                                        StringBuilder sb = new StringBuilder(company.getAdvantage());
+                                        sb.append(",");
+                                        sb.append(tagDetail.getName());
+                                        company.setAdvantage(sb.toString());
+                                    } else {
+                                        company.setAdvantage(tagDetail.getName());
+                                    }
+                                    break;
+                            }
                         }
                     }
                 }
+                list.add(company);
             }
-            list.add(company);
         }
         result.put("count", count);
         result.put("list", list);
