@@ -11,16 +11,14 @@ import com.ggreener.oa.po.TagDetailPO;
 import com.ggreener.oa.util.Constants;
 import com.ggreener.oa.vo.CompanyListVO;
 import com.ggreener.oa.vo.CompanyVO;
+import org.apache.tomcat.util.bcel.classfile.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -56,9 +54,13 @@ public class CompanyService {
     public JSONObject list(String name, List<Long> tags, Long start, Long limit) throws CompanyException {
         JSONObject result = new JSONObject();
         List<CompanyListVO> list = new ArrayList<>();
+        List<Long> parentIds = new ArrayList<>();
         Long count = 0L;
         List<Long> companyIds = new ArrayList<>();
-        if (null != tags) {
+        if (null != tags && tags.size() > 0) {
+            parentIds = addParentIds(tags);
+        }
+        if (null != tags && tags.size() > 0) {
             Map<Long, List<CompanyTagsPO>> mapIds = companyTagsMapper.selectCompanyByTags(tags).stream()
                     .collect(Collectors.groupingBy(CompanyTagsPO::getCompanyId));
             mapIds.forEach((k, v) -> {
@@ -70,6 +72,29 @@ public class CompanyService {
                  companyIds.add(v);
             });
         }
+
+        if (parentIds.size() > 0 && companyIds.size() > 0) {
+            int parentLength = parentIds.size();
+            Map<Long, List<TagDetailPO>> mapIds = companyTagsMapper.selectCompanyByParentIds(companyIds, parentIds).stream()
+                    .collect(Collectors.groupingBy(TagDetailPO::getCompanyId));
+            companyIds.clear();
+            mapIds.forEach((k, v) -> {
+                Set<Long> set = new HashSet<>();
+                for (TagDetailPO tmp : v) {
+                    if (tmp.getTagId() == Constants.NO_MEMBER_FLAG) {
+                        continue;
+                    }
+                    if (tmp.getTagId() == Constants.NO_HIGH_TECHNOLOGY_FLAG) {
+                        continue;
+                    }
+                    set.add(tmp.getParentId());
+                }
+                if (set.size() >= parentLength) {
+                    companyIds.add(k);
+                }
+            });
+        }
+
         if (companyIds.size() > 0 ) {
             List<CompanyOverviewPO> companies = companyMapper.selectByIds(name, companyIds, start, limit);
             count = companyMapper.countByIds(name, companyIds);
@@ -318,5 +343,30 @@ public class CompanyService {
         if (companyMapper.delete(companyId, userId, new Date()) <= 0) {
             throw new CompanyException("删除企业失败!");
         }
+    }
+
+    private List<Long> addParentIds(List<Long> tags) {
+        List<Long> result = new ArrayList<>();
+        if (tags.contains(new Long(Constants.MEMBER_FLAG))) {
+            result.add(new Long(Constants.MEMBER_FLAG));
+            tags.remove(new Long(Constants.MEMBER_FLAG));
+        }
+        if (tags.contains(new Long(Constants.CONCERN_LEVEL_FLAG))) {
+            result.add(new Long(Constants.CONCERN_LEVEL_FLAG));
+            tags.remove(new Long(Constants.CONCERN_LEVEL_FLAG));
+        }
+        if (tags.contains(new Long(Constants.ZOL_FLAG))) {
+            result.add(new Long(Constants.ZOL_FLAG));
+            tags.remove(new Long(Constants.ZOL_FLAG));
+        }
+        if (tags.contains(new Long(Constants.COMPANY_MARKET_FLAG))) {
+            result.add(new Long(Constants.COMPANY_MARKET_FLAG));
+            tags.remove(new Long(Constants.COMPANY_MARKET_FLAG));
+        }
+        if (tags.contains(new Long(Constants.HIGH_TECHNOLOGY_FLAG))) {
+            result.add(new Long(Constants.HIGH_TECHNOLOGY_FLAG));
+            tags.remove(new Long(Constants.HIGH_TECHNOLOGY_FLAG));
+        }
+        return result;
     }
 }

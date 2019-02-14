@@ -17,4 +17,5 @@ public interface CompanyTagsMapper {
     List<CompanyTagsPO> selectCompanyByTags(@Param("tags") List<Long> tags);
     List<TagDetailPO> listByCompanyIds(@Param("ids") List<Long> ids);
     Long deleteMember(@Param("companyId") Long companyId, @Param("memberId") Long memberId);
+    List<TagDetailPO> selectCompanyByParentIds(@Param("companyIds") List<Long> companyIds, @Param("parentIds") List<Long> parentIds);
 }

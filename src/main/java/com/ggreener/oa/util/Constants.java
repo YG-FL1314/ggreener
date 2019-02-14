@@ -105,4 +105,10 @@ public class Constants {
 
     //项目类型
     public static final int PROJECT_TYPE_FLAG = 200;
+
+    //非会员
+    public static final int NO_MEMBER_FLAG = 17;
+
+    //非高薪
+    public static final int NO_HIGH_TECHNOLOGY_FLAG = 91;
 }
