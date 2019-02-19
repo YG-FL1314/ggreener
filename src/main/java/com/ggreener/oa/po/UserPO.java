@@ -29,4 +29,5 @@ public class UserPO implements Serializable {
 
     private Date updateTime;
 
+    private String nickName;
 }

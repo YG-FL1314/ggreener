@@ -9,26 +9,27 @@
         <result column="status" jdbcType="INTEGER" property="status"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
     </resultMap>
 
     <select id="selectUserPOByName" resultMap="UserPO">
-        SELECT uuid, `name`, password, role, status, create_time, update_time
+        SELECT uuid, `name`, password, role, status, create_time, update_time, nick_name
         FROM `user`
         WHERE `name` = #{name} AND password = #{password} AND status = 1
     </select>
 
     <select id="selectUserPOByUuid" resultMap="UserPO">
-        SELECT uuid, `name`, password, role, status, create_time, update_time
+        SELECT uuid, `name`, password, role, status, create_time, update_time, nick_name
         FROM `user`
         WHERE uuid = #{uuid} AND status = 1
     </select>
 
     <insert id="insert">
-        insert into `user` (`uuid`, `name`, `password`, `role`, `status`, `create_time`, `update_time`)
+        insert into `user` (`uuid`, `name`, `password`, `role`, `status`, `create_time`, `update_time`, `nick_name`)
         values
         (#{uuid,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
          #{role,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
-          #{updateTime,jdbcType=TIMESTAMP})
+          #{updateTime,jdbcType=TIMESTAMP}, #{nickName,jdbcType=VARCHAR})
     </insert>
 
     <update id="update">
@@ -36,6 +37,9 @@
         <trim prefix="set" suffixOverrides=",">
            <if test="name!=null">
                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="nickName!=null">
+                nick_name = #{nickName,jdbcType=VARCHAR},
             </if>
             <if test="password!=null">
                 password = #{password,jdbcType=VARCHAR},
@@ -54,7 +58,7 @@
     </update>
 
     <select id="list" resultMap="UserPO">
-        SELECT uuid, `name`, password, role, status, create_time, update_time
+        SELECT uuid, `name`, password, role, status, create_time, update_time, nick_name
         FROM `user`
         WHERE role = #{role} AND status = 1
     </select>

@@ -48,7 +48,7 @@ public class UserService {
         return null;
     }
 
-    public void addUser(String name, String password) throws UserException {
+    public void addUser(String name, String password, String nickName) throws UserException {
         String pwd = PasswordUtil.Encrypt(name + password);
         UserPO user = userMapper.selectUserPOByName(name, pwd);
         if (null == user) {
@@ -56,6 +56,7 @@ public class UserService {
             String uuid = UuidUtil.generateUUID();
             Date date = new Date();
             userNew.setName(name);
+            userNew.setNickName(nickName);
             userNew.setRole(Constants.NORMAL_ROLE);
             userNew.setPassword(PasswordUtil.Encrypt( name  + password));
             userNew.setUuid(uuid);
@@ -81,6 +82,7 @@ public class UserService {
                 UserVO result = new UserVO();
                 result.setUuid(user.getUuid());
                 result.setName(user.getName());
+                result.setNickName(user.getNickName());
                 result.setRole(user.getRole());
                 return result;
             }
@@ -90,18 +92,20 @@ public class UserService {
         return null;
     }
 
-    public UserVO updateUserByUuid(String uuid, String name, String password) throws Exception {
+    public UserVO updateUserByUuid(String uuid, String name, String password, String nickName) throws Exception {
         String pwd = PasswordUtil.Encrypt(name + password);
         UserPO user = new UserPO();
         user.setName(name);
         user.setUuid(uuid);
         user.setPassword(pwd);
+        user.setNickName(nickName);
         user.setUpdateTime(new Date());
         if (userMapper.update(user) > 0) {
             UserPO userNew = userMapper.selectUserPOByUuid(uuid);
             UserVO result = new UserVO();
             result.setUuid(userNew.getUuid());
             result.setName(userNew.getName());
+            result.setNickName(userNew.getNickName());
             result.setRole(userNew.getRole());
             return result;
         } else {
@@ -119,6 +123,7 @@ public class UserService {
                 UserVO result = new UserVO();
                 result.setUuid(user.getUuid());
                 result.setName(user.getName());
+                result.setNickName(user.getNickName());
                 result.setRole(user.getRole());
                 return result;
             } else {
@@ -138,6 +143,7 @@ public class UserService {
                 UserVO result = new UserVO();
                 result.setUuid(user.getUuid());
                 result.setName(user.getName());
+                result.setNickName(user.getNickName());
                 result.setRole(user.getRole());
                 return result;
             } else {

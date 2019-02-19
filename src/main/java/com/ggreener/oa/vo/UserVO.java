@@ -15,6 +15,7 @@ public class UserVO implements Serializable {
     private String name;
     private Integer role;
     private Integer status;
+    private String nickName;
 
     public String getUuid() {
         return uuid;
@@ -46,5 +47,13 @@ public class UserVO implements Serializable {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 }

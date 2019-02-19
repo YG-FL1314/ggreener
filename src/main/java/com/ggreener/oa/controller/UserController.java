@@ -57,7 +57,8 @@ public class UserController {
             if (null != user && user.getRole() == Constants.ADMIN_ROLE) {
                 String name = json.getString("name");
                 String password = json.getString("password");
-                userService.addUser(name, password);
+                String nickName = json.getString("nickName");
+                userService.addUser(name, password, nickName);
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("新增用户成功！");
             } else {
@@ -94,8 +95,9 @@ public class UserController {
             if (null != user && user.getRole() == Constants.ADMIN_ROLE) {
                 String uuid = json.getString("uuid");
                 String name = json.getString("name");
+                String nickName = json.getString("nickName");
                 String password = json.getString("password");
-                resp.setObj(userService.updateUserByUuid(uuid, name, password));
+                resp.setObj(userService.updateUserByUuid(uuid, name, password, nickName));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("更新成功！");
             } else {
