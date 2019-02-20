@@ -25,7 +25,7 @@
     <select id="selectByCompanyId" resultMap="ChatPO">
         SELECT id, company_id, chat_type, chat_address, chat_time, customers, owners, content, status, create_time, create_user, update_time, update_user
         FROM chat_info
-        WHERE company_id = #{companyId} AND status = 1 ORDER BY update_time DESC
+        WHERE company_id = #{companyId} AND status = 1 ORDER BY chat_time DESC
     </select>
 
     <update id="delete">

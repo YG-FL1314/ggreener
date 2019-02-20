@@ -49,6 +49,6 @@
         </if>
         <if test="parentId==null">
             AND parent_id != 0
-        </if> ORDER BY id, `order`
+        </if> ORDER BY `order`
     </select>
 </mapper>

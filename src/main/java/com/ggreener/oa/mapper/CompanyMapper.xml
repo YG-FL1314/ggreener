@@ -23,6 +23,8 @@
         <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+        <result column="honor" jdbcType="VARCHAR" property="honor"/>
+        <result column="brief" jdbcType="VARCHAR" property="brief"/>
     </resultMap>
 
     <resultMap id="CompanyOverviewPO" type="com.ggreener.oa.po.CompanyOverviewPO">
@@ -37,14 +39,15 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO company (`name`, `established_time`, `registered_capital`, `shares_code`,`patents`, `utility_patents`,
          `softwares`, `office_area`, `staff_number`, `technicians`, `products`, `telephone`, `fax`, `website`, `address`, `status`,
-         `create_time`, `create_user`, `update_time`, `update_user`)
+         `create_time`, `create_user`, `update_time`, `update_user`, `honor`, `brief`)
         VALUES(#{name, jdbcType=VARCHAR}, #{establishedTime}, #{registeredCapital}, #{sharesCode}, #{patents}, #{utilityPatents}, #{softwares}, #{officeArea}, #{staffNumber},
-        #{technicians}, #{products, jdbcType=VARCHAR}, #{telephone, jdbcType=VARCHAR}, #{fax, jdbcType=VARCHAR}, #{website, jdbcType=VARCHAR}, #{address, jdbcType=VARCHAR}, #{status}, #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
+        #{technicians}, #{products, jdbcType=VARCHAR}, #{telephone, jdbcType=VARCHAR}, #{fax, jdbcType=VARCHAR}, #{website, jdbcType=VARCHAR}, #{address, jdbcType=VARCHAR}, #{status},
+         #{createTime}, #{createUser}, #{updateTime}, #{updateUser}, #{honor, jdbcType=VARCHAR}, #{brief, jdbcType=VARCHAR})
     </insert>
 
     <select id="selectByCompanyId" resultMap="CompanyPO">
         SELECT id, `name`, established_time, registered_capital, shares_code, patents, utility_patents, softwares, office_area, staff_number, technicians, products,
-        telephone, fax, website, address, status, create_time, create_user, update_time, update_user
+        telephone, fax, website, address, status, create_time, create_user, update_time, update_user, honor, brief
         FROM company
         WHERE id = #{companyId} and status = 1 LIMIT 1
     </select>
@@ -146,6 +149,12 @@
             </if>
             <if test="updateUser!=null">
                 update_user = #{updateUser,jdbcType=VARCHAR},
+            </if>
+            <if test="honor!=null">
+                honor = #{honor,jdbcType=VARCHAR},
+            </if>
+            <if test="brief!=null">
+                brief = #{brief,jdbcType=VARCHAR},
             </if>
         </trim>
         WHERE id = #{id}

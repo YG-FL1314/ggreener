@@ -21,6 +21,7 @@ public class ContactVO implements Serializable {
     private String qq;
     private String weixin;
     private String remark;
+    private Integer order;
 
     public Long getId() {
         return id;
@@ -100,5 +101,13 @@ public class ContactVO implements Serializable {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public Integer getOrder() {
+        return order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
     }
 }

@@ -75,6 +75,10 @@ public class CompanyVO implements Serializable {
     private String website;
     //地址
     private String address;
+    //企业荣誉
+    private String honor;
+    //企业简介
+    private String brief;
 
     public Long getId() {
         return id;
@@ -314,5 +318,21 @@ public class CompanyVO implements Serializable {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getHonor() {
+        return honor;
+    }
+
+    public void setHonor(String honor) {
+        this.honor = honor;
+    }
+
+    public String getBrief() {
+        return brief;
+    }
+
+    public void setBrief(String brief) {
+        this.brief = brief;
     }
 }

@@ -17,17 +17,19 @@
         <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+        <result column="order" jdbcType="INTEGER" property="order"/>
     </resultMap>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
-        INSERT INTO contacts (`company_id`, `name`, `telephone`, `phone`, `duty`,`mail`, `weixin`, `qq`, `remark`, `status`, `create_time`, `create_user`, `update_time`, `update_user`)
-        VALUES(#{companyId}, #{name}, #{telephone}, #{phone}, #{duty}, #{mail}, #{weixin}, #{qq}, #{remark}, #{status}, #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
+        INSERT INTO contacts (`company_id`, `name`, `telephone`, `phone`, `duty`,`mail`, `weixin`, `qq`, `remark`, `status`, `create_time`, `create_user`, `update_time`, `update_user`, `order`)
+        VALUES(#{companyId}, #{name}, #{telephone}, #{phone}, #{duty}, #{mail}, #{weixin}, #{qq}, #{remark}, #{status}, #{createTime}, #{createUser}, #{updateTime}, #{updateUser}, #{order})
     </insert>
 
     <select id="selectByCompanyId" resultMap="ContactPO">
-        SELECT c.`id`, c.`company_id`, c.`name`, c.`telephone`, c.phone, c.`duty`, c.`mail`, c.`weixin`, c.`qq`, c.remark, c.status, c.`create_time`, c.`create_user`, c.`update_time`, c.`update_user`
+        SELECT c.`id`, c.`company_id`, c.`name`, c.`telephone`, c.phone, c.`duty`, c.`mail`, c.`weixin`, c.`qq`, c.remark, c.status,
+        c.`create_time`, c.`create_user`, c.`update_time`, c.`update_user`, c.`order`
         FROM contacts c
-        WHERE c.company_id = #{companyId} and c.status = 1
+        WHERE c.company_id = #{companyId} and c.status = 1 ORDER BY c.`order`
     </select>
 
     <update id="delete">
@@ -69,12 +71,15 @@
             <if test="updateUser!=null">
                 update_user = #{updateUser},
             </if>
+            <if test="order!=null">
+                `order` = #{order},
+            </if>
         </trim>
         WHERE id = #{id} and status = 1
     </update>
 
     <select id="get" resultMap="ContactPO">
-        SELECT c.`id`, c.`company_id`, c.`name`, c.`telephone`, c.`duty`, c.`mail`, c.`weixin`, c.`qq`, c.remark, c.status, c.`create_time`, c.`create_user`, c.`update_time`, c.`update_user`
+        SELECT c.`id`, c.`company_id`, c.`name`, c.`telephone`, c.`duty`, c.`mail`, c.`weixin`, c.`qq`, c.remark, c.status, c.`create_time`, c.`create_user`, c.`update_time`, c.`update_user`, c.`order`
         FROM contacts c
         WHERE c.id = #{contactId} and c.status = 1 LIMIT 1
     </select>

@@ -28,4 +28,5 @@ public class ContactPO implements Serializable {
     private String createUser;
     private Date updateTime;
     private String updateUser;
+    private Integer order;
 }

@@ -34,4 +34,6 @@ public class CompanyPO implements Serializable {
     private String createUser;
     private Date updateTime;
     private String updateUser;
+    private String honor;
+    private String brief;
 }
