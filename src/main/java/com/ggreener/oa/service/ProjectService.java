@@ -79,11 +79,16 @@ public class ProjectService {
         List<ProjectPO> list = projectMapper.list();
         List<ProjectVO> result = new ArrayList<>();
         if (null != list && list.size() > 0) {
+            Map<Long, ProjectPO> projectAmountMap = projectMapper.selectProjectAmount().stream()
+                    .collect(Collectors.toMap(ProjectPO::getId, project -> project));
             Map<Long, TagPO> map = tagMapper.list(new Long(Constants.PROJECT_TYPE_FLAG)).stream()
                     .collect(Collectors.toMap(TagPO::getId, tag -> tag));
             for (ProjectPO projectPO : list) {
                 ProjectVO projectTmp = new ProjectVO();
                 BeanUtils.copyProperties(projectPO, projectTmp);
+                if (projectAmountMap.containsKey(projectTmp.getId())) {
+                    projectTmp.setAmount(projectAmountMap.get(projectTmp.getId()).getAmount());
+                }
                 if (map.containsKey(projectPO.getType())) {
                     projectTmp.setType(map.get(projectPO.getType()).getName());
                 } else {

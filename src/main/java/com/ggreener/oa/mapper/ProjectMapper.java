@@ -15,5 +15,6 @@ public interface ProjectMapper {
                 @Param("updateUser")String updateUser,
                 @Param("updateTime")Date updateTime);
     List<ProjectPO> list();
+    List<ProjectPO> selectProjectAmount();
     Long update(ProjectPO project);
 }

@@ -44,6 +44,10 @@
         WHERE status = 1 ORDER BY update_time DESC
     </select>
 
+    <select id="selectProjectAmount" resultMap="ProjectPO">
+        SELECT project_id AS id, SUM(amount) AS amount FROM project_company WHERE status = 1 GROUP BY project_id
+    </select>
+
     <update id="update">
         UPDATE project
         <trim prefix="set" suffixOverrides=",">
