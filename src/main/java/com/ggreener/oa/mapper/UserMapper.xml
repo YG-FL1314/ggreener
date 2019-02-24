@@ -60,6 +60,6 @@
     <select id="list" resultMap="UserPO">
         SELECT uuid, `name`, password, role, status, create_time, update_time, nick_name
         FROM `user`
-        WHERE role = #{role} AND status = 1
+        WHERE status = 1
     </select>
 </mapper>
