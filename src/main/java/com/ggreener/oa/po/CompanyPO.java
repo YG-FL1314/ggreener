@@ -16,12 +16,12 @@ public class CompanyPO implements Serializable {
     private Long id;
     private String name;
     private Date establishedTime;
-    private float registeredCapital;
+    private Float registeredCapital;
     private String sharesCode;
     private String patents;
     private String utilityPatents;
     private String softwares;
-    private float officeArea;
+    private Float officeArea;
     private Long staffNumber;
     private Long technicians;
     private String products;

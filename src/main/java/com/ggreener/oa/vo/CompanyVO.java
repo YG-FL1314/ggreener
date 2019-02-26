@@ -30,7 +30,7 @@ public class CompanyVO implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:MM", timezone = "GMT+8")
     private Date establishedTime;
     //注册资金
-    private float registeredCapital;
+    private Float registeredCapital;
     //出资方式
     private Long equity;
     //高薪技术
@@ -64,7 +64,7 @@ public class CompanyVO implements Serializable {
     //技术人员数
     private Long technicians;
     //办公面积
-    private float officeArea;
+    private Float officeArea;
     //自主研发技术产品
     private String products;
     //单位总机
@@ -136,11 +136,11 @@ public class CompanyVO implements Serializable {
         this.establishedTime = establishedTime;
     }
 
-    public float getRegisteredCapital() {
+    public Float getRegisteredCapital() {
         return registeredCapital;
     }
 
-    public void setRegisteredCapital(float registeredCapital) {
+    public void setRegisteredCapital(Float registeredCapital) {
         this.registeredCapital = registeredCapital;
     }
 
@@ -272,11 +272,11 @@ public class CompanyVO implements Serializable {
         this.technicians = technicians;
     }
 
-    public float getOfficeArea() {
+    public Float getOfficeArea() {
         return officeArea;
     }
 
-    public void setOfficeArea(float officeArea) {
+    public void setOfficeArea(Float officeArea) {
         this.officeArea = officeArea;
     }
 
