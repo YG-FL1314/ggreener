@@ -1,5 +1,6 @@
 package com.ggreener.oa.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ggreener.oa.exception.ChatException;
 import com.ggreener.oa.mapper.ChatMapper;
 import com.ggreener.oa.mapper.TagMapper;
@@ -69,9 +70,11 @@ public class ChatService {
         }
     }
 
-    public List<ChatVO> list(Long companyId) {
-        List<ChatPO> list = chatMapper.selectByCompanyId(companyId);
-        List<ChatVO> result = new ArrayList<>();
+    public JSONObject list(Long companyId, int start, int limit) {
+        JSONObject result = new JSONObject();
+        Long count = chatMapper.countByCompanyId(companyId);
+        List<ChatPO> list = chatMapper.selectByCompanyId(companyId, start, limit);
+        List<ChatVO> resultList = new ArrayList<>();
         List<TagPO> chatTypes = tagMapper.list(new Long(Constants.CHAT_TYPE_FLAG));
         Map<Long, String> map = new HashMap<>();
         for (TagPO chatType : chatTypes) {
@@ -82,9 +85,11 @@ public class ChatService {
                 ChatVO chatTmp = new ChatVO();
                 BeanUtils.copyProperties(chatPO, chatTmp);
                 chatTmp.setChatType(map.get(chatPO.getChatType()));
-                result.add(chatTmp);
+                resultList.add(chatTmp);
             }
         }
+        result.put("count", count);
+        result.put("list", resultList);
         return result;
     }
 }

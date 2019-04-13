@@ -9,6 +9,8 @@ import com.ggreener.oa.service.BusinessDataService;
 import com.ggreener.oa.service.CompanyService;
 import com.ggreener.oa.service.UserService;
 import com.ggreener.oa.util.Constants;
+import com.ggreener.oa.vo.BusinessDataVO;
+import com.ggreener.oa.vo.CompanyVO;
 import com.ggreener.oa.vo.ResponseVO;
 import com.ggreener.oa.vo.UserVO;
 import org.slf4j.Logger;
@@ -57,6 +59,9 @@ public class BusinessDataController {
                 resp.setObj(businessDataService.addBusinessData(businessDataPO));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("添加经营信息成功！");
+                CompanyVO company = new CompanyVO();
+                company.setId(businessDataPO.getCompanyId());
+                companyService.update(company, user.getUuid());
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
@@ -82,9 +87,13 @@ public class BusinessDataController {
                 BusinessDataPO businessDataPO = JSON.parseObject(json.toString(), new TypeReference<BusinessDataPO>(){});
                 businessDataPO.setUpdateTime(new Date());
                 businessDataPO.setUpdateUser(user.getUuid());
+                BusinessDataVO vo = businessDataService.getBussinessData(businessDataPO.getId());
                 resp.setObj(businessDataService.updateBusinessData(businessDataPO));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("更新经营信息成功！");
+                CompanyVO company = new CompanyVO();
+                company.setId(vo.getCompanyId());
+                companyService.update(company, user.getUuid());
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
@@ -107,9 +116,13 @@ public class BusinessDataController {
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
+                BusinessDataVO vo = businessDataService.getBussinessData(id);
                 businessDataService.deleteBusinessData(id, user.getUuid());
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("删除经营信息成功！");
+                CompanyVO company = new CompanyVO();
+                company.setId(vo.getCompanyId());
+                companyService.update(company, user.getUuid());
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");

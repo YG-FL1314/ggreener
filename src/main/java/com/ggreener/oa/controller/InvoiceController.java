@@ -9,6 +9,8 @@ import com.ggreener.oa.service.CompanyService;
 import com.ggreener.oa.service.InvoiceService;
 import com.ggreener.oa.service.UserService;
 import com.ggreener.oa.util.Constants;
+import com.ggreener.oa.vo.CompanyVO;
+import com.ggreener.oa.vo.InvoiceVO;
 import com.ggreener.oa.vo.ResponseVO;
 import com.ggreener.oa.vo.UserVO;
 import org.slf4j.Logger;
@@ -57,6 +59,9 @@ public class InvoiceController {
                 resp.setObj(invoiceService.addInvoice(invoice));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("添加发票信息成功！");
+                CompanyVO company = new CompanyVO();
+                company.setId(invoice.getCompanyId());
+                companyService.update(company, user.getUuid());
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
@@ -82,10 +87,13 @@ public class InvoiceController {
                 InvoicePO invoice = JSON.parseObject(json.toString(), new TypeReference<InvoicePO>(){});
                 invoice.setUpdateTime(new Date());
                 invoice.setUpdateUser(user.getUuid());
-                invoiceService.getInvoice(invoice.getId());
+                InvoiceVO vo = invoiceService.getInvoice(invoice.getId());
                 resp.setObj(invoiceService.updateInvoice(invoice));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("更新发票信息成功！");
+                CompanyVO company = new CompanyVO();
+                company.setId(vo.getCompanyId());
+                companyService.update(company, user.getUuid());
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
@@ -108,9 +116,13 @@ public class InvoiceController {
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
+                InvoiceVO vo = invoiceService.getInvoice(id);
                 invoiceService.deleteInvoice(id, user.getUuid());
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("删除发票信息成功！");
+                CompanyVO company = new CompanyVO();
+                company.setId(vo.getCompanyId());
+                companyService.update(company, user.getUuid());
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");

@@ -12,7 +12,7 @@ public class ContactVO implements Serializable {
     private static final long serialVersionUID = 6459473131021492848L;
 
     private Long id;
-    private Long contactId;
+    private Long companyId;
     private String name;
     private String telephone;
     private String phone;
@@ -31,12 +31,12 @@ public class ContactVO implements Serializable {
         this.id = id;
     }
 
-    public Long getContactId() {
-        return contactId;
+    public Long getCompanyId() {
+        return companyId;
     }
 
-    public void setContactId(Long contactId) {
-        this.contactId = contactId;
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
     }
 
     public String getName() {

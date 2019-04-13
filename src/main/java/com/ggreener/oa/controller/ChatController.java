@@ -9,6 +9,7 @@ import com.ggreener.oa.service.CompanyService;
 import com.ggreener.oa.service.ChatService;
 import com.ggreener.oa.service.UserService;
 import com.ggreener.oa.util.Constants;
+import com.ggreener.oa.vo.ChatVO;
 import com.ggreener.oa.vo.CompanyVO;
 import com.ggreener.oa.vo.ResponseVO;
 import com.ggreener.oa.vo.UserVO;
@@ -58,6 +59,9 @@ public class ChatController {
                 resp.setObj(chatService.addChat(chat));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("添加互动信息成功！");
+                CompanyVO company = new CompanyVO();
+                company.setId(chat.getCompanyId());
+                companyService.update(company, user.getUuid());
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
@@ -83,10 +87,13 @@ public class ChatController {
                 ChatPO chat = JSON.parseObject(json.toString(), new TypeReference<ChatPO>(){});
                 chat.setUpdateTime(new Date());
                 chat.setUpdateUser(user.getUuid());
-                chatService.getChat(chat.getId());
+                ChatVO chatSrc = chatService.getChat(chat.getId());
                 resp.setObj(chatService.updateChat(chat));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("更新互动信息成功！");
+                CompanyVO company = new CompanyVO();
+                company.setId(chatSrc.getCompanyId());
+                companyService.update(company, user.getUuid());
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
@@ -109,7 +116,11 @@ public class ChatController {
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
+                ChatVO chatSrc = chatService.getChat(id);
+                CompanyVO company = new CompanyVO();
+                company.setId(chatSrc.getCompanyId());
                 chatService.deleteChat(id, user.getUuid());
+                companyService.update(company, user.getUuid());
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("删除互动信息成功！");
             } else {
@@ -129,12 +140,14 @@ public class ChatController {
     }
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    Object listChats(HttpServletRequest request,@RequestParam(value = "companyId", required = true) Long companyId) {
+    Object listChats(HttpServletRequest request,@RequestParam(value = "companyId", required = true) Long companyId,
+                     @RequestParam(value = "start", required = true) Integer start,
+                     @RequestParam(value = "limit", required = true) Integer limit) {
         ResponseVO resp = new ResponseVO();
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
-                resp.setObj(chatService.list(companyId));
+                resp.setObj(chatService.list(companyId, start, limit));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
             } else {
                 resp.setStatus(Constants.RESPONSE_REDIRECT);

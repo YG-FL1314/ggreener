@@ -12,6 +12,7 @@ public interface BusinessDataMapper {
     Long insert(BusinessDataPO businessDataPO);
     List<BusinessDataPO> selectByCompanyId(Long companyId);
     Long update(BusinessDataPO businessDataPO);
+    BusinessDataPO get(Long businessDataId);
     Long delete(@Param("id") Long id,
                 @Param("updateUser") String updateUser,
                 @Param("updateTime") Date updateTime);

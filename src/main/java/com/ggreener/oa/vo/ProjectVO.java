@@ -17,6 +17,8 @@ public class ProjectVO implements Serializable {
     private Long id;
     private String name;
     private String type;
+    private Integer companyCount;
+    private Integer people;
     private String address;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date startDate;
@@ -47,6 +49,22 @@ public class ProjectVO implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Integer getCompanyCount() {
+        return companyCount;
+    }
+
+    public void setCompanyCount(Integer companyCount) {
+        this.companyCount = companyCount;
+    }
+
+    public Integer getPeople() {
+        return people;
+    }
+
+    public void setPeople(Integer people) {
+        this.people = people;
     }
 
     public String getAddress() {

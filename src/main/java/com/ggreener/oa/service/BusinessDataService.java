@@ -69,4 +69,14 @@ public class BusinessDataService {
         }
     }
 
+    public BusinessDataVO getBussinessData(Long businessDataId) throws BusinessDataException {
+        BusinessDataVO result = new BusinessDataVO();
+        BusinessDataPO chat = businessDataMapper.get(businessDataId);
+        if (null != chat) {
+            BeanUtils.copyProperties(chat, result);
+        } else {
+            throw new BusinessDataException("经营信息不存在！");
+        }
+        return result;
+    }
 }

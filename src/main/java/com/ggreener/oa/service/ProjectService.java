@@ -1,8 +1,10 @@
 package com.ggreener.oa.service;
 
 import com.ggreener.oa.exception.ProjectException;
+import com.ggreener.oa.mapper.ProjectCompanyMapper;
 import com.ggreener.oa.mapper.ProjectMapper;
 import com.ggreener.oa.mapper.TagMapper;
+import com.ggreener.oa.po.ProjectCompanyDetailPO;
 import com.ggreener.oa.po.ProjectPO;
 import com.ggreener.oa.po.TagPO;
 import com.ggreener.oa.util.Constants;
@@ -35,6 +37,10 @@ public class ProjectService {
     @Autowired
     private TagMapper tagMapper;
 
+    @Autowired
+    private ProjectCompanyMapper projectCompanyMapper;
+
+
     public ProjectVO addProject(ProjectPO project) throws ProjectException {
         if (projectMapper.insert(project) > 0) {
             ProjectVO result = new ProjectVO();
@@ -52,6 +58,18 @@ public class ProjectService {
             Map<Long, TagPO> map = tagMapper.list(new Long(Constants.PROJECT_TYPE_FLAG)).stream()
                     .collect(Collectors.toMap(TagPO::getId, tag -> tag));
             BeanUtils.copyProperties(project, result);
+            List<ProjectCompanyDetailPO> companies = projectCompanyMapper.selectByProjectId(projectId);
+            if (null != companies) {
+                result.setCompanyCount(companies.size());
+                int people = 0;
+                float amount = 0;
+                for (ProjectCompanyDetailPO company : companies) {
+                    people = people + company.getPeople().split(",").length;
+                    amount = amount + company.getAmount();
+                }
+                result.setPeople(people);
+                result.setAmount(amount);
+            }
             result.setType(map.get(project.getType()).getName());
         } else {
             throw new ProjectException("项目不存在！");

@@ -11,6 +11,8 @@ import com.ggreener.oa.service.ProjectCompanyService;
 import com.ggreener.oa.service.ProjectService;
 import com.ggreener.oa.service.UserService;
 import com.ggreener.oa.util.Constants;
+import com.ggreener.oa.vo.CompanyVO;
+import com.ggreener.oa.vo.ProjectCompanyVO;
 import com.ggreener.oa.vo.ResponseVO;
 import com.ggreener.oa.vo.UserVO;
 import org.slf4j.Logger;
@@ -63,6 +65,9 @@ public class ProjectCompanyController {
                 resp.setObj(projectCompanyService.addProjectCompany(projectCompany));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("添加项目关系成功！");
+                CompanyVO company = new CompanyVO();
+                company.setId(projectCompany.getCompanyId());
+                companyService.update(company, user.getUuid());
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
@@ -92,6 +97,9 @@ public class ProjectCompanyController {
                 resp.setObj(projectCompanyService.updateProjectCompany(projectCompany));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("更新项目关系成功！");
+                CompanyVO company = new CompanyVO();
+                company.setId(projectCompany.getCompanyId());
+                companyService.update(company, user.getUuid());
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
@@ -114,9 +122,13 @@ public class ProjectCompanyController {
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
+                ProjectCompanyVO vo = projectCompanyService.getProjectCompany(id);
                 projectCompanyService.deleteProjectCompany(id, user.getUuid());
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("删除项目关系成功！");
+                CompanyVO company = new CompanyVO();
+                company.setId(vo.getCompanyId());
+                companyService.update(company, user.getUuid());
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");

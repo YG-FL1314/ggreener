@@ -9,6 +9,7 @@ import com.ggreener.oa.service.CompanyService;
 import com.ggreener.oa.service.MemberService;
 import com.ggreener.oa.service.UserService;
 import com.ggreener.oa.util.Constants;
+import com.ggreener.oa.vo.CompanyVO;
 import com.ggreener.oa.vo.MemberVO;
 import com.ggreener.oa.vo.ResponseVO;
 import com.ggreener.oa.vo.UserVO;
@@ -62,6 +63,9 @@ public class MemberController {
                 resp.setObj(memberService.addMember(member));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("添加会员信息成功！");
+                CompanyVO company = new CompanyVO();
+                company.setId(member.getCompanyId());
+                companyService.update(company, user.getUuid());
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
@@ -97,6 +101,9 @@ public class MemberController {
                 }
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("更新会员信息成功！");
+                CompanyVO company = new CompanyVO();
+                company.setId(member.getCompanyId());
+                companyService.update(company, user.getUuid());
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");

@@ -55,6 +55,7 @@ public class ProjectCompanyService {
             for (ProjectCompanyDetailPO tmp : list) {
                 ProjectCompanyDetailVO vo = new ProjectCompanyDetailVO();
                 BeanUtils.copyProperties(tmp, vo);
+                vo.setId(tmp.getCompanyId());
                 result.add(vo);
             }
         }
@@ -91,5 +92,16 @@ public class ProjectCompanyService {
         if (projectCompanyMapper.delete(id, userId, new Date()) <= 0) {
             throw new ProjectCompanyException("删除项目关系失败！");
         }
+    }
+
+    public ProjectCompanyVO getProjectCompany(Long id) throws ProjectCompanyException {
+        ProjectCompanyVO result = new ProjectCompanyVO();
+        ProjectCompanyPO po = projectCompanyMapper.get(id);
+        if (null != po) {
+            BeanUtils.copyProperties(po, result);
+        } else {
+            throw new ProjectCompanyException("项目关系不存在！");
+        }
+        return result;
     }
 }

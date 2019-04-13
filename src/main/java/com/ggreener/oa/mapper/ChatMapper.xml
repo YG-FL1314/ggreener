@@ -25,7 +25,12 @@
     <select id="selectByCompanyId" resultMap="ChatPO">
         SELECT id, company_id, chat_type, chat_address, chat_time, customers, owners, content, status, create_time, create_user, update_time, update_user
         FROM chat_info
-        WHERE company_id = #{companyId} AND status = 1 ORDER BY chat_time DESC
+        WHERE company_id = #{companyId} AND status = 1 ORDER BY chat_time DESC LIMIT #{start}, #{limit}
+    </select>
+
+    <select id="countByCompanyId" resultType="java.lang.Long">
+        SELECT COUNT(1) FROM chat_info
+        WHERE company_id = #{companyId} AND status = 1
     </select>
 
     <update id="delete">
@@ -51,6 +56,9 @@
             </if>
             <if test="content!=null">
                 content = #{content},
+            </if>
+            <if test="chatType!=null">
+                chat_type = #{chatType},
             </if>
             <if test="updateTime!=null">
                 update_time = #{updateTime},

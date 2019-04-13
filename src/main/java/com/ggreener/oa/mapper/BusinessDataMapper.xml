@@ -37,6 +37,13 @@
         WHERE company_id = #{companyId} AND status = 1 ORDER BY year DESC
     </select>
 
+    <select id="get" resultMap="BusinessDataPO">
+        SELECT id, `company_id`, `year`, `total_asset`, `net_asset`,`revenue`, `profit`, `debt_ratio`, `contract_amount`,
+        `invested_amount`, `number`, `status`, `create_time`, `create_user`, `update_time`, `update_user`
+        FROM business_data
+        WHERE id = #{businessDataId} AND status = 1 LIMIT 1
+    </select>
+
     <update id="update">
         UPDATE business_data
         <trim prefix="set" suffixOverrides=",">

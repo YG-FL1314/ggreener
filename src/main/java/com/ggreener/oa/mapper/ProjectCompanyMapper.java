@@ -17,4 +17,5 @@ public interface ProjectCompanyMapper {
     Long delete(@Param("id") Long id, @Param("updateUser") String updateUser,
                 @Param("updateTime") Date updateTime);
     Long update(ProjectCompanyPO projectCompanyPO);
+    ProjectCompanyPO get(Long id);
 }

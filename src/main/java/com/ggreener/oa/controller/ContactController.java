@@ -9,6 +9,8 @@ import com.ggreener.oa.service.CompanyService;
 import com.ggreener.oa.service.ContactService;
 import com.ggreener.oa.service.UserService;
 import com.ggreener.oa.util.Constants;
+import com.ggreener.oa.vo.CompanyVO;
+import com.ggreener.oa.vo.ContactVO;
 import com.ggreener.oa.vo.ResponseVO;
 import com.ggreener.oa.vo.UserVO;
 import org.slf4j.Logger;
@@ -57,6 +59,9 @@ public class ContactController {
                 resp.setObj(contactService.addContact(contact));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("添加联系人成功！");
+                CompanyVO company = new CompanyVO();
+                company.setId(contact.getCompanyId());
+                companyService.update(company, user.getUuid());
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
@@ -82,10 +87,13 @@ public class ContactController {
                 ContactPO contact = JSON.parseObject(json.toString(), new TypeReference<ContactPO>(){});
                 contact.setUpdateTime(new Date());
                 contact.setUpdateUser(user.getUuid());
-                contactService.getContact(contact.getId());
+                ContactVO vo = contactService.getContact(contact.getId());
                 resp.setObj(contactService.updateContact(contact));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("更新联系人成功！");
+                CompanyVO company = new CompanyVO();
+                company.setId(vo.getCompanyId());
+                companyService.update(company, user.getUuid());
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
@@ -108,9 +116,13 @@ public class ContactController {
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
+                ContactVO vo = contactService.getContact(id);
                 contactService.deleteContact(id, user.getUuid());
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("删除联系人成功！");
+                CompanyVO company = new CompanyVO();
+                company.setId(vo.getCompanyId());
+                companyService.update(company, user.getUuid());
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");

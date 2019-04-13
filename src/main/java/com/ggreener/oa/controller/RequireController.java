@@ -60,6 +60,9 @@ public class RequireController {
                 requireService.addRequires(companyId, requires, user.getUuid());
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("添加需求信息成功！");
+                CompanyVO company = new CompanyVO();
+                company.setId(companyId);
+                companyService.update(company, user.getUuid());
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
@@ -85,6 +88,9 @@ public class RequireController {
                 requireService.deleteRequire(companyId);
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("删除需求信息成功！");
+                CompanyVO company = new CompanyVO();
+                company.setId(companyId);
+                companyService.update(company, user.getUuid());
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
@@ -142,6 +148,9 @@ public class RequireController {
                 requireService.updateRequires(companyId, requires, user.getUuid());
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("更新需求信息成功！");
+                CompanyVO company = new CompanyVO();
+                company.setId(companyId);
+                companyService.update(company, user.getUuid());
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
