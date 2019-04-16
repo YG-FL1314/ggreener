@@ -67,7 +67,7 @@ public class ProjectService {
                 for (ProjectCompanyDetailPO company : companies) {
                     people = people + company.getPeople().split(",").length;
                     BigDecimal tmp = new BigDecimal(company.getAmount());
-                    amount.add(tmp);
+                    amount = amount.add(tmp);
                 }
                 result.setPeople(people);
                 result.setAmount(amount.floatValue());
