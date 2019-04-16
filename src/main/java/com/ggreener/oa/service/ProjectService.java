@@ -15,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -62,13 +63,14 @@ public class ProjectService {
             if (null != companies) {
                 result.setCompanyCount(companies.size());
                 int people = 0;
-                float amount = 0;
+                BigDecimal amount = new BigDecimal(0);
                 for (ProjectCompanyDetailPO company : companies) {
                     people = people + company.getPeople().split(",").length;
-                    amount = amount + company.getAmount();
+                    BigDecimal tmp = new BigDecimal(company.getAmount());
+                    amount.add(tmp);
                 }
                 result.setPeople(people);
-                result.setAmount(amount);
+                result.setAmount(amount.floatValue());
             }
             result.setType(map.get(project.getType()).getName());
         } else {
