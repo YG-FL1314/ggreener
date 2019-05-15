@@ -289,6 +289,20 @@ public class CompanyService {
 
     public CompanyVO update(CompanyVO company, String userId) throws CompanyException {
         CompanyPO companyPO = new CompanyPO();
+        CompanyPO src = companyMapper.selectByCompanyId(company.getId());
+        if (company.getId() == null || src == null) {
+            throw new CompanyException("公司不存在！");
+        }
+        BeanUtils.copyProperties(company, companyPO);
+        companyPO.setEstablishedTime(src.getEstablishedTime());
+        companyPO.setUpdateTime(new Date());
+        companyPO.setUpdateUser(userId);
+        companyMapper.update(companyPO);
+        return company;
+    }
+
+    public CompanyVO updateCompanyBaseInfo(CompanyVO company, String userId) throws CompanyException {
+        CompanyPO companyPO = new CompanyPO();
         if (company.getId() == null ||
                 companyMapper.selectByCompanyId(company.getId()) == null) {
             throw new CompanyException("公司不存在！");

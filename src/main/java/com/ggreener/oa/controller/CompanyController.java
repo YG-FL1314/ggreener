@@ -148,7 +148,7 @@ public class CompanyController {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
                 CompanyVO company = JSON.parseObject(json.toString(), new TypeReference<CompanyVO>(){});
-                resp.setObj(companyService.update(company, user.getUuid()));
+                resp.setObj(companyService.updateCompanyBaseInfo(company, user.getUuid()));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
