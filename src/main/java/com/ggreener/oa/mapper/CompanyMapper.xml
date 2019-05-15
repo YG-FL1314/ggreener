@@ -34,6 +34,8 @@
         <result column="registered_capital" jdbcType="FLOAT" property="registeredCapital"/>
         <result column="member_name" jdbcType="VARCHAR" property="memberName"/>
         <result column="member_code" jdbcType="VARCHAR" property="memberCode"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
     </resultMap>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
@@ -53,7 +55,7 @@
     </select>
 
     <select id="selectByIds" resultMap="CompanyOverviewPO">
-        SELECT c.id, c.`name`, c.established_time, c.registered_capital, m.member_code, t.name AS member_name
+        SELECT c.id, c.`name`, c.established_time, c.registered_capital, c.update_time, c.update_user, m.member_code, t.name AS member_name
         FROM company c LEFT JOIN member m on c.id = m.company_id LEFT JOIN tag t on m.tag_id = t.id
         WHERE c.status = 1
         <if test="ids != null" >
@@ -102,9 +104,7 @@
             <if test="name!=null">
                 `name` = #{name,jdbcType=VARCHAR},
             </if>
-            <if test="establishedTime!=null">
-                established_time = #{establishedTime,jdbcType=TIMESTAMP},
-            </if>
+            established_time = #{establishedTime,jdbcType=TIMESTAMP},
             <if test="registeredCapital!=null">
                 `registered_capital`= #{registeredCapital,jdbcType=FLOAT},
             </if>

@@ -4,10 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.ggreener.oa.exception.CompanyException;
 import com.ggreener.oa.mapper.CompanyMapper;
 import com.ggreener.oa.mapper.CompanyTagsMapper;
-import com.ggreener.oa.po.CompanyOverviewPO;
-import com.ggreener.oa.po.CompanyPO;
-import com.ggreener.oa.po.CompanyTagsPO;
-import com.ggreener.oa.po.TagDetailPO;
+import com.ggreener.oa.mapper.UserMapper;
+import com.ggreener.oa.po.*;
 import com.ggreener.oa.util.Constants;
 import com.ggreener.oa.vo.CompanyListVO;
 import com.ggreener.oa.vo.CompanyVO;
@@ -35,6 +33,9 @@ public class CompanyService {
 
     @Autowired
     private CompanyTagsMapper companyTagsMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     public CompanyVO addCompany(CompanyPO company, List<Long> tags) throws CompanyException {
         CompanyVO companyVO = new CompanyVO();
@@ -100,6 +101,8 @@ public class CompanyService {
             count = companyMapper.countByIds(name, companyIds);
             Map<Long, List<TagDetailPO>> map = companyTagsMapper.listByCompanyIds(companyIds).stream()
                     .collect(Collectors.groupingBy(TagDetailPO::getCompanyId));
+            Map<String, UserPO> userMap = userMapper.list(Constants.NORMAL_ROLE).stream()
+                    .collect(Collectors.toMap(k -> k.getUuid(), v -> v));
             for (CompanyOverviewPO companyOverview : companies) {
                 CompanyListVO company = new CompanyListVO();
                 company.setCompanyId(companyOverview.getId());
@@ -108,6 +111,13 @@ public class CompanyService {
                 company.setMember(companyOverview.getMemberName());
                 company.setCreateTime(companyOverview.getEstablishedTime());
                 company.setRegister(companyOverview.getRegisteredCapital());
+                company.setUpdateTime(companyOverview.getUpdateTime());
+                if (userMap.containsKey(companyOverview.getUpdateUser())) {
+                    company.setUpdateUser(userMap.get(companyOverview.getUpdateUser()).getNickName());
+                } else {
+                    company.setUpdateUser("");
+                }
+
                 if (map.containsKey(company.getCompanyId())) {
                     List<TagDetailPO> tagDetails = map.get(company.getCompanyId());
                     if (tagDetails != null || tagDetails.size() > 0) {

@@ -19,4 +19,6 @@ public class CompanyOverviewPO implements Serializable {
     private float registeredCapital;
     private String memberName;
     private String memberCode;
+    private Date updateTime;
+    private String updateUser;
 }

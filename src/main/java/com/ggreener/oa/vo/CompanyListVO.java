@@ -28,6 +28,9 @@ public class CompanyListVO implements Serializable{
     private String business;
     private String businessArea;
     private String advantage;
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+    private Date updateTime;
+    private String updateUser;
 
     public Long getCompanyId() {
         return companyId;
@@ -132,4 +135,21 @@ public class CompanyListVO implements Serializable{
     public void setAdvantage(String advantage) {
         this.advantage = advantage;
     }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public String getUpdateUser() {
+        return updateUser;
+    }
+
+    public void setUpdateUser(String updateUser) {
+        this.updateUser = updateUser;
+    }
+
 }
