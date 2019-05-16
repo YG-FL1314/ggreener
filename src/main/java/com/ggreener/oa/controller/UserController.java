@@ -160,7 +160,7 @@ public class UserController {
             if (null != user && user.getRole() == Constants.ADMIN_ROLE) {
                 resp.setObj(userService.updateUserStatus(uuid, status));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
-                resp.setMessage("停用该用户成功！");
+                resp.setMessage("更新该用户状态成功！");
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");

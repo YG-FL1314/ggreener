@@ -21,7 +21,7 @@
     <select id="selectUserPOByUuid" resultMap="UserPO">
         SELECT uuid, `name`, password, role, status, create_time, update_time, nick_name
         FROM `user`
-        WHERE uuid = #{uuid} AND status = 1
+        WHERE uuid = #{uuid}
     </select>
 
     <insert id="insert">
@@ -60,6 +60,5 @@
     <select id="list" resultMap="UserPO">
         SELECT uuid, `name`, password, role, status, create_time, update_time, nick_name
         FROM `user`
-        WHERE status = 1
     </select>
 </mapper>
