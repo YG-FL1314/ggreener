@@ -22,7 +22,7 @@
     <select id="selectByCompanyId" resultMap="HolderPO">
         SELECT id, `company_id`, `name`, `amount`, `percent`,`status`, `create_time`, `create_user`, `update_time`, `update_user`
         FROM holder
-        WHERE company_id = #{companyId} AND status = 1 ORDER BY update_time DESC
+        WHERE company_id = #{companyId} AND status = 1 ORDER BY create_time DESC
     </select>
 
     <update id="delete">
