@@ -15,4 +15,6 @@ public interface RequireMapper {
                      @Param("userId") String userId, @Param("date") Date date);
     List<TagDetailPO> selectByCompanyId(Long companyId);
     Long delete(Long companyId);
+    List<RequirePO> listByRequireId(@Param("requireIds") List<Long> requireIds,
+                               @Param("companyIds") List<Long> companyIds);
 }

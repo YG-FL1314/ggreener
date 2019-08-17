@@ -39,4 +39,17 @@
         DELETE FROM requirements
         WHERE company_id = #{companyId}
     </delete>
+
+    <select id="listByRequireId" resultMap="RequirePO">
+        SELECT id, requirement_id, company_id, create_time, create_user
+        FROM requirements
+        where requirement_id in
+        <foreach collection="requireIds" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        and company_id in
+        <foreach collection="companyIds" item="companyId" open="(" close=")" separator=",">
+            #{companyId}
+        </foreach>
+    </select>
 </mapper>

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.ggreener.oa.exception.CompanyException;
 import com.ggreener.oa.mapper.CompanyMapper;
 import com.ggreener.oa.mapper.CompanyTagsMapper;
+import com.ggreener.oa.mapper.RequireMapper;
 import com.ggreener.oa.mapper.UserMapper;
 import com.ggreener.oa.po.*;
 import com.ggreener.oa.util.Constants;
@@ -37,6 +38,9 @@ public class CompanyService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private RequireMapper requireMapper;
+
     public CompanyVO addCompany(CompanyPO company, List<Long> tags) throws CompanyException {
         CompanyVO companyVO = new CompanyVO();
         if (companyMapper.insert(company) > 0) {
@@ -52,7 +56,7 @@ public class CompanyService {
         return companyVO;
     }
 
-    public JSONObject list(String name, List<Long> tags, Long start, Long limit) throws CompanyException {
+    public JSONObject list(String name, List<Long> tags, List<Long> requireIds, Long start, Long limit) throws CompanyException {
         JSONObject result = new JSONObject();
         List<CompanyListVO> list = new ArrayList<>();
         List<Long> parentIds = new ArrayList<>();
@@ -94,6 +98,19 @@ public class CompanyService {
                     companyIds.add(k);
                 }
             });
+        }
+
+        if (companyIds.size() > 0 && null != requireIds && requireIds.size() > 0) {
+            List<RequirePO> requires = requireMapper.listByRequireId(requireIds, companyIds);
+            companyIds.clear();
+            if (requires != null && requires.size() > 0) {
+                Map<Long, List<RequirePO>> map = requires.stream().collect(Collectors.groupingBy(RequirePO::getCompanyId));
+                map.forEach((k, v) -> {
+                    if (v.size() >= requireIds.size()) {
+                        companyIds.add(k);
+                    }
+                });
+            }
         }
 
         if (companyIds.size() > 0 ) {

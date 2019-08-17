@@ -90,6 +90,7 @@ public class CompanyController {
                 Long start = json.getLong("start");
                 Long limit = json.getLong("limit");
                 JSONArray tags = json.getJSONArray("tags");
+                JSONArray requireIds = json.getJSONArray("requires");
                 List<Long> tagList = null;
                 if (tags != null && tags.size() > 0) {
                     tagList = new ArrayList<>();
@@ -97,7 +98,14 @@ public class CompanyController {
                         tagList.add(tags.getLong(i));
                     }
                 }
-                resp.setObj(companyService.list(name, tagList, start, limit));
+                List<Long> requireList = null;
+                if (requireIds != null && requireIds.size() > 0) {
+                    requireList = new ArrayList<>();
+                    for (int i = 0; i < requireIds.size(); i++) {
+                        requireList.add(requireIds.getLong(i));
+                    }
+                }
+                resp.setObj(companyService.list(name, tagList, requireList, start, limit));
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
