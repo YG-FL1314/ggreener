@@ -51,6 +51,8 @@ public class CompanyVO implements Serializable {
     private List<Long> segmentMarket;
     //单位优势
     private List<Long> advantages;
+    //合作单位
+    private List<Long> cooperation;
     //技术产品
     private Long techProduct;
     //发明专利
@@ -334,5 +336,13 @@ public class CompanyVO implements Serializable {
 
     public void setBrief(String brief) {
         this.brief = brief;
+    }
+
+    public List<Long> getCooperation() {
+        return cooperation;
+    }
+
+    public void setCooperation(List<Long> cooperation) {
+        this.cooperation = cooperation;
     }
 }

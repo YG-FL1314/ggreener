@@ -291,6 +291,15 @@ public class CompanyService {
                         companyVO.setAdvantages(result);
                     }
                     break;
+                case Constants.COOPERATION_FLAG:
+                    if (companyVO.getCooperation() != null) {
+                        companyVO.getCooperation().add(tagDetail.getTagId());
+                    } else {
+                        List<Long> result = new ArrayList<>();
+                        result.add(tagDetail.getTagId());
+                        companyVO.setCooperation(result);
+                    }
+                    break;
             }
         }
         return companyVO;
@@ -407,6 +416,10 @@ public class CompanyService {
         if (tags.contains(new Long(Constants.HIGH_TECHNOLOGY_FLAG))) {
             result.add(new Long(Constants.HIGH_TECHNOLOGY_FLAG));
             tags.remove(new Long(Constants.HIGH_TECHNOLOGY_FLAG));
+        }
+        if (tags.contains(new Long(Constants.COOPERATION_FLAG))) {
+            result.add(new Long(Constants.COOPERATION_FLAG));
+            tags.remove(new Long(Constants.COOPERATION_FLAG));
         }
         return result;
     }

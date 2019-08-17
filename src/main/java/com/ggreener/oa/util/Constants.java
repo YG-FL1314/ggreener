@@ -106,6 +106,9 @@ public class Constants {
     //项目类型
     public static final int PROJECT_TYPE_FLAG = 200;
 
+    //合作单位
+    public static final int COOPERATION_FLAG = 220;
+
     //非会员
     public static final int NO_MEMBER_FLAG = 17;
 
