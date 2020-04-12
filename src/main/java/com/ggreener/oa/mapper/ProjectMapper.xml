@@ -41,7 +41,7 @@
         SELECT id, `name`, `type`, `start_date`, `end_date`,`address`, `remark`, `amount`,
         `status`, `create_time`, `create_user`, `update_time`, `update_user`
         FROM project
-        WHERE status = 1 ORDER BY update_time DESC
+        WHERE status = 1 ORDER BY start_date DESC
     </select>
 
     <select id="selectProjectAmount" resultMap="ProjectPO">

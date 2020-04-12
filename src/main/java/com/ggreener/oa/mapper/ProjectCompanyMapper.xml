@@ -49,7 +49,7 @@
          pc.status, p.name, p.type, p.start_date, p.end_date
         FROM project_company pc JOIN project p ON pc.project_id = p.id
         WHERE pc.company_id = #{companyId} AND pc.status = 1 AND p.status = 1
-        ORDER BY pc.update_time DESC
+        ORDER BY p.start_date DESC
     </select>
 
     <select id="selectByProjectId" resultMap="ProjectCompanyDetailPO">
