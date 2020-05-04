@@ -13,6 +13,7 @@ import com.ggreener.oa.vo.CompanyVO;
 import com.ggreener.oa.vo.MemberVO;
 import com.ggreener.oa.vo.ResponseVO;
 import com.ggreener.oa.vo.UserVO;
+import org.apache.tomcat.util.bcel.classfile.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,7 @@ public class MemberController {
                 member.setMemberCode(json.getString("memberCode"));
                 member.setJoiningTime(json.getDate("joiningTime"));
                 member.setValidityTime(json.getDate("validityTime"));
+                member.setStatus(getMemberStatus(member.getJoiningTime(), member.getValidityTime()));
                 resp.setObj(memberService.addMember(member));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
                 resp.setMessage("添加会员信息成功！");
@@ -91,6 +93,7 @@ public class MemberController {
                 MemberPO member = JSON.parseObject(json.toString(), new TypeReference<MemberPO>(){});
                 member.setUpdateTime(new Date());
                 member.setUpdateUser(user.getUuid());
+                member.setStatus(getMemberStatus(member.getJoiningTime(), member.getValidityTime()));
                 MemberVO vo = memberService.getMemberByCompanyId(member.getCompanyId());
                 if (vo!= null && vo.getId() != null) {
                     resp.setObj(memberService.updateMember(member));
@@ -142,5 +145,26 @@ public class MemberController {
             resp.setMessage(e.getMessage());
         }
         return resp;
+    }
+
+    private int getMemberStatus(Date startDate, Date endDate) {
+        Long currentTime = System.currentTimeMillis();
+        LOGGER.info("currentTime：{}, startDate: {}, endDate: {}, two month: {}",
+                currentTime, startDate.getTime(), endDate.getTime(), Constants.TWO_MONTH_TIME);
+        if (startDate == null || endDate == null) {
+            return Constants.DEFAULT;
+        }
+        if (currentTime >= startDate.getTime() && currentTime <= endDate.getTime() - Constants.TWO_MONTH_TIME) {
+            return Constants.EFFECTIVE;
+        }
+
+        if (currentTime >= startDate.getTime() && currentTime > endDate.getTime() - Constants.TWO_MONTH_TIME
+                && currentTime <= endDate.getTime()) {
+            return Constants.EFFECTIVE_SOON;
+        }
+        if (currentTime >= startDate.getTime() &&  currentTime > endDate.getTime()) {
+            return Constants.NOT_EFFECTIVE;
+        }
+        return Constants.DEFAULT;
     }
 }

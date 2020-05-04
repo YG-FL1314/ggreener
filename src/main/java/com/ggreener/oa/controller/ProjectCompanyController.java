@@ -148,15 +148,18 @@ public class ProjectCompanyController {
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     Object listProjects(HttpServletRequest request,
                         @RequestParam(value = "projectId", required = false) Long projectId,
-                        @RequestParam(value = "companyId", required = false) Long companyId) {
+                        @RequestParam(value = "companyId", required = false) Long companyId,
+                        @RequestParam(value = "projectType", required = false) Long projectType,
+                        @RequestParam(value = "startDate", required = false) Date startDate,
+                        @RequestParam(value = "endDate", required = false) Date endDate) {
         ResponseVO resp = new ResponseVO();
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
                 if (null != projectId) {
-                    resp.setObj(projectCompanyService.getListByProjectId(projectId));
+                    resp.setObj(projectCompanyService.getListByProjectId(projectId, projectType, startDate, endDate));
                 } else if (null != companyId){
-                    resp.setObj(projectCompanyService.getListByCompanyId(companyId));
+                    resp.setObj(projectCompanyService.getListByCompanyId(companyId, projectType, startDate, endDate));
                 }
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
             } else {

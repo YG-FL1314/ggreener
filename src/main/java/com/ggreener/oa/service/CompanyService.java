@@ -2,10 +2,7 @@ package com.ggreener.oa.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ggreener.oa.exception.CompanyException;
-import com.ggreener.oa.mapper.CompanyMapper;
-import com.ggreener.oa.mapper.CompanyTagsMapper;
-import com.ggreener.oa.mapper.RequireMapper;
-import com.ggreener.oa.mapper.UserMapper;
+import com.ggreener.oa.mapper.*;
 import com.ggreener.oa.po.*;
 import com.ggreener.oa.util.Constants;
 import com.ggreener.oa.vo.CompanyListVO;
@@ -16,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,6 +39,12 @@ public class CompanyService {
     @Autowired
     private RequireMapper requireMapper;
 
+    @Autowired
+    private MemberMapper memberMapper;
+
+    @Autowired
+    private ProjectCompanyMapper projectCompanyMapper;
+
     public CompanyVO addCompany(CompanyPO company, List<Long> tags) throws CompanyException {
         CompanyVO companyVO = new CompanyVO();
         if (companyMapper.insert(company) > 0) {
@@ -56,7 +60,8 @@ public class CompanyService {
         return companyVO;
     }
 
-    public JSONObject list(String name, List<Long> tags, List<Long> requireIds, Long start, Long limit) throws CompanyException {
+    public JSONObject list(String name, List<Long> tags, List<Long> requireIds, List<Long> memberStatus, Long cooperationInfo,
+                           Long start, Long limit) throws CompanyException {
         JSONObject result = new JSONObject();
         List<CompanyListVO> list = new ArrayList<>();
         List<Long> parentIds = new ArrayList<>();
@@ -68,14 +73,14 @@ public class CompanyService {
         if (null != tags && tags.size() > 0) {
             Map<Long, List<CompanyTagsPO>> mapIds = companyTagsMapper.selectCompanyByTags(tags).stream()
                     .collect(Collectors.groupingBy(CompanyTagsPO::getCompanyId));
-            mapIds.forEach((k, v) -> {
-                if (v.size() >= tags.size()) companyIds.add(k);
-            });
+            for (Long k : mapIds.keySet()) {
+                List<CompanyTagsPO> v = mapIds.get(k);
+                if (v.size() >= tags.size())
+                    companyIds.add(k);
+            }
         } else {
             List<Long> companyTmpIds = companyMapper.list(name);
-            companyTmpIds.forEach((v) -> {
-                 companyIds.add(v);
-            });
+            companyIds.addAll(companyTmpIds);
         }
 
         if (parentIds.size() > 0 && companyIds.size() > 0) {
@@ -83,7 +88,8 @@ public class CompanyService {
             Map<Long, List<TagDetailPO>> mapIds = companyTagsMapper.selectCompanyByParentIds(companyIds, parentIds).stream()
                     .collect(Collectors.groupingBy(TagDetailPO::getCompanyId));
             companyIds.clear();
-            mapIds.forEach((k, v) -> {
+            for (Long k : mapIds.keySet()) {
+                List<TagDetailPO> v = mapIds.get(k);
                 Set<Long> set = new HashSet<>();
                 for (TagDetailPO tmp : v) {
                     if (tmp.getTagId() == Constants.NO_MEMBER_FLAG) {
@@ -97,7 +103,26 @@ public class CompanyService {
                 if (set.size() >= parentLength) {
                     companyIds.add(k);
                 }
+            }
+        }
+
+        //filter by memberStatus
+        if (!CollectionUtils.isEmpty(memberStatus) && !CollectionUtils.isEmpty(companyIds)) {
+            List<MemberPO> members = memberMapper.listByCompanyIds(companyIds, memberStatus);
+            List<Long> newCompanyIds = new ArrayList<>();
+            members.forEach(member -> {
+                newCompanyIds.add(member.getCompanyId());
             });
+            companyIds = newCompanyIds;
+        }
+        //filter by cooperationInfo
+        if (cooperationInfo != null && cooperationInfo > 0 && !CollectionUtils.isEmpty(companyIds)) {
+            List<Long> newCompanyIds = projectCompanyMapper.selectByCompanyIds(companyIds);
+            if (Constants.HAVE_COOPERATION == cooperationInfo) {
+                companyIds = newCompanyIds;
+            } else {
+                companyIds.removeAll(companyIds);
+            }
         }
 
         if (companyIds.size() > 0 && null != requireIds && requireIds.size() > 0) {
@@ -105,11 +130,12 @@ public class CompanyService {
             companyIds.clear();
             if (requires != null && requires.size() > 0) {
                 Map<Long, List<RequirePO>> map = requires.stream().collect(Collectors.groupingBy(RequirePO::getCompanyId));
-                map.forEach((k, v) -> {
+                for (Long k : map.keySet()) {
+                    List<RequirePO> v = map.get(k);
                     if (v.size() >= requireIds.size()) {
                         companyIds.add(k);
                     }
-                });
+                }
             }
         }
 
@@ -300,6 +326,15 @@ public class CompanyService {
                         companyVO.setCooperation(result);
                     }
                     break;
+                case Constants.CREDIT_FLAG:
+                    companyVO.setCredit(tagDetail.getTagId());
+                    break;
+                case Constants.NORMAL_SERVICE_FLAG:
+                    companyVO.setNormalService(tagDetail.getTagId());
+                    break;
+                case Constants.ABUTMENT_FLAG:
+                    companyVO.setAbutment(tagDetail.getTagId());
+                    break;
             }
         }
         return companyVO;
@@ -327,69 +362,22 @@ public class CompanyService {
         return company;
     }
 
-    public CompanyVO updateCompanyBaseInfo(CompanyVO company, String userId) throws CompanyException {
-        CompanyPO companyPO = new CompanyPO();
-        if (company.getId() == null ||
-                companyMapper.selectByCompanyId(company.getId()) == null) {
+    public CompanyPO updateCompanyBaseInfo(CompanyPO companyPO, String userId) throws CompanyException {
+        if (companyPO.getId() == null ||
+                companyMapper.selectByCompanyId(companyPO.getId()) == null) {
             throw new CompanyException("公司不存在！");
         }
-        BeanUtils.copyProperties(company, companyPO);
         companyPO.setUpdateTime(new Date());
         companyPO.setUpdateUser(userId);
         if (companyMapper.update(companyPO) > 0) {
             List<Long> tags = new ArrayList<>();
-            if (company.getAttention() != null) {
-                tags.add(company.getAttention());
-            }
-            if (company.getRegion() != null) {
-                tags.add(company.getRegion());
-            }
-            if (company.getZol() != null) {
-                tags.add(company.getZol());
-            }
-            if (company.getUnitProperty() != null) {
-                tags.add(company.getUnitProperty());
-            }
-            if (company.getEquity() != null) {
-                tags.add(company.getEquity());
-            }
-            if (company.getHighTechs() != null) {
-                tags.addAll(company.getHighTechs());
-            }
-            if (company.getCompanyMarket() != null) {
-                tags.add(company.getCompanyMarket());
-            }
-            if (company.getIndustries() != null) {
-                tags.addAll(company.getIndustries());
-            }
-            if (company.getBusiness() != null) {
-                tags.addAll(company.getBusiness());
-            }
-            if (company.getBusinessArea() != null) {
-                tags.addAll(company.getBusinessArea());
-            }
-            if (company.getSegmentMarket() != null) {
-                tags.addAll(company.getSegmentMarket());
-            }
-            if (company.getAdvantages() != null) {
-                tags.addAll(company.getAdvantages());
-            }
-            if (company.getTechProduct() != null) {
-                tags.add(company.getTechProduct());
-            }
-            if (company.getCompanyType() != null) {
-                tags.add(company.getCompanyType());
-            }
-            if (company.getCooperation() != null) {
-                tags.addAll(company.getCooperation());
-            }
             if (tags.size() > 0) {
                 //删除除了会员关系的company_tag相关信息
                 companyTagsMapper.delete(companyPO.getId(), new Long(Constants.MEMBER_FLAG));
-                companyTagsMapper.batchInsert(company.getId(), tags, new Date());
+                companyTagsMapper.batchInsert(companyPO.getId(), tags, new Date());
             }
         }
-        return company;
+        return companyPO;
     }
 
     public void delete(Long companyId, String userId) throws CompanyException {

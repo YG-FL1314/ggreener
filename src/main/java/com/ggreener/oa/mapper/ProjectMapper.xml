@@ -9,7 +9,7 @@
         <result column="end_date" jdbcType="TIMESTAMP" property="endDate"/>
         <result column="address" jdbcType="VARCHAR" property="address"/>
         <result column="remark" jdbcType="VARCHAR" property="remark"/>
-        <result column="amount" jdbcType="FLOAT" property="amount"/>
+        <result column="amount" jdbcType="DECIMAL" property="amount"/>
         <result column="status" jdbcType="INTEGER" property="status"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
@@ -41,7 +41,17 @@
         SELECT id, `name`, `type`, `start_date`, `end_date`,`address`, `remark`, `amount`,
         `status`, `create_time`, `create_user`, `update_time`, `update_user`
         FROM project
-        WHERE status = 1 ORDER BY start_date DESC
+        WHERE status = 1
+        <if test="projectType!=null">
+            AND type = #{projectType}
+        </if>
+        <if test="startDate!=null">
+            AND start_date >= #{startDate}
+        </if>
+        <if test="endDate!=null">
+            AND end_date <= #{endDate}
+        </if>
+        ORDER BY start_date DESC
     </select>
 
     <select id="selectProjectAmount" resultMap="ProjectPO">

@@ -13,4 +13,7 @@ public interface MemberMapper {
     MemberPO selectByCompanyId(Long companyId);
     Long update(MemberPO member);
     MemberPO get(Long id);
+    List<MemberPO> list();
+    Long updateStatusById(@Param("status") Integer status, @Param("id") Long id);
+    List<MemberPO> listByCompanyIds(@Param("companyIds") List<Long> companyIds, @Param("status") List<Long> status);
 }

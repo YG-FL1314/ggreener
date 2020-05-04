@@ -1,5 +1,6 @@
 package com.ggreener.oa.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ggreener.oa.exception.ProjectCompanyException;
 import com.ggreener.oa.exception.ProjectException;
 import com.ggreener.oa.mapper.ProjectCompanyMapper;
@@ -16,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,33 +50,52 @@ public class ProjectCompanyService {
         }
     }
 
-    public List<ProjectCompanyDetailVO> getListByProjectId(Long projectId) throws ProjectCompanyException {
-        List<ProjectCompanyDetailVO> result = new ArrayList<>();
-        List<ProjectCompanyDetailPO> list = projectCompanyMapper.selectByProjectId(projectId);
+    public JSONObject getListByProjectId(Long projectId, Long projectType,
+                                         Date startDate, Date endDate) throws ProjectCompanyException {
+        JSONObject result = new JSONObject();
+        List<ProjectCompanyDetailVO> data = new ArrayList<>();
+        List<ProjectCompanyDetailPO> list = projectCompanyMapper.selectByProjectId(projectId, projectType,
+                startDate, endDate);
+        int count = 0;
+        BigDecimal money = new BigDecimal(0.00f);
         if (null != list) {
             for (ProjectCompanyDetailPO tmp : list) {
                 ProjectCompanyDetailVO vo = new ProjectCompanyDetailVO();
+                money = money.add(tmp.getAmount());
                 BeanUtils.copyProperties(tmp, vo);
                 vo.setId(tmp.getCompanyId());
-                result.add(vo);
+                data.add(vo);
             }
+            count = list.size();
         }
+        result.put("list", data);
+        result.put("count", count);
+        result.put("money", money.floatValue());
         return result;
     }
 
-    public List<ProjectCompanyDetailVO> getListByCompanyId(Long companyId) throws ProjectCompanyException {
-        List<ProjectCompanyDetailVO> result = new ArrayList<>();
-        List<ProjectCompanyDetailPO> list = projectCompanyMapper.selectByCompanyId(companyId);
+    public JSONObject getListByCompanyId(Long companyId, Long projectType,
+                                         Date startDate, Date endDate) throws ProjectCompanyException {
+        JSONObject result = new JSONObject();
+        List<ProjectCompanyDetailVO> data = new ArrayList<>();
+        List<ProjectCompanyDetailPO> list = projectCompanyMapper.selectByCompanyId(companyId, projectType, startDate, endDate);
+        int count = 0;
+        BigDecimal money = new BigDecimal(0.00);
         if (null != list) {
             Map<Long, TagPO> map = tagMapper.list(new Long(Constants.PROJECT_TYPE_FLAG)).stream()
                     .collect(Collectors.toMap(TagPO::getId, tag -> tag));
             for (ProjectCompanyDetailPO tmp : list) {
                 ProjectCompanyDetailVO vo = new ProjectCompanyDetailVO();
+                money = money.add(tmp.getAmount());
                 BeanUtils.copyProperties(tmp, vo);
                 vo.setProjectType(map.get(tmp.getProjectType()).getName());
-                result.add(vo);
+                data.add(vo);
             }
+            count = list.size();
         }
+        result.put("list", data);
+        result.put("count", count);
+        result.put("money", money.floatValue());
         return result;
     }
 

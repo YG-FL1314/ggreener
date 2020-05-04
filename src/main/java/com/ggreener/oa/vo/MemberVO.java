@@ -2,6 +2,8 @@ package com.ggreener.oa.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -11,6 +13,8 @@ import java.util.Date;
  * <p>
  * XXX
  */
+@Getter
+@Setter
 public class MemberVO implements Serializable {
     private static final long serialVersionUID = 2003885731988953062L;
     private Long id;
@@ -21,52 +25,5 @@ public class MemberVO implements Serializable {
     private Date joiningTime;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date validityTime;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(Long companyId) {
-        this.companyId = companyId;
-    }
-
-    public Long getTagId() {
-        return tagId;
-    }
-
-    public void setTagId(Long tagId) {
-        this.tagId = tagId;
-    }
-
-    public String getMemberCode() {
-        return memberCode;
-    }
-
-    public void setMemberCode(String memberCode) {
-        this.memberCode = memberCode;
-    }
-
-    public Date getJoiningTime() {
-        return joiningTime;
-    }
-
-    public void setJoiningTime(Date joiningTime) {
-        this.joiningTime = joiningTime;
-    }
-
-    public Date getValidityTime() {
-        return validityTime;
-    }
-
-    public void setValidityTime(Date validityTime) {
-        this.validityTime = validityTime;
-    }
+    private Integer status;
 }

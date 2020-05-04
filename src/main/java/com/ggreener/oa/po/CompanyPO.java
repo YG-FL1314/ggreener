@@ -18,12 +18,10 @@ public class CompanyPO implements Serializable {
     private Date establishedTime;
     private Float registeredCapital;
     private String sharesCode;
-    private String patents;
     private String utilityPatents;
+    private Long utilityPatentsTag;
     private String softwares;
-    private Float officeArea;
     private Long staffNumber;
-    private Long technicians;
     private String products;
     private String telephone;
     private String fax;
@@ -36,4 +34,8 @@ public class CompanyPO implements Serializable {
     private String updateUser;
     private String honor;
     private String brief;
+    private Long totalProjects;
+    private Float income;
+    private Float profit;
+    private Float totalAssets;
 }

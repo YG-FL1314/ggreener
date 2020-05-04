@@ -14,7 +14,9 @@ public interface ProjectMapper {
     Long delete(@Param("projectId")Long projectId,
                 @Param("updateUser")String updateUser,
                 @Param("updateTime")Date updateTime);
-    List<ProjectPO> list();
+    List<ProjectPO> list(@Param("projectType")Long projectType,
+                         @Param("startDate")Date startDate,
+                         @Param("endDate")Date endDate);
     List<ProjectPO> selectProjectAmount();
     Long update(ProjectPO project);
 }

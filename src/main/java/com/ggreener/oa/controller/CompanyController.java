@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -43,6 +44,7 @@ public class CompanyController {
     @PostMapping(value = "add", consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE},
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     Object addCompany(@RequestBody JSONObject json, HttpServletRequest request) {
+        LOGGER.info("add company request {}", json.toString());
         ResponseVO resp = new ResponseVO();
         try {
             UserVO user = userService.validateUser(request.getSession());
@@ -89,6 +91,8 @@ public class CompanyController {
                 String name = json.getString("name");
                 Long start = json.getLong("start");
                 Long limit = json.getLong("limit");
+                List<Long> memberStatus = JSONObject.parseArray(json.getString("memberStatus"), Long.class);
+                Long cooperationInfo = json.getLong("cooperationInfos");
                 JSONArray tags = json.getJSONArray("tags");
                 JSONArray requireIds = json.getJSONArray("requires");
                 List<Long> tagList = null;
@@ -105,7 +109,7 @@ public class CompanyController {
                         requireList.add(requireIds.getLong(i));
                     }
                 }
-                resp.setObj(companyService.list(name, tagList, requireList, start, limit));
+                resp.setObj(companyService.list(name, tagList, requireList, memberStatus, cooperationInfo, start, limit));
             } else {
                 resp.setStatus(Constants.RESPONSE_FAIL);
                 resp.setMessage("没有权限！");
@@ -151,11 +155,12 @@ public class CompanyController {
     @PutMapping(value = "update", consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE},
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     Object updateCompany(HttpServletRequest request, @RequestBody JSONObject json) {
+        LOGGER.info("update company request {}", json.toString());
         ResponseVO resp = new ResponseVO();
         try {
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
-                CompanyVO company = JSON.parseObject(json.toString(), new TypeReference<CompanyVO>(){});
+                CompanyPO company = JSON.parseObject(json.toString(), new TypeReference<CompanyPO>(){});
                 resp.setObj(companyService.updateCompanyBaseInfo(company, user.getUuid()));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
             } else {

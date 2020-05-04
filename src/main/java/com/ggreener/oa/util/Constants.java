@@ -114,4 +114,34 @@ public class Constants {
 
     //非高薪
     public static final int NO_HIGH_TECHNOLOGY_FLAG = 91;
+
+    //项目个数父标签
+    public static final int TOTAL_PROJECTS_FLAG = 603;
+
+    //收入父标签
+    public static final int INCOME_FLAG = 600;
+
+    //利润父标签
+    public static final int PROFIT_FLAG = 601;
+
+    //资产总额父标签
+    public static final int TOTAL_ASSETS_FLAG = 602;
+
+    //信用等级父标签
+    public static final int CREDIT_FLAG = 599;
+    //信用等级父标签
+    public static final int NORMAL_SERVICE_FLAG = 597;
+    //信用等级父标签
+    public static final int ABUTMENT_FLAG = 598;
+
+
+    public static final long TWO_MONTH_TIME = 2 * 30 * 24 * 60 * 60 * 1000L;
+
+    public static final int DEFAULT = 0;
+    public static final int EFFECTIVE = 1;
+    public static final int EFFECTIVE_SOON = 2;
+    public static final int NOT_EFFECTIVE = 4;
+
+    public static final long HAVE_COOPERATION = 1;
+    public static final int NO_HAVE_COOPERATION = 2;
 }

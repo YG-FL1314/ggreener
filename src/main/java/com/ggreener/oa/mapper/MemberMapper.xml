@@ -12,15 +12,37 @@
         <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
     </resultMap>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
-        INSERT INTO member (`company_id`, `tag_id`, `member_code`, `joining_time`,`validity_time`, `create_time`, `create_user`, `update_time`, `update_user`)
-        VALUES(#{companyId}, #{tagId}, #{memberCode}, #{joiningTime}, #{validityTime}, #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
+        INSERT INTO member (
+            `company_id`,
+            `tag_id`,
+            `member_code`,
+            `joining_time`,
+            `validity_time`,
+            `create_time`,
+            `create_user`,
+            `update_time`,
+            `update_user`,
+            `status`
+        ) VALUES (
+            #{companyId},
+            #{tagId},
+            #{memberCode},
+            #{joiningTime},
+            #{validityTime},
+            #{createTime},
+            #{createUser},
+            #{updateTime},
+            #{updateUser},
+            #{status}
+        )
     </insert>
 
     <select id="selectByCompanyId" resultMap="MemberPO">
-        SELECT id, company_id, tag_id, member_code, joining_time, validity_time, create_time, create_user, update_time, update_user
+        SELECT id, company_id, tag_id, member_code, joining_time, validity_time, create_time, create_user, update_time, update_user, status
         FROM member
         WHERE company_id = #{companyId} LIMIT 1
     </select>
@@ -46,14 +68,40 @@
             <if test="updateUser!=null">
                 update_user = #{updateUser,jdbcType=VARCHAR},
             </if>
+            <if test="status!=null">
+                status = #{status},
+            </if>
         </trim>
         WHERE company_id = #{companyId}
     </update>
 
     <select id="get" resultMap="MemberPO">
-        SELECT id, company_id, tag_id, member_code, joining_time, validity_time, create_time, create_user, update_time, update_user
+        SELECT id, company_id, tag_id, member_code, joining_time, validity_time, create_time, create_user, update_time, update_user, status
         FROM member
         WHERE c.id = #{id} LIMIT 1
     </select>
 
+    <select id="list" resultMap="MemberPO">
+        SELECT id, company_id, tag_id, member_code, joining_time, validity_time, create_time, create_user, update_time, update_user, status
+        FROM member
+        WHERE validity_time is not null and joining_time is not null;
+    </select>
+
+    <select id="listByCompanyIds" resultMap="MemberPO">
+        SELECT id, company_id, tag_id, member_code, joining_time, validity_time, create_time, create_user, update_time, update_user, status
+        FROM member
+        WHERE company_id IN
+        <foreach collection="companyIds" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        and status IN
+        <foreach collection="status" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+    <update id="updateStatusById">
+        UPDATE member set status = #{status}
+        WHERE id = #{id}
+    </update>
 </mapper>

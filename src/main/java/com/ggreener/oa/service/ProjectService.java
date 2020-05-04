@@ -1,5 +1,6 @@
 package com.ggreener.oa.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ggreener.oa.exception.ProjectException;
 import com.ggreener.oa.mapper.ProjectCompanyMapper;
 import com.ggreener.oa.mapper.ProjectMapper;
@@ -59,15 +60,15 @@ public class ProjectService {
             Map<Long, TagPO> map = tagMapper.list(new Long(Constants.PROJECT_TYPE_FLAG)).stream()
                     .collect(Collectors.toMap(TagPO::getId, tag -> tag));
             BeanUtils.copyProperties(project, result);
-            List<ProjectCompanyDetailPO> companies = projectCompanyMapper.selectByProjectId(projectId);
+            List<ProjectCompanyDetailPO> companies = projectCompanyMapper.selectByProjectId(projectId, null,
+                    null, null);
             if (null != companies) {
                 result.setCompanyCount(companies.size());
                 int people = 0;
                 BigDecimal amount = new BigDecimal(0);
                 for (ProjectCompanyDetailPO company : companies) {
                     people = people + company.getPeople().split(",").length;
-                    BigDecimal tmp = new BigDecimal(company.getAmount());
-                    amount = amount.add(tmp);
+                    amount = amount.add(company.getAmount());
                 }
                 result.setPeople(people);
                 result.setAmount(amount.floatValue());
@@ -95,9 +96,12 @@ public class ProjectService {
         }
     }
 
-    public List<ProjectVO> listProjects() {
-        List<ProjectPO> list = projectMapper.list();
-        List<ProjectVO> result = new ArrayList<>();
+    public JSONObject listProjects(Long projectType, Date startDate, Date endDate) {
+        JSONObject result = new JSONObject();
+        List<ProjectPO> list = projectMapper.list(projectType, startDate, endDate);
+        List<ProjectVO> data = new ArrayList<>();
+        int count = 0;
+        BigDecimal money = new BigDecimal(0.0f);
         if (null != list && list.size() > 0) {
             Map<Long, ProjectPO> projectAmountMap = projectMapper.selectProjectAmount().stream()
                     .collect(Collectors.toMap(ProjectPO::getId, project -> project));
@@ -107,16 +111,21 @@ public class ProjectService {
                 ProjectVO projectTmp = new ProjectVO();
                 BeanUtils.copyProperties(projectPO, projectTmp);
                 if (projectAmountMap.containsKey(projectTmp.getId())) {
-                    projectTmp.setAmount(projectAmountMap.get(projectTmp.getId()).getAmount());
+                    projectTmp.setAmount(projectAmountMap.get(projectTmp.getId()).getAmount().floatValue());
                 }
+                money = money.add(projectAmountMap.get(projectTmp.getId()).getAmount());
                 if (map.containsKey(projectPO.getType())) {
                     projectTmp.setType(map.get(projectPO.getType()).getName());
                 } else {
                     projectTmp.setType(projectPO.getType().toString());
                 }
-                result.add(projectTmp);
+                data.add(projectTmp);
             }
+            count = list.size();
         }
+        result.put("list", data);
+        result.put("count", count);
+        result.put("money", money);
         return result;
     }
 }

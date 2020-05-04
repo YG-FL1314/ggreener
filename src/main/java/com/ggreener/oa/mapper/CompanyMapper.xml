@@ -7,12 +7,9 @@
         <result column="established_time" jdbcType="TIMESTAMP" property="establishedTime"/>
         <result column="registered_capital" jdbcType="FLOAT" property="registeredCapital"/>
         <result column="shares_code" jdbcType="VARCHAR" property="sharesCode"/>
-        <result column="patents" jdbcType="VARCHAR" property="patents"/>
         <result column="utility_patents" jdbcType="VARCHAR" property="utilityPatents"/>
         <result column="softwares" jdbcType="VARCHAR" property="softwares"/>
-        <result column="office_area" jdbcType="FLOAT" property="officeArea"/>
         <result column="staff_number" jdbcType="BIGINT" property="staffNumber"/>
-        <result column="technicians" jdbcType="BIGINT" property="technicians"/>
         <result column="products" jdbcType="VARCHAR" property="products"/>
         <result column="telephone" jdbcType="VARCHAR" property="telephone"/>
         <result column="fax" jdbcType="VARCHAR" property="fax"/>
@@ -25,6 +22,10 @@
         <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
         <result column="honor" jdbcType="VARCHAR" property="honor"/>
         <result column="brief" jdbcType="VARCHAR" property="brief"/>
+        <result column="total_projects" jdbcType="BIGINT" property="totalProjects"/>
+        <result column="income" jdbcType="FLOAT" property="income"/>
+        <result column="profit" jdbcType="FLOAT" property="profit"/>
+        <result column="total_assets" jdbcType="FLOAT" property="totalAssets"/>
     </resultMap>
 
     <resultMap id="CompanyOverviewPO" type="com.ggreener.oa.po.CompanyOverviewPO">
@@ -39,17 +40,19 @@
     </resultMap>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
-        INSERT INTO company (`name`, `established_time`, `registered_capital`, `shares_code`,`patents`, `utility_patents`,
-         `softwares`, `office_area`, `staff_number`, `technicians`, `products`, `telephone`, `fax`, `website`, `address`, `status`,
-         `create_time`, `create_user`, `update_time`, `update_user`, `honor`, `brief`)
-        VALUES(#{name, jdbcType=VARCHAR}, #{establishedTime}, #{registeredCapital}, #{sharesCode}, #{patents}, #{utilityPatents}, #{softwares}, #{officeArea}, #{staffNumber},
-        #{technicians}, #{products, jdbcType=VARCHAR}, #{telephone, jdbcType=VARCHAR}, #{fax, jdbcType=VARCHAR}, #{website, jdbcType=VARCHAR}, #{address, jdbcType=VARCHAR}, #{status},
-         #{createTime}, #{createUser}, #{updateTime}, #{updateUser}, #{honor, jdbcType=VARCHAR}, #{brief, jdbcType=VARCHAR})
+        INSERT INTO company (`name`, `established_time`, `registered_capital`, `shares_code`, `utility_patents`,
+         `softwares`, `staff_number`, `products`, `telephone`, `fax`, `website`, `address`, `status`,
+         `create_time`, `create_user`, `update_time`, `update_user`, `honor`, `brief`, total_projects, income,
+         profit, total_assets)
+        VALUES(#{name}, #{establishedTime}, #{registeredCapital}, #{sharesCode}, #{utilityPatents}, #{softwares},  #{staffNumber},
+         #{products, jdbcType=VARCHAR}, #{telephone}, #{fax}, #{website}, #{address}, #{status}, #{createTime}, #{createUser},
+         #{updateTime}, #{updateUser}, #{honor}, #{brief}, #{totalProjects}, #{income}, #{profit}, #{totalAssets})
     </insert>
 
     <select id="selectByCompanyId" resultMap="CompanyPO">
-        SELECT id, `name`, established_time, registered_capital, shares_code, patents, utility_patents, softwares, office_area, staff_number, technicians, products,
-        telephone, fax, website, address, status, create_time, create_user, update_time, update_user, honor, brief
+        SELECT id, `name`, established_time, registered_capital, shares_code, utility_patents, softwares, staff_number, products,
+        telephone, fax, website, address, status, create_time, create_user, update_time, update_user, honor, brief, total_projects,
+        income, profit, total_assets
         FROM company
         WHERE id = #{companyId} and status = 1 LIMIT 1
     </select>
@@ -87,7 +90,7 @@
     </select>
 
     <select id="selectByName" resultMap="CompanyPO">
-        SELECT id, `name`, established_time, registered_capital, shares_code, patents, utility_patents, softwares, office_area, staff_number, technicians, products,
+        SELECT id, `name`, established_time, registered_capital, shares_code, utility_patents, softwares, staff_number, products,
         telephone, fax, website, address, status, create_time, create_user, update_time, update_user
         FROM company
         WHERE `name` = #{name} and status = 1 LIMIT 1
@@ -111,23 +114,14 @@
             <if test="sharesCode!=null">
                 shares_code = #{sharesCode,jdbcType=VARCHAR},
             </if>
-            <if test="patents!=null">
-                patents = #{patents,jdbcType=VARCHAR},
-            </if>
             <if test="utilityPatents!=null">
                 utility_patents = #{utilityPatents,jdbcType=VARCHAR},
             </if>
             <if test="softwares!=null">
                 softwares = #{softwares,jdbcType=VARCHAR},
             </if>
-            <if test="officeArea!=null">
-                office_area = #{officeArea,jdbcType=FLOAT},
-            </if>
             <if test="staffNumber!=null">
                 staff_number = #{staffNumber,jdbcType=BIGINT},
-            </if>
-            <if test="technicians!=null">
-                technicians = #{technicians,jdbcType=BIGINT},
             </if>
             <if test="products!=null">
                 products = #{products,jdbcType=VARCHAR},
@@ -155,6 +149,18 @@
             </if>
             <if test="brief!=null">
                 brief = #{brief,jdbcType=VARCHAR},
+            </if>
+            <if test="totalProjects!=null">
+                total_projects = #{totalProjects},
+            </if>
+            <if test="income!=null">
+                income = #{income},
+            </if>
+            <if test="profit!=null">
+                profit = #{profit},
+            </if>
+            <if test="totalAssets!=null">
+                total_assets = #{totalAssets},
             </if>
         </trim>
         WHERE id = #{id}

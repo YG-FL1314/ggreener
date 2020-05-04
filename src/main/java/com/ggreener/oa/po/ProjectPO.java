@@ -3,6 +3,7 @@ package com.ggreener.oa.po;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -19,7 +20,7 @@ public class ProjectPO implements Serializable {
     private String address;
     private Date startDate;
     private Date endDate;
-    private float amount;
+    private BigDecimal amount;
     private String remark;
     private Integer status;
     private Date createTime;

@@ -12,6 +12,7 @@ import java.util.List;
  * <p>
  * XXX
  */
+@Data
 public class CompanyVO implements Serializable {
     private static final long serialVersionUID = 1441455311765181191L;
     //公司ID
@@ -55,18 +56,14 @@ public class CompanyVO implements Serializable {
     private List<Long> cooperation;
     //技术产品
     private Long techProduct;
-    //发明专利
-    private String patents;
     //实用专利
     private String utilityPatents;
+    //实用专利
+    private Long utilityPatentsTag;
     //软件著作
     private String softwares;
     //员工人数
     private Long staffNumber;
-    //技术人员数
-    private Long technicians;
-    //办公面积
-    private Float officeArea;
     //自主研发技术产品
     private String products;
     //单位总机
@@ -82,267 +79,12 @@ public class CompanyVO implements Serializable {
     //企业简介
     private String brief;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Long getAttention() {
-        return attention;
-    }
-
-    public void setAttention(Long attention) {
-        this.attention = attention;
-    }
-
-    public Long getRegion() {
-        return region;
-    }
-
-    public void setRegion(Long region) {
-        this.region = region;
-    }
-
-    public Long getZol() {
-        return zol;
-    }
-
-    public void setZol(Long zol) {
-        this.zol = zol;
-    }
-
-    public Long getUnitProperty() {
-        return unitProperty;
-    }
-
-    public void setUnitProperty(Long unitProperty) {
-        this.unitProperty = unitProperty;
-    }
-
-    public Date getEstablishedTime() {
-        return establishedTime;
-    }
-
-    public void setEstablishedTime(Date establishedTime) {
-        this.establishedTime = establishedTime;
-    }
-
-    public Float getRegisteredCapital() {
-        return registeredCapital;
-    }
-
-    public void setRegisteredCapital(Float registeredCapital) {
-        this.registeredCapital = registeredCapital;
-    }
-
-    public Long getEquity() {
-        return equity;
-    }
-
-    public void setEquity(Long equity) {
-        this.equity = equity;
-    }
-
-    public List<Long> getHighTechs() {
-        return highTechs;
-    }
-
-    public void setHighTechs(List<Long> highTechs) {
-        this.highTechs = highTechs;
-    }
-
-    public Long getCompanyMarket() {
-        return companyMarket;
-    }
-
-    public void setCompanyMarket(Long companyMarket) {
-        this.companyMarket = companyMarket;
-    }
-
-    public String getSharesCode() {
-        return sharesCode;
-    }
-
-    public void setSharesCode(String sharesCode) {
-        this.sharesCode = sharesCode;
-    }
-
-    public Long getCompanyType() {
-        return companyType;
-    }
-
-    public void setCompanyType(Long companyType) {
-        this.companyType = companyType;
-    }
-
-    public List<Long> getIndustries() {
-        return industries;
-    }
-
-    public void setIndustries(List<Long> industries) {
-        this.industries = industries;
-    }
-
-    public List<Long> getBusiness() {
-        return business;
-    }
-
-    public void setBusiness(List<Long> business) {
-        this.business = business;
-    }
-
-    public List<Long> getBusinessArea() {
-        return businessArea;
-    }
-
-    public void setBusinessArea(List<Long> businessArea) {
-        this.businessArea = businessArea;
-    }
-
-    public List<Long> getSegmentMarket() {
-        return segmentMarket;
-    }
-
-    public void setSegmentMarket(List<Long> segmentMarket) {
-        this.segmentMarket = segmentMarket;
-    }
-
-    public List<Long> getAdvantages() {
-        return advantages;
-    }
-
-    public void setAdvantages(List<Long> advantages) {
-        this.advantages = advantages;
-    }
-
-    public Long getTechProduct() {
-        return techProduct;
-    }
-
-    public void setTechProduct(Long techProduct) {
-        this.techProduct = techProduct;
-    }
-
-    public String getPatents() {
-        return patents;
-    }
-
-    public void setPatents(String patents) {
-        this.patents = patents;
-    }
-
-    public String getUtilityPatents() {
-        return utilityPatents;
-    }
-
-    public void setUtilityPatents(String utilityPatents) {
-        this.utilityPatents = utilityPatents;
-    }
-
-    public String getSoftwares() {
-        return softwares;
-    }
-
-    public void setSoftwares(String softwares) {
-        this.softwares = softwares;
-    }
-
-    public Long getStaffNumber() {
-        return staffNumber;
-    }
-
-    public void setStaffNumber(Long staffNumber) {
-        this.staffNumber = staffNumber;
-    }
-
-    public Long getTechnicians() {
-        return technicians;
-    }
-
-    public void setTechnicians(Long technicians) {
-        this.technicians = technicians;
-    }
-
-    public Float getOfficeArea() {
-        return officeArea;
-    }
-
-    public void setOfficeArea(Float officeArea) {
-        this.officeArea = officeArea;
-    }
-
-    public String getProducts() {
-        return products;
-    }
-
-    public void setProducts(String products) {
-        this.products = products;
-    }
-
-    public String getTelephone() {
-        return telephone;
-    }
-
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
-    }
-
-    public String getFax() {
-        return fax;
-    }
-
-    public void setFax(String fax) {
-        this.fax = fax;
-    }
-
-    public String getWebsite() {
-        return website;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getHonor() {
-        return honor;
-    }
-
-    public void setHonor(String honor) {
-        this.honor = honor;
-    }
-
-    public String getBrief() {
-        return brief;
-    }
-
-    public void setBrief(String brief) {
-        this.brief = brief;
-    }
-
-    public List<Long> getCooperation() {
-        return cooperation;
-    }
-
-    public void setCooperation(List<Long> cooperation) {
-        this.cooperation = cooperation;
-    }
+    private Float totalAssets;
+    private Float income;
+    private Float profit;
+    private Long totalProjects;
+    private Long credit;
+
+    private Long normalService;
+    private Long abutment;
 }

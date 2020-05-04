@@ -6,7 +6,7 @@
         <result column="project_id" jdbcType="BIGINT" property="projectId" />
         <result column="company_id" jdbcType="BIGINT" property="companyId" />
         <result column="people" jdbcType="VARCHAR" property="people"/>
-        <result column="amount" jdbcType="FLOAT" property="amount"/>
+        <result column="amount" jdbcType="DECIMAL" property="amount"/>
         <result column="owners" jdbcType="VARCHAR" property="owners"/>
         <result column="others" jdbcType="VARCHAR" property="others"/>
         <result column="status" jdbcType="INTEGER" property="status"/>
@@ -14,6 +14,7 @@
         <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
     </resultMap>
 
     <resultMap id="ProjectCompanyDetailPO" type="com.ggreener.oa.po.ProjectCompanyDetailPO">
@@ -21,7 +22,7 @@
         <result column="project_id" jdbcType="BIGINT" property="projectId" />
         <result column="company_id" jdbcType="BIGINT" property="companyId" />
         <result column="people" jdbcType="VARCHAR" property="people"/>
-        <result column="amount" jdbcType="FLOAT" property="amount"/>
+        <result column="amount" jdbcType="DECIMAL" property="amount"/>
         <result column="owners" jdbcType="VARCHAR" property="owners"/>
         <result column="others" jdbcType="VARCHAR" property="others"/>
         <result column="status" jdbcType="INTEGER" property="status"/>
@@ -34,36 +35,66 @@
         <result column="type" jdbcType="INTEGER" property="projectType"/>
         <result column="start_date" jdbcType="TIMESTAMP" property="startDate"/>
         <result column="end_date" jdbcType="TIMESTAMP" property="endDate"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
     </resultMap>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO project_company (`project_id`, `company_id`, `people`, `amount`,`owners`, `others`,
-         `status`, `create_time`, `create_user`, `update_time`, `update_user`)
+         `status`, `create_time`, `create_user`, `update_time`, `update_user`, `remark`)
         VALUES(#{projectId}, #{companyId}, #{people}, #{amount}, #{owners}, #{others}, #{status},
-        #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
+        #{createTime}, #{createUser}, #{updateTime}, #{updateUser}, #{remark})
     </insert>
 
     <select id="selectByCompanyId" resultMap="ProjectCompanyDetailPO">
         SELECT pc.id, pc.`project_id`, pc.`company_id`, pc.`people`, pc.`amount`, pc.`owners`,
          pc.`others`, pc.`create_time`, pc.`create_user`, pc.`update_time`, pc.`update_user`,
-         pc.status, p.name, p.type, p.start_date, p.end_date
+         pc.status, p.name, p.type, p.start_date, p.end_date, pc.remark
         FROM project_company pc JOIN project p ON pc.project_id = p.id
         WHERE pc.company_id = #{companyId} AND pc.status = 1 AND p.status = 1
+        <if test="projectType!=null">
+            AND p.type = #{projectType},
+        </if>
+        <if test="startDate!=null">
+            AND p.start_date >= #{startDate},
+        </if>
+        <if test="endDate!=null">
+            AND p.end_date <= #{endDate},
+        </if>
         ORDER BY p.start_date DESC
+    </select>
+
+    <select id="selectByCompanyIds" resultType="java.lang.Long">
+        SELECT distinct pc.`company_id`
+        FROM project_company pc JOIN project p ON pc.project_id = p.id
+        WHERE pc.company_id IN
+        <foreach collection="companyIds" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach> AND pc.status = 1 AND p.status = 1
     </select>
 
     <select id="selectByProjectId" resultMap="ProjectCompanyDetailPO">
         SELECT pc.id, pc.`project_id`, pc.`company_id`, pc.`people`, pc.`amount`, pc.`owners`,
          pc.`others`, pc.`create_time`, pc.`create_user`, pc.`update_time`, pc.`update_user`,
-         c.name as company_name
-        FROM project_company pc JOIN company c ON pc.company_id = c.id
+         c.name as company_name, pc.remark
+        FROM project_company pc
+        JOIN company c ON pc.company_id = c.id
+        JOIN project p ON pc.project_id = p.id
         WHERE pc.project_id = #{projectId} AND pc.status = 1 AND c.status = 1
+        <if test="projectType!=null">
+            AND p.type = #{projectType},
+        </if>
+        <if test="startDate!=null">
+            AND p.start_date >= #{startDate},
+        </if>
+        <if test="endDate!=null">
+            AND p.end_date <= #{endDate},
+        </if>
         ORDER BY pc.update_time DESC
     </select>
 
     <select id="get" resultMap="ProjectCompanyPO">
         SELECT id, `project_id`, `company_id`, `people`, `amount`, `owners`,
-        `others`, `create_time`, `create_user`, `update_time`, `update_user`
+        `others`, `create_time`, `create_user`, `update_time`, `update_user`, remark
         FROM project_company
         WHERE id = #{id} AND status = 1 LIMIT 1
     </select>
@@ -93,6 +124,9 @@
             </if>
             <if test="others!=null">
                 others = #{others},
+            </if>
+            <if test="remark!=null">
+                remark = #{remark},
             </if>
             <if test="updateTime!=null">
                 update_time = #{updateTime},

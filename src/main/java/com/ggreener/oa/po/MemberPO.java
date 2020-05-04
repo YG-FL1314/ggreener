@@ -23,4 +23,5 @@ public class MemberPO implements Serializable {
     private String createUser;
     private Date updateTime;
     private String updateUser;
+    private Integer status;
 }

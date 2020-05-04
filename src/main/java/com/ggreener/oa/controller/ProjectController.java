@@ -13,6 +13,7 @@ import com.ggreener.oa.service.UserService;
 import com.ggreener.oa.util.Constants;
 import com.ggreener.oa.vo.ResponseVO;
 import com.ggreener.oa.vo.UserVO;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -126,12 +128,23 @@ public class ProjectController {
     }
 
     @GetMapping(value = "list", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    Object listProjects(HttpServletRequest request) {
+    Object listProjects(HttpServletRequest request, @RequestParam(value = "projectType", required = false) Long projectType,
+                        @RequestParam(value = "startDate", required = false) String startDateStr,
+                        @RequestParam(value = "endDate", required = false) String endDateStr) {
         ResponseVO resp = new ResponseVO();
         try {
+            SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+            Date startDate = null;
+            Date endDate = null;
+            if (StringUtils.isNotEmpty(startDateStr)) {
+                startDate = sdf.parse(startDateStr);
+            }
+            if (StringUtils.isNotEmpty(endDateStr)) {
+                endDate = sdf.parse(endDateStr);
+            }
             UserVO user = userService.validateUser(request.getSession());
             if (null != user) {
-                resp.setObj(projectService.listProjects());
+                resp.setObj(projectService.listProjects(projectType, startDate, endDate));
                 resp.setStatus(Constants.RESPONSE_SUCCESS);
             } else {
                 resp.setStatus(Constants.RESPONSE_REDIRECT);
