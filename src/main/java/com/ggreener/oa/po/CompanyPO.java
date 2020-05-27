@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by lifu on 2018/10/8.
@@ -38,4 +39,5 @@ public class CompanyPO implements Serializable {
     private Float income;
     private Float profit;
     private Float totalAssets;
+    private List<Long> tags;
 }

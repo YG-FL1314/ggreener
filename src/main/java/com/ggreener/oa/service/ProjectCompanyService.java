@@ -64,6 +64,7 @@ public class ProjectCompanyService {
                 money = money.add(tmp.getAmount());
                 BeanUtils.copyProperties(tmp, vo);
                 vo.setId(tmp.getCompanyId());
+				vo.setAmount(tmp.getAmount().floatValue());
                 data.add(vo);
             }
             count = list.size();
@@ -89,6 +90,7 @@ public class ProjectCompanyService {
                 money = money.add(tmp.getAmount());
                 BeanUtils.copyProperties(tmp, vo);
                 vo.setProjectType(map.get(tmp.getProjectType()).getName());
+				vo.setAmount(tmp.getAmount().floatValue());
                 data.add(vo);
             }
             count = list.size();

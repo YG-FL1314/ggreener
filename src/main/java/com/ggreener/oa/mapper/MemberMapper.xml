@@ -56,12 +56,8 @@
             <if test="memberCode!=null">
                 member_code = #{memberCode,jdbcType=VARCHAR},
             </if>
-            <if test="joiningTime!=null">
-                joining_time = #{joiningTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="validityTime!=null">
-                validity_time = #{validityTime,jdbcType=TIMESTAMP},
-            </if>
+            joining_time = #{joiningTime},
+            validity_time = #{validityTime},
             <if test="updateTime!=null">
                 update_time = #{updateTime,jdbcType=TIMESTAMP},
             </if>

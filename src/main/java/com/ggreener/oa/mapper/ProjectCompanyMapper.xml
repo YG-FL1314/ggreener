@@ -58,7 +58,7 @@
             AND p.start_date >= #{startDate},
         </if>
         <if test="endDate!=null">
-            AND p.end_date <= #{endDate},
+            AND p.end_date &lt;= #{endDate},
         </if>
         ORDER BY p.start_date DESC
     </select>
@@ -87,7 +87,7 @@
             AND p.start_date >= #{startDate},
         </if>
         <if test="endDate!=null">
-            AND p.end_date <= #{endDate},
+            AND p.end_date &lt;== #{endDate},
         </if>
         ORDER BY pc.update_time DESC
     </select>

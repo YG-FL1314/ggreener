@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.ggreener.oa.exception.SessionException;
 import com.ggreener.oa.po.MemberPO;
+import com.ggreener.oa.schedule.MemberStatusSchedule;
 import com.ggreener.oa.service.CompanyService;
 import com.ggreener.oa.service.MemberService;
 import com.ggreener.oa.service.UserService;
@@ -41,6 +42,9 @@ public class MemberController {
 
     @Autowired
     private CompanyService companyService;
+
+    @Autowired
+    private MemberStatusSchedule schedule;
 
     @PostMapping(value = "add", consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE },
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -147,13 +151,18 @@ public class MemberController {
         return resp;
     }
 
+    @GetMapping(value = "schedule", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    void startSchedule() {
+        schedule.startSchedule();
+    }
+
     private int getMemberStatus(Date startDate, Date endDate) {
         Long currentTime = System.currentTimeMillis();
-        LOGGER.info("currentTime：{}, startDate: {}, endDate: {}, two month: {}",
-                currentTime, startDate.getTime(), endDate.getTime(), Constants.TWO_MONTH_TIME);
         if (startDate == null || endDate == null) {
             return Constants.DEFAULT;
         }
+        LOGGER.info("currentTime：{}, startDate: {}, endDate: {}, two month: {}",
+                currentTime, startDate.getTime(), endDate.getTime(), Constants.TWO_MONTH_TIME);
         if (currentTime >= startDate.getTime() && currentTime <= endDate.getTime() - Constants.TWO_MONTH_TIME) {
             return Constants.EFFECTIVE;
         }

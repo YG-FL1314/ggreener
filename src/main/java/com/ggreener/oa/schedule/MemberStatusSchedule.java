@@ -7,11 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
-@Configurable
+@Component
 @EnableScheduling
 public class MemberStatusSchedule {
     @Autowired
@@ -42,5 +43,9 @@ public class MemberStatusSchedule {
            }
         }
 
+    }
+
+    public void startSchedule() {
+        updateMemberStatus();
     }
 }

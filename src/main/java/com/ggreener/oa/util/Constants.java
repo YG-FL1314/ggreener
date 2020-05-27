@@ -140,7 +140,7 @@ public class Constants {
     public static final int DEFAULT = 0;
     public static final int EFFECTIVE = 1;
     public static final int EFFECTIVE_SOON = 2;
-    public static final int NOT_EFFECTIVE = 4;
+    public static final int NOT_EFFECTIVE = 3;
 
     public static final long HAVE_COOPERATION = 1;
     public static final int NO_HAVE_COOPERATION = 2;

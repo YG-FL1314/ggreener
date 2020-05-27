@@ -121,7 +121,7 @@ public class CompanyService {
             if (Constants.HAVE_COOPERATION == cooperationInfo) {
                 companyIds = newCompanyIds;
             } else {
-                companyIds.removeAll(companyIds);
+                companyIds.removeAll(newCompanyIds);
             }
         }
 
@@ -370,11 +370,10 @@ public class CompanyService {
         companyPO.setUpdateTime(new Date());
         companyPO.setUpdateUser(userId);
         if (companyMapper.update(companyPO) > 0) {
-            List<Long> tags = new ArrayList<>();
-            if (tags.size() > 0) {
+            if (!CollectionUtils.isEmpty(companyPO.getTags())) {
                 //删除除了会员关系的company_tag相关信息
                 companyTagsMapper.delete(companyPO.getId(), new Long(Constants.MEMBER_FLAG));
-                companyTagsMapper.batchInsert(companyPO.getId(), tags, new Date());
+                companyTagsMapper.batchInsert(companyPO.getId(), companyPO.getTags(), new Date());
             }
         }
         return companyPO;

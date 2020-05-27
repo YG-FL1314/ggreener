@@ -49,7 +49,7 @@
             AND start_date >= #{startDate}
         </if>
         <if test="endDate!=null">
-            AND end_date <= #{endDate}
+            AND end_date &lt;= #{endDate}
         </if>
         ORDER BY start_date DESC
     </select>

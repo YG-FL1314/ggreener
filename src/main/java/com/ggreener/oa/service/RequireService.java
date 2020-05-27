@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,10 +40,12 @@ public class RequireService {
 
     public void updateRequires(Long companyId, List<Long> tags, String userId) throws RequireException {
         if (requireMapper.delete(companyId) >= 0) {
-            if (requireMapper.batchInsert(companyId, tags, userId, new Date()) > 0) {
+            if (!CollectionUtils.isEmpty(tags)) {
+                if (requireMapper.batchInsert(companyId, tags, userId, new Date()) > 0) {
 
-            } else {
-                throw new RequireException("添加需求信息失败！");
+                } else {
+                    throw new RequireException("添加需求信息失败！");
+                }
             }
         } else {
             throw new RequireException("删除需求信息失败！");
