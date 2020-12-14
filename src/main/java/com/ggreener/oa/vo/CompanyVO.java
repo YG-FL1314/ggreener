@@ -87,4 +87,5 @@ public class CompanyVO implements Serializable {
 
     private Long normalService;
     private Long abutment;
+    private Long techCase;
 }

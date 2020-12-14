@@ -134,6 +134,9 @@ public class Constants {
     //信用等级父标签
     public static final int ABUTMENT_FLAG = 598;
 
+    //案例标签
+    public static final int TECH_CASE_FLAG = 654;
+
 
     public static final long TWO_MONTH_TIME = 2 * 30 * 24 * 60 * 60 * 1000L;
 

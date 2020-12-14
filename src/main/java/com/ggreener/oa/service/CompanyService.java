@@ -334,6 +334,8 @@ public class CompanyService {
                     break;
                 case Constants.ABUTMENT_FLAG:
                     companyVO.setAbutment(tagDetail.getTagId());
+                case Constants.TECH_CASE_FLAG:
+                    companyVO.setTechCase(tagDetail.getTagId());
                     break;
             }
         }

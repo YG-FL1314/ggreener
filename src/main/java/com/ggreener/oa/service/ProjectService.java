@@ -112,8 +112,8 @@ public class ProjectService {
                 BeanUtils.copyProperties(projectPO, projectTmp);
                 if (projectAmountMap.containsKey(projectTmp.getId())) {
                     projectTmp.setAmount(projectAmountMap.get(projectTmp.getId()).getAmount().floatValue());
+                    money = money.add(projectAmountMap.get(projectTmp.getId()).getAmount());
                 }
-                money = money.add(projectAmountMap.get(projectTmp.getId()).getAmount());
                 if (map.containsKey(projectPO.getType())) {
                     projectTmp.setType(map.get(projectPO.getType()).getName());
                 } else {
