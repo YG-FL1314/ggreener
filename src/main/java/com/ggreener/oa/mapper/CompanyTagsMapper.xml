@@ -78,6 +78,24 @@
         </if>
     </select>
 
+    <select id="selectCompanyByTagIds" parameterType="java.util.List" resultMap="TagDetailPO">
+        SELECT t.name, t.parent_id, ct.company_id, ct.tag_id
+        FROM tag t, company_tag ct
+        WHERE t.id = ct.tag_id
+        <if test="tagIds != null" >
+            AND t.id IN
+            <foreach collection="tagIds" item="tag" open="(" close=")"  separator=",">
+                #{tag}
+            </foreach>
+        </if>
+        <if test="companyIds != null" >
+            AND ct.company_id IN
+            <foreach collection="companyIds" item="company" open="(" close=")"  separator=",">
+                #{company}
+            </foreach>
+        </if>
+    </select>
+
     <select id="listByCompanyIds" resultMap="TagDetailPO">
         SELECT t.name, t.parent_id, ct.company_id, ct.tag_id
         FROM tag t, company_tag ct

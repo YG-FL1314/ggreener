@@ -45,6 +45,9 @@ public class CompanyService {
     @Autowired
     private ProjectCompanyMapper projectCompanyMapper;
 
+    @Autowired
+    private TagMapper tagMapper;
+
     public CompanyVO addCompany(CompanyPO company, List<Long> tags) throws CompanyException {
         CompanyVO companyVO = new CompanyVO();
         if (companyMapper.insert(company) > 0) {
@@ -67,10 +70,21 @@ public class CompanyService {
         List<Long> parentIds = new ArrayList<>();
         Long count = 0L;
         List<Long> companyIds = new ArrayList<>();
+        //判断本次请求是否含有会员tag并过滤出来
+        List<Long> memberTags = tagMapper.list(Long.valueOf(Constants.MEMBER_FLAG)).stream()
+                .map(s -> s.getId()).collect(Collectors.toList());
+        List<Long> thisMemberTags = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(tags)) {
+            memberTags.forEach(s -> {
+                if (tags.contains(s)) {
+                    thisMemberTags.add(s);
+                }
+            });
+            tags.removeAll(thisMemberTags);
+        }
+
         if (null != tags && tags.size() > 0) {
             parentIds = addParentIds(tags);
-        }
-        if (null != tags && tags.size() > 0) {
             Map<Long, List<CompanyTagsPO>> mapIds = companyTagsMapper.selectCompanyByTags(tags).stream()
                     .collect(Collectors.groupingBy(CompanyTagsPO::getCompanyId));
             for (Long k : mapIds.keySet()) {
@@ -104,6 +118,16 @@ public class CompanyService {
                     companyIds.add(k);
                 }
             }
+        }
+
+        //filter by member
+        if (!CollectionUtils.isEmpty(thisMemberTags) && !CollectionUtils.isEmpty(companyIds)) {
+            List<TagDetailPO> companys = companyTagsMapper.selectCompanyByTagIds(companyIds, thisMemberTags);
+            List<Long> newCompanyIds = new ArrayList<>();
+            companys.forEach(company -> {
+                newCompanyIds.add(company.getCompanyId());
+            });
+            companyIds = newCompanyIds;
         }
 
         //filter by memberStatus
